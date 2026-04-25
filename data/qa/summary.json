@@ -1,0 +1,24 @@
+{
+  "total": 150,
+  "target_counts": {
+    "text": 75,
+    "table": 35,
+    "image": 25,
+    "multimodal": 15
+  },
+  "actual_counts": {
+    "text": 75,
+    "table": 35,
+    "image": 25,
+    "multimodal": 15
+  },
+  "available_candidates": {
+    "text": 173,
+    "table": 3581,
+    "image": 318,
+    "multimodal": 52
+  },
+  "dev_count": 30,
+  "test_count": 120,
+  "note": "Image questions are generated from visual checkboxes or embedded image markers. Manually review them before using them as strict chart/image reasoning benchmarks."
+}

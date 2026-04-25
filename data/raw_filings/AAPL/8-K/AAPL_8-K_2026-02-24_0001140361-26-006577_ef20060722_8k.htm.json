@@ -1,0 +1,11 @@
+{
+  "ticker": "AAPL",
+  "company": "Apple Inc.",
+  "cik": "0000320193",
+  "form": "8-K",
+  "filing_date": "2026-02-24",
+  "accession": "0001140361-26-006577",
+  "primary_doc": "ef20060722_8k.htm",
+  "url": "https://www.sec.gov/Archives/edgar/data/320193/000114036126006577/ef20060722_8k.htm",
+  "local_path": "data\\raw_filings\\AAPL\\8-K\\AAPL_8-K_2026-02-24_0001140361-26-006577_ef20060722_8k.htm"
+}

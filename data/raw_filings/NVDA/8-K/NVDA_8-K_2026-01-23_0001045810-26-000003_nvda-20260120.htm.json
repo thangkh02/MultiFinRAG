@@ -1,0 +1,11 @@
+{
+  "ticker": "NVDA",
+  "company": "NVIDIA CORP",
+  "cik": "0001045810",
+  "form": "8-K",
+  "filing_date": "2026-01-23",
+  "accession": "0001045810-26-000003",
+  "primary_doc": "nvda-20260120.htm",
+  "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000003/nvda-20260120.htm",
+  "local_path": "data\\raw_filings\\NVDA\\8-K\\NVDA_8-K_2026-01-23_0001045810-26-000003_nvda-20260120.htm"
+}

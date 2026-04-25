@@ -1,0 +1,11 @@
+{
+  "ticker": "MS",
+  "company": "MORGAN STANLEY",
+  "cik": "0000895421",
+  "form": "DEF 14A",
+  "filing_date": "2026-04-02",
+  "accession": "0001140361-26-012975",
+  "primary_doc": "ny20058185x1_def14a.htm",
+  "url": "https://www.sec.gov/Archives/edgar/data/895421/000114036126012975/ny20058185x1_def14a.htm",
+  "local_path": "data\\raw_filings\\MS\\DEF 14A\\MS_DEF_14A_2026-04-02_0001140361-26-012975_ny20058185x1_def14a.htm"
+}
