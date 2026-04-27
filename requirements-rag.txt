@@ -9,3 +9,4 @@ requests
 pdfminer.six
 pillow
 python-dotenv
+playwright
