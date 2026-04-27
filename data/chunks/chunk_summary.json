@@ -3,9 +3,9 @@
   "chunk_counts": {
     "text": 1318,
     "table": 1847,
-    "image": 981
+    "image": 369
   },
-  "total_chunks": 4146,
+  "total_chunks": 3534,
   "text_chunking": {
     "method": "BGE sentence semantic chunking",
     "model": "BAAI/bge-base-en-v1.5",
@@ -20,5 +20,10 @@
     "max_merge_pages": 6
   },
   "table_chunking": "unchanged from existing table_chunks.jsonl",
-  "image_chunking": "unchanged from existing image_chunks.jsonl"
+  "image_chunking": "SEC HTML image object chunks; image assets downloaded locally; 369 meaningful images summarized by google/gemma-3-27b-it via NVIDIA API; summaries embedded with BAAI/bge-base-en-v1.5. pdfminer LTImage/LTFigure implementation exists but found 0 objects in Playwright-converted PDFs.",
+  "image_assets": {
+    "downloaded": 981,
+    "vlm_summarized": 369,
+    "local_dir": "data/visual_chunks/sec_images"
+  }
 }

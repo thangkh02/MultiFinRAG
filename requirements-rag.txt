@@ -1,0 +1,11 @@
+sentence-transformers
+faiss-cpu
+numpy
+scipy
+scikit-learn
+pymupdf
+beautifulsoup4
+requests
+pdfminer.six
+pillow
+python-dotenv
