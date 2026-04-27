@@ -19,11 +19,17 @@
     "max_merge_words": 1000,
     "max_merge_pages": 6
   },
-  "table_chunking": "unchanged from existing table_chunks.jsonl",
+  "table_chunking": "HTML table object chunks parsed with BeautifulSoup; 1310 financial/numeric tables rendered to images and summarized by google/gemma-3-27b-it via NVIDIA API; table_json remains from HTML parse as source of truth; 17 VLM calls fell back to deterministic summaries.",
   "image_chunking": "SEC HTML image object chunks; image assets downloaded locally; 369 meaningful images summarized by google/gemma-3-27b-it via NVIDIA API; summaries embedded with BAAI/bge-base-en-v1.5. pdfminer LTImage/LTFigure implementation exists but found 0 objects in Playwright-converted PDFs.",
   "image_assets": {
     "downloaded": 981,
     "vlm_summarized": 369,
     "local_dir": "data/visual_chunks/sec_images"
+  },
+  "table_assets": {
+    "rendered": 1310,
+    "vlm_ok": 1293,
+    "vlm_fallback": 17,
+    "local_dir": "data/visual_chunks/tables"
   }
 }
