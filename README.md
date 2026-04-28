@@ -310,18 +310,40 @@ semantic chunks:      9927
 docs_with_chunks:     84
 questions:            150
 evidence_rows:        189
-qrels:                258
+qrels raw:            258
+qrels active:         248
 unmatched_evidence:   0
-match_method_counts:  fuzzy_text=192, exact_text=66
+match_method_counts:  fuzzy_text=182, exact_text=66
+```
+
+Da audit va loc bot qrels dang ngo:
+
+```text
+Tieu chi loc: fuzzy_text co token_recall < 0.60
+So qrels bi loai: 10
+So query bi anh huong: 7
+So query con lai trong benchmark: 150/150
+remaining low-token fuzzy qrels: 0
+```
+
+Khong loai tat ca `page_match=False`, vi semantic chunk co the gom nhieu page hoac page index cua parser PDF lech voi FinanceBench. Neu `token_recall` van du cao thi qrel duoc giu lai.
+
+File qrels:
+
+```text
+outputs/financebench_eval_bge/qrels/qrels.jsonl                  # active, da loc
+outputs/financebench_eval_bge/qrels/qrels_unfiltered.jsonl       # backup ban raw
+outputs/financebench_eval_bge/qrels/removed_qrels_suspicious.jsonl
+outputs/financebench_eval_bge/qrels/mapping_report.json
 ```
 
 Phan bo query -> relevant chunks:
 
 ```text
-1 chunk relevant : 99 queries
+1 chunk relevant : 103 queries
 2 chunks relevant: 30 queries
-3 chunks relevant: 14 queries
-4 chunks relevant: 6 queries
+3 chunks relevant: 11 queries
+4 chunks relevant: 5 queries
 5 chunks relevant: 1 query
 ```
 
@@ -347,35 +369,54 @@ notebooks/financebench_retrieval_benchmark_audit.ipynb
 File ket qua evaluation:
 
 ```text
-outputs/financebench_eval_bge/retrieval_eval/dense_bge_small_retrieval_results.jsonl
-outputs/financebench_eval_bge/retrieval_eval/sparse_tfidf_retrieval_results.jsonl
-outputs/financebench_eval_bge/retrieval_eval/hybrid_retrieval_results.jsonl
-outputs/financebench_eval_bge/retrieval_eval/retrieval_results.jsonl
-outputs/financebench_eval_bge/retrieval_eval/metrics_summary.json
-outputs/financebench_eval_bge/retrieval_eval/metrics_by_question.jsonl
+outputs/financebench_eval_bge/retrieval_eval_filtered/bm25_retrieval_results.jsonl
+outputs/financebench_eval_bge/retrieval_eval_filtered/bge_dense_retrieval_results.jsonl
+outputs/financebench_eval_bge/retrieval_eval_filtered/hybrid_retrieval_results.jsonl
+outputs/financebench_eval_bge/retrieval_eval_filtered/metadata_aware_retrieval_results.jsonl
+outputs/financebench_eval_bge/retrieval_eval_filtered/retrieval_results.jsonl
+outputs/financebench_eval_bge/retrieval_eval_filtered/metrics_summary.json
+outputs/financebench_eval_bge/retrieval_eval_filtered/metrics_by_question.jsonl
+outputs/financebench_eval_bge/retrieval_eval_filtered/retrieval_eval_report.md
+```
+
+Chay lai evaluation filtered:
+
+```powershell
+python -m rag_eval.src.run_financebench_filtered_retrieval_eval `
+  --base-dir outputs/financebench_eval_bge `
+  --out-dir outputs/financebench_eval_bge/retrieval_eval_filtered `
+  --top-k 10 `
+  --candidate-k 50 `
+  --hybrid-alpha 0.60 `
+  --reranker-model cross-encoder/ms-marco-MiniLM-L-6-v2 `
+  --reranker-batch-size 8
 ```
 
 Ket qua retrieval:
 
 | Method | Hit@1 | Recall@1 | MRR@1 | Hit@10 | Recall@10 | MRR@10 | Precision@10 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| dense_bge_small | 0.1067 | 0.0650 | 0.1067 | 0.3400 | 0.2661 | 0.1695 | 0.0387 |
-| sparse_tfidf | 0.0333 | 0.0283 | 0.0333 | 0.1133 | 0.0989 | 0.0561 | 0.0140 |
-| hybrid_bge_small_tfidf_alpha_0.60 | 0.0533 | 0.0400 | 0.0533 | 0.2600 | 0.2206 | 0.1106 | 0.0307 |
+| bge_dense | 0.1067 | 0.0650 | 0.1067 | 0.3400 | 0.2694 | 0.1695 | 0.0387 |
+| bm25 | 0.0600 | 0.0500 | 0.0600 | 0.1733 | 0.1539 | 0.0947 | 0.0213 |
+| bm25_bge_hybrid_alpha_0.60 | 0.1000 | 0.0706 | 0.1000 | 0.3267 | 0.2639 | 0.1563 | 0.0387 |
+| bm25_bge_hybrid_alpha_0.60_reranker_cross_encoder_ms_marco_minilm_l_6_v2 | 0.1067 | 0.0722 | 0.1067 | 0.3133 | 0.2522 | 0.1605 | 0.0373 |
+| metadata_doc_filter_bm25_bge_hybrid_alpha_0.60 | 0.2067 | 0.1617 | 0.2067 | 0.5333 | 0.4596 | 0.3018 | 0.0680 |
 
 Nhan xet:
 
 ```text
-dense_bge_small dang tot nhat trong 3 cach.
-Hybrid alpha=0.60 chua tot hon dense thuan.
-Hit@10=0.34 nghia la top-10 lay duoc it nhat mot chunk relevant cho 34% cau hoi.
-Recall@10=0.2661 nghia la trung binh lay duoc 26.61% relevant chunks trong top-10.
+bge_dense dang tot nhat trong open-corpus retrieval theo Hit@10/Recall@10.
+BM25 thuan thap hon dense.
+Hybrid alpha=0.60 gan bang dense nhung chua vuot dense.
+Reranker nhe cross-encoder cai thien Recall@1 so voi dense/hybrid, nhung giam Hit@10/Recall@10 vi rerank lai top-50.
+metadata_doc_filter la cau hinh oracle biet truoc doc_name, khong so sanh truc tiep voi open-corpus retrieval.
+FinanceBench BGE chunks hien tai chi la text chunks, nen chua co table-aware retrieval rieng.
 ```
 
 File metric chinh:
 
 ```text
-outputs/financebench_eval_bge/retrieval_eval/metrics_summary.json
+outputs/financebench_eval_bge/retrieval_eval_filtered/metrics_summary.json
 ```
 
 
