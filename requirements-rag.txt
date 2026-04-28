@@ -10,3 +10,5 @@ pdfminer.six
 pillow
 python-dotenv
 playwright
+pyyaml
+tqdm
