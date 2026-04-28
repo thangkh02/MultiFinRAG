@@ -39,6 +39,8 @@ def chunk_file_for(index_name: str) -> Path:
 
 
 def chunk_text(chunk: dict) -> str:
+    if chunk.get("embed_text"):
+        return chunk["embed_text"]
     if chunk.get("modality") == "table":
         return chunk.get("summary") or chunk.get("text") or ""
     if chunk.get("modality") == "image":
