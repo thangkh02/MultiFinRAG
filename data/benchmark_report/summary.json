@@ -1,0 +1,27 @@
+{
+  "queries": 110,
+  "qrels": 148,
+  "full_corpus_chunks": 3534,
+  "gold_corpus_chunks": 91,
+  "query_type_counts": {
+    "text": 40,
+    "table": 26,
+    "image": 25,
+    "multimodal": 19
+  },
+  "qrel_modality_counts": {
+    "text": 59,
+    "table": 45,
+    "image": 44
+  },
+  "qrels_per_query": {
+    "min": 1,
+    "max": 3,
+    "avg": 1.3454545454545455,
+    "distribution": {
+      "1": 91,
+      "3": 19
+    }
+  },
+  "note": "Report benchmark with natural questions. It excludes cover-page metadata and table-of-contents qrels. Multimodal queries require text, table, and image evidence chunks."
+}
