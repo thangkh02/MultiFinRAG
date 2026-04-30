@@ -40,6 +40,10 @@ def load_chunks_by_id(index_name: str) -> dict[str, dict]:
     return {chunk["id"]: chunk for chunk in load_jsonl(chunk_file_for(index_name))}
 
 
+def chunk_preview_text(chunk: dict) -> str:
+    return chunk.get("embed_text") or chunk.get("text") or chunk.get("summary") or ""
+
+
 def retrieve_bge(
     query: str,
     index_name: str = "all",
@@ -102,7 +106,7 @@ def main() -> None:
         device=args.device,
     )
     for row in rows:
-        preview = row.get("text") or row.get("summary") or ""
+        preview = chunk_preview_text(row)
         print(
             json.dumps(
                 {

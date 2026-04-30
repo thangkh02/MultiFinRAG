@@ -1,0 +1,15 @@
+{
+  "index_name": "all",
+  "model_name": "BAAI/bge-base-en-v1.5",
+  "chunks": 3534,
+  "dimension": 768,
+  "normalized_embeddings": true,
+  "metric": "inner_product_cosine",
+  "sources": [
+    "text",
+    "table",
+    "image"
+  ],
+  "index_path": "data/index_bge/all.faiss",
+  "chunk_ids_path": "data/index_bge/all_chunk_ids.json"
+}
