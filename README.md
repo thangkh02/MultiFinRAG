@@ -128,6 +128,126 @@ multimodal: 15
 
 ---
 
+# Semantic Tagging
+
+Semantic tagging currently follows only the paper schema from
+`Multi-Document Financial Question Answering using LLMs`.
+
+The `semantic_tags` schema for chunks and queries is exactly:
+
+```json
+{
+  "named_entities": [],
+  "dates": [],
+  "industries": [],
+  "domains": [],
+  "sectors": [],
+  "organizations": [],
+  "partnerships": [],
+  "partners": [],
+  "dividends": [],
+  "products": [],
+  "locations": []
+}
+```
+
+No extra semantic fields are added. The paper-schema output does not use
+`chunk_role`, `evidence_type`, `section_tags`, `financial_metrics`,
+`business_topics`, `risk_topics`, or `retrieval_keywords`.
+
+## Tagged Files
+
+Chunk tags:
+
+```text
+data/chunks/all_chunks_tagged_paper_schema.jsonl
+```
+
+Query tags for QA test split:
+
+```text
+data/qa/test_qa_tagged.jsonl
+```
+
+Each tagged chunk keeps the original chunk fields and adds:
+
+```json
+"semantic_tags": { "...": [] }
+```
+
+Each tagged QA item keeps the original QA fields and adds:
+
+```json
+"query_semantic_tags": { "...": [] }
+```
+
+## API Configuration
+
+The taggers use an OpenAI-compatible chat API. For NVIDIA:
+
+```powershell
+$env:OPENAI_API_KEY="your_nvidia_key"
+$env:OPENAI_BASE_URL="https://integrate.api.nvidia.com/v1"
+$env:OPENAI_MODEL="openai/gpt-oss-20b"
+```
+
+The local `.env` file can contain the same values:
+
+```text
+OPENAI_API_KEY=...
+OPENAI_BASE_URL=https://integrate.api.nvidia.com/v1
+OPENAI_MODEL=openai/gpt-oss-20b
+```
+
+## Tag All Chunks
+
+Run from scratch:
+
+```bash
+python src/semantic_tagging/tag_pipeline.py --input data/chunks/all_chunks.jsonl --output data/chunks/all_chunks_tagged_paper_schema.jsonl --model openai/gpt-oss-20b --overwrite
+```
+
+Resume:
+
+```bash
+python src/semantic_tagging/tag_pipeline.py --input data/chunks/all_chunks.jsonl --output data/chunks/all_chunks_tagged_paper_schema.jsonl --model openai/gpt-oss-20b --resume
+```
+
+Dry run writes empty paper-schema tags without calling the LLM:
+
+```bash
+python src/semantic_tagging/tag_pipeline.py --input data/chunks/all_chunks.jsonl --output data/chunks/all_chunks_tagged_paper_schema.jsonl --dry-run --overwrite
+```
+
+## Tag QA Queries
+
+Tag all test QA queries:
+
+```bash
+python src/semantic_tagging/tag_query_pipeline.py --input data/qa/test_qa.jsonl --output data/qa/test_qa_tagged.jsonl --model openai/gpt-oss-20b --overwrite
+```
+
+Resume:
+
+```bash
+python src/semantic_tagging/tag_query_pipeline.py --input data/qa/test_qa.jsonl --output data/qa/test_qa_tagged.jsonl --model openai/gpt-oss-20b --resume
+```
+
+Tag one query for inspection:
+
+```bash
+python src/semantic_tagging/query_tagger.py --question "What risks does Apple mention about tariffs in 2025?" --model openai/gpt-oss-20b
+```
+
+Logs:
+
+```text
+tagging_errors.log
+query_tagging_errors.log
+```
+
+---
+
 # Rebuild Pipeline
 
 ## 1. Convert HTML → PDF
@@ -242,6 +362,97 @@ data/eval/financebench_retrieval/report.md
 ```
 
 Metrics gom `Precision@k`, `Recall@k`, `Hit@k`, `MRR@k`, `Page Recall@k`, va `Evidence Recall@k`.
+
+---
+
+## 7.1 Retrieval Benchmark cho RAG_SEM (tagged vs untagged)
+
+Muc nay danh gia retrieval-only cho pipeline RAG_SEM trong project:
+
+- So sanh query **khong tagged** (`data/qa/test_qa.jsonl`) va query **co tagged** (`data/qa/test_qa_tagged.jsonl`)
+- So sanh cac method: BM25, Dense BGE, tag-aware variants, va Hybrid `RRF(BM25 + Dense)`
+- Co them buoc rerank top-N sau fusion (hien tai thu nghiem top-20)
+
+Luu y quan trong:
+
+- Khong retag lai chunks
+- Khong retag lai queries
+- Khong re-embed chunks
+- Chi retrieve va tinh metric retrieval
+
+### Du lieu dau vao
+
+```text
+data/chunks/all_chunks.jsonl
+data/chunks/all_chunks_tagged_paper_schema.jsonl
+data/index_bge/all.faiss
+data/index_bge/all_chunk_ids.json
+data/index_tagged_chunks/chunks.faiss
+data/index_tagged_chunks/chunk_ids.json
+data/qa/test_qa.jsonl
+data/qa/test_qa_tagged.jsonl
+```
+
+### Lenh chay benchmark (query khong tagged)
+
+```powershell
+python -m src.evaluation.evaluate_rag_sem_retrieval `
+  --queries data/qa/test_qa.jsonl `
+  --tagged-index-dir data/index_tagged_chunks `
+  --baseline-index data/index_bge/all.faiss `
+  --baseline-ids data/index_bge/all_chunk_ids.json `
+  --baseline-chunks data/chunks/all_chunks.jsonl `
+  --out-dir outputs/retrieval_benchmark_report_untagged_queries_hybrid_rrf_top20 `
+  --k-values 5 10 `
+  --candidate-k 50 `
+  --include-bm25 `
+  --include-tag-aware `
+  --include-hybrid-rrf `
+  --rrf-k 60 `
+  --hybrid-rerank-top-n 20 `
+  --hybrid-rerank-weight 1.0 `
+  --hybrid-rerank-batch-size 32
+```
+
+### Lenh chay benchmark (query co tagged)
+
+```powershell
+python -m src.evaluation.evaluate_rag_sem_retrieval `
+  --queries data/qa/test_qa_tagged.jsonl `
+  --tagged-index-dir data/index_tagged_chunks `
+  --baseline-index data/index_bge/all.faiss `
+  --baseline-ids data/index_bge/all_chunk_ids.json `
+  --baseline-chunks data/chunks/all_chunks.jsonl `
+  --out-dir outputs/retrieval_benchmark_report_tagged_queries_hybrid_rrf_top20 `
+  --k-values 5 10 `
+  --candidate-k 50 `
+  --include-bm25 `
+  --include-tag-aware `
+  --include-hybrid-rrf `
+  --rrf-k 60 `
+  --hybrid-rerank-top-n 20 `
+  --hybrid-rerank-weight 1.0 `
+  --hybrid-rerank-batch-size 32
+```
+
+### File output chinh
+
+```text
+outputs/retrieval_benchmark_report_untagged_queries_hybrid_rrf_top20/metrics_summary.json
+outputs/retrieval_benchmark_report_untagged_queries_hybrid_rrf_top20/metrics_by_question.jsonl
+outputs/retrieval_benchmark_report_untagged_queries_hybrid_rrf_top20/retrieval_results_all_modes.jsonl
+outputs/retrieval_benchmark_report_tagged_queries_hybrid_rrf_top20/metrics_summary.json
+outputs/retrieval_benchmark_report_tagged_queries_hybrid_rrf_top20/metrics_by_question.jsonl
+outputs/retrieval_benchmark_report_tagged_queries_hybrid_rrf_top20/retrieval_results_all_modes.jsonl
+outputs/retrieval_benchmark_report_summary.md
+```
+
+### Cach doc ket qua nhanh
+
+- Dung `metrics_summary.json` de so method theo `Hit@k`, `Recall@k`, `MRR@k`, `NDCG@k`
+- Dung `metrics_by_question.jsonl` de xem query nao huong loi/bi giam khi bat tag-aware hoac hybrid
+- Dung `retrieval_results_all_modes.jsonl` de debug chi tiet top chunks theo tung method
+- `tag_boost` va `tag_filter` la bien the implementation-specific cua project (paper khong cho cong thuc scoring/filtering cu the)
 
 ---
 
