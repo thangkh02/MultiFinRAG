@@ -1,8 +1,11 @@
 sentence-transformers
 faiss-cpu
 numpy
+pandas
 scipy
 scikit-learn
+torch
+torch-geometric
 pymupdf
 beautifulsoup4
 requests
