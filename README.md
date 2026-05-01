@@ -75,6 +75,15 @@ src/
     combine_bge_indexes.py
   retrieval/
     retrieve_bge.py
+  semantic_tagging/
+    tag_pipeline.py
+    semantic_tagger.py
+  graph_extraction/
+    extract_chunk_graph.py
+    build_graph_nodes_edges.py
+    llm_openie_model.py
+    prompts.py
+    base_openie_model.py
   evaluation/
     generate_eval_qa.py
 
@@ -84,6 +93,7 @@ data/
   chunks/
   qa/
   index_bge/
+  graph/
 ```
 
 
@@ -244,6 +254,103 @@ Logs:
 ```text
 tagging_errors.log
 query_tagging_errors.log
+```
+
+---
+
+# Knowledge Graph từ chunk (OpenIE + LLM)
+
+Module `src/graph_extraction` trích **thực thể** và **triple quan hệ** từ nội dung chunk báo cáo tài chính (OpenIE hai bước: NER rồi trích triple), gọi API **OpenAI-compatible** giống semantic tagging (`OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL` trong `.env` hoặc biến môi trường).
+
+Văn bản đưa vào LLM ưu tiên theo thứ tự: `text` → `summary` → `embed_text`. Một đoạn “focus” có thể được cắt quanh các từ mang tính biến động (vd. increased/decreased) khi passage quá dài; **không bắt buộc** chunk phải có quan hệ đó.
+
+## Schema trong `chunk_graph.jsonl`
+
+Mỗi dòng là một chunk gốc kèm trường `graph`:
+
+```json
+{
+  "id": "...",
+  "text": "...",
+  "graph": {
+    "entities": ["..."],
+    "triples": [["subject", "relation_canonical", "object"]],
+    "clean_triples": [["...", "...", "..."]],
+    "noisy_triples": [{"triple": [...], "reason": "..."}]
+  }
+}
+```
+
+- `clean_triples`: triple đã qua kiểm tra (grounding trong đoạn, chuẩn hóa relation, và ít nhất một đầu mút trùng NER).
+- `noisy_triples`: các triple bị loại kèm lý do để audit.
+- `triples`: trùng nội dung chính của `clean_triples` sau bước xử lý trong model.
+
+## Bước 1 — Trích graph (LLM)
+
+Chạy từ đầu (ghi đè file output):
+
+```bash
+python src/graph_extraction/extract_chunk_graph.py --input data/chunks/all_chunks.jsonl --output data/graph/chunk_graph.jsonl --summary-out data/graph/graph_summary.json --overwrite
+```
+
+Tiếp tục sau khi dừng giữa chừng (giữ các dòng đã có `graph`, chỉ xử lý chunk thiếu):
+
+```bash
+python src/graph_extraction/extract_chunk_graph.py --input data/chunks/all_chunks.jsonl --output data/graph/chunk_graph.jsonl --summary-out data/graph/graph_summary.json --resume
+```
+
+Tham số hữu ích:
+
+```text
+--model <ten_model>          # ghi đè OPENAI_MODEL
+--max-chunks N               # thử nhanh trên N chunk đầu
+--enable-delta-heuristic     # tùy chọn: chỉ khi LLM ra quá ít triple, fallback nhẹ cho câu có từ khóa tăng/giảm (mặc định tắt để không ép buộc)
+--log-file graph_extraction_errors.log
+```
+
+Output:
+
+```text
+data/graph/chunk_graph.jsonl
+data/graph/graph_summary.json
+graph_extraction_errors.log
+```
+
+## Bước 2 — Gộp nodes / relations / edges (định dạng gần GFM-RAG)
+
+Từ `chunk_graph.jsonl` sinh các file JSONL và CSV (cột CSV tương thích ý đồ `nodes.csv`, `relations.csv`, `edges.csv` của luồng bring-your-own-graph trong GFM-RAG: `uid`/`name`/`type`/`attributes`, `source`/`relation`/`target`/`attributes`, v.v.). Node loại chunk dùng `chunk:<chunk_id>`; node entity có id băm cố định từ tên đã normalize.
+
+Khuyến nghị để có graph “đầy đủ” nhưng không lọc quá gắt (chỉ bỏ self-loop và object boolean yes/no và vài relation trạng thái nội bộ như `filer_status` / `shell_company_status` khi dùng `--drop-low-value-edges`; **đã không** loại triple chỉ vì object là số liệu):
+
+```bash
+python src/graph_extraction/build_graph_nodes_edges.py \
+  --input data/graph/chunk_graph.jsonl \
+  --nodes-out data/graph/nodes.jsonl \
+  --edges-out data/graph/edges.jsonl \
+  --relations-out data/graph/relations.jsonl \
+  --nodes-csv-out data/graph/nodes.csv \
+  --edges-csv-out data/graph/edges.csv \
+  --relations-csv-out data/graph/relations.csv \
+  --summary-out data/graph/graph_nodes_edges_summary.json \
+  --add-equivalent-edges \
+  --drop-low-value-edges \
+  --use-default-relation-whitelist
+```
+
+Nếu muốn giữ **mọi** relation do LLM trích (không whitelist), bỏ `--use-default-relation-whitelist` và có thể bỏ `--drop-low-value-edges`.
+
+Tham số khác:
+
+```text
+--relation-whitelist rel1,rel2,...   # cộng thêm hoặc chỉ định (kết hợp được với default nếu cần logic riêng: chạy không flag default và chỉ dùng whitelist tùy bạn)
+```
+
+## Một lệnh full pipeline + resume trích LLM
+
+Sau khi đã có `chunk_graph.jsonl` một phần, chạy lệnh sau sẽ **resume** trích chunk thiếu rồi build lại toàn bộ nodes/relations/edges:
+
+```bash
+python src/graph_extraction/extract_chunk_graph.py --input data/chunks/all_chunks.jsonl --output data/graph/chunk_graph.jsonl --summary-out data/graph/graph_summary.json --resume && python src/graph_extraction/build_graph_nodes_edges.py --input data/graph/chunk_graph.jsonl --nodes-out data/graph/nodes.jsonl --edges-out data/graph/edges.jsonl --relations-out data/graph/relations.jsonl --nodes-csv-out data/graph/nodes.csv --edges-csv-out data/graph/edges.csv --relations-csv-out data/graph/relations.csv --summary-out data/graph/graph_nodes_edges_summary.json --add-equivalent-edges --drop-low-value-edges --use-default-relation-whitelist
 ```
 
 ---
