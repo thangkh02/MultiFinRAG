@@ -81,6 +81,7 @@ src/
   graph_extraction/
     extract_chunk_graph.py
     build_graph_nodes_edges.py
+    build_graph_tensor.py
     llm_openie_model.py
     prompts.py
     base_openie_model.py
@@ -351,6 +352,39 @@ Sau khi đã có `chunk_graph.jsonl` một phần, chạy lệnh sau sẽ **resu
 
 ```bash
 python src/graph_extraction/extract_chunk_graph.py --input data/chunks/all_chunks.jsonl --output data/graph/chunk_graph.jsonl --summary-out data/graph/graph_summary.json --resume && python src/graph_extraction/build_graph_nodes_edges.py --input data/graph/chunk_graph.jsonl --nodes-out data/graph/nodes.jsonl --edges-out data/graph/edges.jsonl --relations-out data/graph/relations.jsonl --nodes-csv-out data/graph/nodes.csv --edges-csv-out data/graph/edges.csv --relations-csv-out data/graph/relations.csv --summary-out data/graph/graph_nodes_edges_summary.json --add-equivalent-edges --drop-low-value-edges --use-default-relation-whitelist
+```
+
+## Step 3 - Convert CSV graph to tensor graph for GFM/GNN
+
+The CSV graph can be converted to a PyTorch Geometric `Data` object. This keeps
+the original directed edges as `target_edge_index` / `target_edge_type`, and also
+adds inverse edges to `edge_index` / `edge_type` for message passing.
+
+```bash
+python src/graph_extraction/build_graph_tensor.py \
+  --graph-dir data/graph \
+  --output-dir data/graph_tensor
+```
+
+Output:
+
+```text
+data/graph_tensor/graph.pt
+data/graph_tensor/node2id.json
+data/graph_tensor/id2node.json
+data/graph_tensor/rel2id.json
+data/graph_tensor/tensor_summary.json
+```
+
+By default this creates structural tensors only (`x=None`, `rel_attr=None`,
+`feat_dim=0`). To add BGE node/relation features:
+
+```bash
+python src/graph_extraction/build_graph_tensor.py \
+  --graph-dir data/graph \
+  --output-dir data/graph_tensor_bge \
+  --embed-features \
+  --embedding-model BAAI/bge-base-en-v1.5
 ```
 
 ---
