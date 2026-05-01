@@ -1,1 +1,0 @@
-"""FinanceBench retrieval evaluation pipeline."""
