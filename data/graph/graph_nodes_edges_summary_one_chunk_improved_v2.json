@@ -1,0 +1,18 @@
+{
+  "input_path": "data/graph/chunk_graph_one_chunk_improved_v2.jsonl",
+  "nodes_out": "data/graph/nodes_one_chunk_improved_v2.jsonl",
+  "edges_out": "data/graph/edges_one_chunk_improved_v2.jsonl",
+  "relations_out": "data/graph/relations_one_chunk_improved_v2.jsonl",
+  "nodes_csv_out": "data/graph/nodes_one_chunk_improved_v2.csv",
+  "edges_csv_out": "data/graph/edges_one_chunk_improved_v2.csv",
+  "relations_csv_out": "data/graph/relations_one_chunk_improved_v2.csv",
+  "total_chunks": 1,
+  "total_entities": 25,
+  "total_nodes": 26,
+  "total_relations": 15,
+  "total_edges": 29,
+  "triple_edges": 22,
+  "mention_edges": 7,
+  "equivalent_edges": 0,
+  "add_equivalent_edges": true
+}

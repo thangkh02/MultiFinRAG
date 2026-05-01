@@ -1,0 +1,12 @@
+{"node_id": "chunk:text_73a5224d4e0d0dc4", "node_type": "chunk", "chunk_id": "text_73a5224d4e0d0dc4", "source_pdf": "data/pdfs/AAPL_10-K_2025-10-31_0000320193-25-000079_aapl-20250927.pdf", "ticker": "AAPL", "modality": "text", "text_preview": "Company: Apple\nTicker: AAPL\nFiling type: 10-K\nSource filing: AAPL_10-K_2025-10-31_0000320193-25-000079_aapl-20250927.pdf\nPage: 1\nModality: text\nPassage: UNITED STATES SECURITIES AND EXCHANGE COMMISSION Washington, D.C. 20549 FORM 10-K (Mark One) ☒ ANNUAL REPORT PURSUANT TO SECTION 13 OR 15(d) OF THE SECURITIES EXCHANGE ACT OF 1934 For the fiscal year ended September 27, 2025 or ☐ TRANSITION REPORT PURSUANT TO SECTION 13 OR 15(d) OF THE SECURITIES EXCHANGE ACT OF 1934 For the transition period fr"}
+{"node_id": "entity:4b8c66e39b72", "node_type": "entity", "name": "Washington, D.C.", "name_normalized": "washington d.c."}
+{"node_id": "entity:51ff63a5b532", "node_type": "entity", "name": "Nasdaq Stock Market LLC", "name_normalized": "nasdaq stock market llc"}
+{"node_id": "entity:61f1cc4cd1e2", "node_type": "entity", "name": "Cupertino, California", "name_normalized": "cupertino california"}
+{"node_id": "entity:9de5240df532", "node_type": "entity", "name": "United States Securities and Exchange Commission", "name_normalized": "united states securities and exchange commission"}
+{"node_id": "entity:a5e87248b4ea", "node_type": "entity", "name": "AAPL", "name_normalized": "aapl"}
+{"node_id": "entity:a6105c0a611b", "node_type": "entity", "name": "Yes", "name_normalized": "yes"}
+{"node_id": "entity:c1c17bca6cff", "node_type": "entity", "name": "The Nasdaq Stock Market LLC", "name_normalized": "the nasdaq stock market llc"}
+{"node_id": "entity:c6698873b4f1", "node_type": "entity", "name": "California", "name_normalized": "california"}
+{"node_id": "entity:cbfbc831fe39", "node_type": "entity", "name": "(408) 996-1010", "name_normalized": "408 996-1010"}
+{"node_id": "entity:fe7f2bba2acf", "node_type": "entity", "name": "Apple Inc.", "name_normalized": "apple inc."}
+{"node_id": "entity:fed025b82f52", "node_type": "entity", "name": "One Apple Park Way Cupertino, California 95014", "name_normalized": "one apple park way cupertino california 95014"}

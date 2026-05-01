@@ -1,0 +1,13 @@
+{
+  "input_path": "data/graph/chunk_graph_one_chunk_demo.jsonl",
+  "nodes_out": "data/graph/nodes_one_chunk_demo.jsonl",
+  "edges_out": "data/graph/edges_one_chunk_demo.jsonl",
+  "total_chunks": 1,
+  "total_entities": 8,
+  "total_nodes": 9,
+  "total_edges": 11,
+  "triple_edges": 4,
+  "mention_edges": 7,
+  "equivalent_edges": 0,
+  "add_equivalent_edges": true
+}

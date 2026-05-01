@@ -1,0 +1,12 @@
+uid,name,type,attributes
+chunk:text_73a5224d4e0d0dc4,text_73a5224d4e0d0dc4,chunk,"{""chunk_id"": ""text_73a5224d4e0d0dc4"", ""source_pdf"": ""data/pdfs/AAPL_10-K_2025-10-31_0000320193-25-000079_aapl-20250927.pdf"", ""ticker"": ""AAPL"", ""modality"": ""text"", ""text_preview"": ""Company: Apple\nTicker: AAPL\nFiling type: 10-K\nSource filing: AAPL_10-K_2025-10-31_0000320193-25-000079_aapl-20250927.pdf\nPage: 1\nModality: text\nPassage: UNITED STATES SECURITIES AND EXCHANGE COMMISSION Washington, D.C. 20549 FORM 10-K (Mark One) ☒ ANNUAL REPORT PURSUANT TO SECTION 13 OR 15(d) OF THE SECURITIES EXCHANGE ACT OF 1934 For the fiscal year ended September 27, 2025 or ☐ TRANSITION REPORT PURSUANT TO SECTION 13 OR 15(d) OF THE SECURITIES EXCHANGE ACT OF 1934 For the transition period fr""}"
+entity:4b8c66e39b72,"Washington, D.C.",entity,"{""name_normalized"": ""washington d.c.""}"
+entity:51ff63a5b532,Nasdaq Stock Market LLC,entity,"{""name_normalized"": ""nasdaq stock market llc""}"
+entity:61f1cc4cd1e2,"Cupertino, California",entity,"{""name_normalized"": ""cupertino california""}"
+entity:6dd0f1a277be,Common Stock,entity,"{""name_normalized"": ""common stock""}"
+entity:9de5240df532,United States Securities and Exchange Commission,entity,"{""name_normalized"": ""united states securities and exchange commission""}"
+entity:a5e87248b4ea,AAPL,entity,"{""name_normalized"": ""aapl""}"
+entity:c1c17bca6cff,The Nasdaq Stock Market LLC,entity,"{""name_normalized"": ""the nasdaq stock market llc""}"
+entity:c6698873b4f1,California,entity,"{""name_normalized"": ""california""}"
+entity:fe7f2bba2acf,Apple Inc.,entity,"{""name_normalized"": ""apple inc.""}"
+entity:fed025b82f52,"One Apple Park Way Cupertino, California 95014",entity,"{""name_normalized"": ""one apple park way cupertino california 95014""}"
