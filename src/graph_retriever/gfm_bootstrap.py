@@ -12,17 +12,30 @@ def bootstrap_gfmrag(gfmrag_path: str | None) -> None:
 
     gfmrag_path: đường dẫn tới thư mục clone, ví dụ `d:/Project/gfm-rag`.
     """
-    if gfmrag_path is None:
-        gfmrag_path = os.environ.get("GFM_RAG_PATH")
-    if not gfmrag_path:
-        raise ValueError(
-            "Thiếu gfmrag_path. Hãy truyền --gfmrag-path hoặc set biến môi trường GFM_RAG_PATH."
-        )
+    candidates: list[Path] = []
+    if gfmrag_path:
+        candidates.append(Path(gfmrag_path).resolve())
+    env_path = os.environ.get("GFM_RAG_PATH")
+    if env_path:
+        candidates.append(Path(env_path).resolve())
 
-    resolved = Path(gfmrag_path).resolve()
-    package_dir = resolved / "gfmrag"
-    if not package_dir.is_dir():
-        raise FileNotFoundError(f"Không tìm thấy thư mục `gfmrag/` tại: {package_dir}")
+    # fallback cho trường hợp đã copy `gfmrag/` vào project hiện tại
+    repo_root = Path(__file__).resolve().parents[2]
+    candidates.extend([repo_root, Path.cwd()])
+
+    resolved: Path | None = None
+    package_dir: Path | None = None
+    for cand in candidates:
+        cand_pkg = cand if cand.name == "gfmrag" else cand / "gfmrag"
+        if cand_pkg.is_dir():
+            resolved = cand_pkg.parent
+            package_dir = cand_pkg
+            break
+
+    if resolved is None or package_dir is None:
+        raise FileNotFoundError(
+            "Không tìm thấy thư mục `gfmrag/`. Hãy copy `gfmrag` vào project hoặc truyền --gfmrag-path."
+        )
 
     if str(resolved) not in sys.path:
         sys.path.insert(0, str(resolved))
