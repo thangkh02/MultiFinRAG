@@ -1,66 +1,84 @@
-# Graph retriever — KGC pretraining cục bộ
+# Graph Retriever - GFM-RAG KGC Finetune
 
-Module này tách khỏi pipeline RAG/FAISS. Nó tái hiện **negative sampling / ranking** như trong `tasks.py` và **`KGCTrainer`** (BCE + trọng số adversarial) nhưng dùng **`torch_geometric.data.Data`** đã được sinh từ `data/graph_tensor` của project.
+Module này dùng **đúng luồng tác giả** cho KG Completion:
+- Model: `QueryGNN + QueryNBFNet` (từ `D:/Project/gfm-rag`)
+- Trainer: `KGCTrainer`
+- Negative sampling/ranking: `gfmrag.models.ultra.tasks`
 
-## Chuẩn bị graph
+Không rewrite pipeline RAG hiện có, chỉ thêm module riêng cho pretrain/finetune graph retriever.
 
-1. Chuỗi chuẩn của repo (xem README gốc): `extract_chunk_graph` → `build_graph_nodes_edges.py` sinh CSV trong `data/graph/`.
-2. Chuyển sang tensor PyG:
+## 1) Chuẩn bị dữ liệu graph
+
+Yêu cầu tối thiểu trong `data/graph_tensor`:
+- `graph.pt`
+- `node2id.json`
+- `id2node.json`
+- `rel2id.json`
+
+Nếu chưa có:
 
 ```bash
 python src/graph_extraction/build_graph_tensor.py --graph-dir data/graph --output-dir data/graph_tensor
 ```
 
-Kết quả cần thiết: `graph.pt`, `node2id.json`, `id2node.json`, `rel2id.json`. Inverse edges và `edge_type` mở rộng đã có sẵn trong `graph.pt` — đủ điều kiện cho `strict_negative_mask`.
+Lưu ý:
+- `graph.pt` phải có `edge_index`, `edge_type`, `target_edge_index`, `target_edge_type`.
+- Inverse edges đã cần sẵn để `strict_negative_mask` hoạt động đúng.
+- `rel_attr` sẽ được module tự tạo từ `rel2id.json` bằng BGE nếu graph chưa có.
 
-## Huấn luyện (KGC)
+## 2) File config chính
 
-Cấu hình mặc định: `configs/graph_retriever/kgc_training.yaml` (đường dẫn tương đối từ **thư mục gốc project**).
+File: `configs/graph_retriever/kgc_gfm_training.yaml`
+
+Nhóm tham số quan trọng:
+- `gfmrag_path`: đường dẫn repo tác giả (`d:/Project/gfm-rag`)
+- `disable_custom_rspmm`: nên để `true` trên Windows/CPU
+- `graph.tensor_dir`: thư mục graph tensor local
+- `graph.relation_embedding_model`: model sinh `rel_attr` (mặc định BGE)
+- `model.entity_model`: cấu hình `QueryNBFNet`
+- `training.pretrained_model_path`: checkpoint pretrained để finetune (`model/model.pth`)
+- `training.epochs`, `train_batch_size`, `num_negative`, `strict_negative`, `fast_test`
+
+## 3) Finetune từ pretrained của tác giả
 
 ```bash
-python -m src.graph_retriever.train_kgc --config configs/graph_retriever/kgc_training.yaml
+python -m src.graph_retriever.train_kgc \
+  --config configs/graph_retriever/kgc_gfm_training.yaml \
+  --gfmrag-path d:/Project/gfm-rag \
+  --disable-custom-rspmm
 ```
 
-Ghi đè nhanh:
+Điểm bắt buộc khi dùng pretrained:
+- Kiến trúc trong `model.entity_model` phải **khớp tuyệt đối** với checkpoint (`input_dim`, `hidden_dims`, ...).
+- Nếu mismatch shape khi load weights, hãy chỉnh lại YAML cho trùng pretrained.
+
+Output:
+- Best checkpoint: `outputs/graph_retriever/kgc_gfm_pretrained/model_best.pth`
+
+## 4) Inference (tail prediction cho link prediction)
 
 ```bash
-python -m src.graph_retriever.train_kgc --epochs 5 --tensor-dir data/graph_tensor --output-dir outputs/my_kgc --fast-eval-queries 500
-```
-
-- **`num_negative`**: mặc định 128 trong YAML (đổi thành 256 nếu cần).
-- **`strict_negative`**: `true` mặc định (không lấy true tail/head làm negative).
-- **`graph.build_relation_graph`**: chỉ bật nếu một mô hình sau này yêu cầu relation graph (**DistMult không cần**).
-
-Checkpoint: `{output_dir}/kgc_checkpoint.pt` (embedding DistMult).
-
-## Inference
-
-```bash
-python -m src.graph_retriever.inference ^
-  --tensor-dir data/graph_tensor ^
-  --checkpoint outputs/graph_retriever/kgc_pretrained/kgc_checkpoint.pt ^
-  --relation is_mentioned_in ^
-  --head entity:YOUR_ENTITY_HASH ^
-  --direction tail ^
-  --top-k 10 ^
+python -m src.graph_retriever.inference \
+  --tensor-dir data/graph_tensor \
+  --checkpoint outputs/graph_retriever/kgc_gfm_pretrained/model_best.pth \
+  --model-config configs/graph_retriever/kgc_gfm_training.yaml \
+  --gfmrag-path d:/Project/gfm-rag \
+  --relation is_mentioned_in \
+  --head entity:YOUR_ENTITY_HASH \
+  --direction tail \
+  --top-k 10 \
   --candidates entity_only
 ```
 
-- **`--direction tail`**: cho (head, relation), xếp hạng mọi ứng viên làm đuôi.
-- **`--direction head`**: cho (tail, relation), đặt **`--tail chunk:...`** (hoặc entity), bỏ `--head`.
-- **`--candidates`**: `all` hoặc `entity_only` (lọc theo `nodes_by_type["entity"]` trên graph).
+Output JSON:
+- `top_entities`: top-k node dự đoán
+- `top_documents`: map entity -> chunk/document qua cạnh `is_mentioned_in` (nếu có)
 
-Đầu ra JSON:
+## 5) Gợi ý tune khi dữ liệu ít
 
-- **`query`**: các trường đã giải mã relation/ids.
-- **`top_entities`**: `rank`, `node_id`, `uid`, `score`, optional `linked_documents` (ánh xạ từ cạnh `is_mentioned_in`).
-- **`top_documents`**: gộp theo điểm tốt nhất từ các entity trong `top_entities` (độ dài có thể lớn hơn `--top-k` khi một entity có nhiều chunk).
-
-## Tiện ích lập trình
-
-- **`load_graph_bundle(Path)`**: trả **`GraphBundle(data, mappings)`**, gồm `entity_to_documents`.
-- **`build_relation_graph`**: trong `tasks.py`, bám file tác giả — gọi khi `graph.build_relation_graph: true`.
-
-## Tiêm mô hình GFM khác
-
-Module hiện huấn luyện **DistMult** (forward `(graph, batch)` giống bước trong `KGCTrainer`). Để dùng NBF/GNN của gfm-rag, giữ adapter + `tasks.py`; thay lớp mô hình và vòng huấn luyện theo repo upstream vẫn tương thích với **`Data`** đã có.
+- Luôn bắt đầu từ `training.pretrained_model_path`.
+- Tăng `epochs` (10-20), giảm `lr` nếu dao động.
+- Với CPU:
+  - giữ kiến trúc khớp pretrained
+  - giảm `train_batch_size`, `num_negative`
+  - giữ `disable_custom_rspmm: true`
