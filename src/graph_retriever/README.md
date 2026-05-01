@@ -1,11 +1,15 @@
 # Graph Retriever - GFM-RAG KGC Finetune
 
 Module này dùng **đúng luồng tác giả** cho KG Completion:
-- Model: `QueryGNN + QueryNBFNet` (từ `D:/Project/gfm-rag`)
+- Model: `QueryGNN + QueryNBFNet` (từ thư mục `gfmrag/` đã copy vào project)
 - Trainer: `KGCTrainer`
 - Negative sampling/ranking: `gfmrag.models.ultra.tasks`
 
 Không rewrite pipeline RAG hiện có, chỉ thêm module riêng cho pretrain/finetune graph retriever.
+
+Điều kiện quan trọng:
+- Trong repo hiện tại đã có thư mục `gfmrag/` (copy từ repo tác giả).
+- Vì vậy trên cloud/Kaggle có thể chạy trực tiếp, không cần đường dẫn Windows cũ.
 
 ## 1) Chuẩn bị dữ liệu graph
 
@@ -44,7 +48,6 @@ Nhóm tham số quan trọng:
 ```bash
 python -m src.graph_retriever.train_kgc \
   --config configs/graph_retriever/kgc_gfm_training.yaml \
-  --gfmrag-path d:/Project/gfm-rag \
   --disable-custom-rspmm
 ```
 
