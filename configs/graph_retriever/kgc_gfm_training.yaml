@@ -1,4 +1,6 @@
-gfmrag_path: d:/Project/gfm-rag
+# Để null nếu đã copy `gfmrag/` vào root project.
+# Có thể override bằng --gfmrag-path khi cần.
+gfmrag_path: null
 disable_custom_rspmm: true
 
 graph:
@@ -29,19 +31,19 @@ model:
 training:
   output_dir: outputs/graph_retriever/kgc_gfm_pretrained
   pretrained_model_path: model/model.pth
-  device: cpu
+  # Cấu hình ưu tiên GPU T4
+  device: cuda
   lr: 5.0e-4
-  epochs: 20
-  # Hạ batch để giảm RAM khi chạy CPU nhưng vẫn giữ đúng kiến trúc pretrained.
-  train_batch_size: 1
-  eval_batch_size: 1
+  epochs: 10
+  train_batch_size: 8
+  eval_batch_size: 8
   logging_steps: 50
-  dtype: float32
+  dtype: float16
 
-  num_negative: 8
+  num_negative: 256
   strict_negative: true
   adversarial_temperature: 1.0
-  fast_test: 20
+  fast_test: 500
   metrics: [mr, mrr, hits@1, hits@3, hits@10]
   save_best_only: true
   metric_for_best_model: mrr
