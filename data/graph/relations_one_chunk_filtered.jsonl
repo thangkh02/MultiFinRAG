@@ -1,0 +1,6 @@
+{"relation": "equivalent", "attributes": {"source": "system_normalized_name"}}
+{"relation": "files_report", "attributes": {"source": "llm_openie"}}
+{"relation": "has_address", "attributes": {"source": "llm_openie"}}
+{"relation": "has_ticker", "attributes": {"source": "llm_openie"}}
+{"relation": "is_mentioned_in", "attributes": {"source": "system"}}
+{"relation": "listed_on", "attributes": {"source": "llm_openie"}}
