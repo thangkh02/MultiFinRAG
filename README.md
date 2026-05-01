@@ -387,6 +387,51 @@ python src/graph_extraction/build_graph_tensor.py \
   --embedding-model BAAI/bge-base-en-v1.5
 ```
 
+## Step 4 - Train GFM-RAG graph reasoning
+
+This project keeps the financial graph in `data/graph`, while the GFM-RAG code
+is used as the model/trainer implementation. The adapter below converts the
+local graph and benchmark queries into the GFM-RAG stage1 format:
+
+```bash
+python src/graph_reasoning/prepare_gfmrag_dataset.py \
+  --graph-dir data/graph \
+  --queries data/benchmark_report/queries_tagged.jsonl \
+  --output-root data/gfmrag_reasoning \
+  --data-name multifin_graph
+```
+
+It creates:
+
+```text
+data/gfmrag_reasoning/multifin_graph/raw/documents.json
+data/gfmrag_reasoning/multifin_graph/processed/stage1/nodes.csv
+data/gfmrag_reasoning/multifin_graph/processed/stage1/relations.csv
+data/gfmrag_reasoning/multifin_graph/processed/stage1/edges.csv
+data/gfmrag_reasoning/multifin_graph/processed/stage1/train.json
+data/gfmrag_reasoning/multifin_graph/processed/stage1/test.json
+```
+
+Train the reasoning model by pointing to the local `gfm-rag` repo:
+
+```bash
+python src/graph_reasoning/train_gfmrag_reasoner.py \
+  --config configs/gfmrag_reasoning/sft_training.yaml \
+  --gfmrag-path d:/Project/gfm-rag
+```
+
+The config uses `gfmrag.models.gfm_rag_v1.GNNRetriever` with
+`QueryNBFNet`. It reasons over entity nodes and learns to rank evidence chunk
+nodes through the `entity -> chunk` `is_mentioned_in` edges. The main supervised
+target node type is `chunk`.
+
+The local config sets `disable_custom_rspmm: true`, so `QueryNBFNet` uses the
+standard PyG message-passing fallback and runs on the current Windows/CPU
+environment without compiling Ultra's `rspmm` C++ extension. This is slower but
+portable. Set `disable_custom_rspmm: false` only when running in an environment
+that can compile PyTorch extensions, such as Linux/CUDA or Windows with Visual
+Studio C++ Build Tools (`cl.exe`).
+
 ---
 
 # Rebuild Pipeline

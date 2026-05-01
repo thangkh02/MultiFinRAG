@@ -6,6 +6,12 @@ scipy
 scikit-learn
 torch
 torch-geometric
+hydra-core
+omegaconf
+datasets
+wandb
+transformers
+ninja
 pymupdf
 beautifulsoup4
 requests
