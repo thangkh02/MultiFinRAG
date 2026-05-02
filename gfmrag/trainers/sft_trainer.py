@@ -190,6 +190,13 @@ class SFTTrainer(BaseTrainer):
                 single_loss = loss_fn(
                     target_node_pred, distillation_targets[target_node_type]
                 )
+            elif target_node_label.sum() == 0:
+                logger.debug(
+                    "Skipping %s for target type %s because this batch has no positive labels",
+                    loss_name,
+                    target_node_type,
+                )
+                single_loss = target_node_pred.sum() * 0.0
             else:
                 single_loss = loss_fn(target_node_pred, target_node_label)
 
@@ -261,6 +268,15 @@ class SFTTrainer(BaseTrainer):
                     target_node_ids = graph.nodes_by_type[target_type]  # type: ignore
                     target_node_pred = pred[:, target_node_ids]  # type: ignore
                     target_node_label = target[:, target_node_ids]  # type: ignore
+                    non_empty_target = target_node_label.sum(dim=-1) > 0
+                    if not non_empty_target.any():
+                        logger.debug(
+                            "Skipping evaluation batch for target type %s because it has no positive labels",
+                            target_type,
+                        )
+                        continue
+                    target_node_pred = target_node_pred[non_empty_target]
+                    target_node_label = target_node_label[non_empty_target]
                     node_ranking, target_node_ranking = utils.batch_evaluate(
                         target_node_pred, target_node_label
                     )
