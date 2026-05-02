@@ -8,7 +8,11 @@ data/index/
 outputs/**
 !outputs/**/
 !outputs/**/model_best.pth
+!outputs/**/model_best1.pth
+!outputs/**/model_besteefinal.pth
 !outputs/**/model_last.pth
+
+tmp/
 
 data/chunks/*_sample*.jsonl
 data/chunks/*_assets.jsonl
