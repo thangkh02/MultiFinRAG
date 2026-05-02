@@ -1,0 +1,81 @@
+# Config Stage 2 GFM-RAG SFT Fine-tuning
+# Bám sát gfmrag/workflow/config/gfm_rag/sft_training.yaml của tác giả
+# Chạy: python src/graph_retriever/train_stage2.py --config configs/graph_retriever/stage2_sft.yaml
+
+gfmrag_path: null
+disable_custom_rspmm: true
+
+# ─── Graph ───────────────────────────────────────────────────
+graph:
+  name: multifin_graph
+  graph_dir: data/graph
+  tensor_dir: data/graph_tensor
+  mention_relation_key: is_mentioned_in
+  relation_embedding_model: BAAI/bge-base-en-v1.5
+  relation_embedding_device: null
+  relation_embedding_batch_size: 32
+  force_rebuild_rel_attr: false
+
+# ─── Stage 2 Data ────────────────────────────────────────────
+data:
+  stage2_json: data/qa/test_qa_stage2.json
+  text_emb_model: BAAI/bge-base-en-v1.5
+  emb_device: null
+  emb_cache: data/qa/test_question_embeddings.pt
+  train_ratio: 0.833
+  seed: 42
+
+# ─── Model (GNNRetriever + QueryNBFNet + SimpleRanker) ───────
+model:
+  entity_model:
+    _target_: gfmrag.models.ultra.models.QueryNBFNet
+    input_dim: 512
+    hidden_dims: [512, 512, 512, 512, 512, 512]
+    message_func: distmult
+    aggregate_func: sum
+    short_cut: true
+    layer_norm: true
+  # init_nodes_weight: true → dùng IDF weight từ entity→chunk map
+  # init_nodes_type: "chunk" → tính weight từ graph.target_to_other_types["chunk"]
+  init_nodes_weight: true
+  init_nodes_type: chunk
+
+# ─── Losses (BCE 0.3 + ListCE 0.7 trên entity nodes) ────────
+losses:
+  - name: bce_entity
+    weight: 0.3
+    target_node_type: entity
+    is_distillation_loss: false
+  - name: listce_entity
+    weight: 0.7
+    target_node_type: entity
+    is_distillation_loss: false
+
+# ─── Training Arguments ──────────────────────────────────────
+training:
+  output_dir: outputs/graph_retriever/kgc_stage2_sft
+  pretrained_model_path: outputs/graph_retriever/kgc_gfm_typed_after_patch_full/model_besteefinal.pth
+  device: cuda
+  dtype: float32
+  lr: 5.0e-5
+  weight_decay: 0.01
+  epochs: 20
+  train_batch_size: 4
+  eval_batch_size: 4
+  logging_steps: 10
+  save_best_only: true
+  metric_for_best_model: chunk_mrr   # metrics format: {type}_{metric}
+  eval_strategy: epoch
+  eval_steps: null
+  max_steps_per_epoch: null
+
+# ─── Eval metrics ────────────────────────────────────────────
+# target_types: loại node cần đánh giá retrieval
+target_types: [entity, chunk]
+metrics:
+  - mrr
+  - hits@1
+  - hits@2
+  - hits@5
+  - hits@10
+  - hits@20

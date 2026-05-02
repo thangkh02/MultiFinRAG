@@ -1,0 +1,3729 @@
+[
+  {
+    "id": "q002",
+    "question": "What period ended is reported on the cover page of Apple's 10-Q filing?",
+    "answer": "June 28, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_0281f2023809c503"
+      ],
+      "entity": [
+        "entity:d7ff8939d7f3",
+        "entity:61f1cc4cd1e2",
+        "entity:a5e87248b4ea",
+        "entity:4b8c66e39b72",
+        "entity:fe1fd04a4f8a",
+        "entity:9de5240df532",
+        "entity:fe7f2bba2acf",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1",
+        "entity:0a66750f752b",
+        "entity:db96464a7abe",
+        "entity:fc0f21105964",
+        "entity:51ff63a5b532",
+        "entity:4d349a3d6db9",
+        "entity:74459ca3cf85"
+      ]
+    }
+  },
+  {
+    "id": "q003",
+    "question": "What period ended is reported on the cover page of Apple's 10-Q filing?",
+    "answer": "December 27, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_e8ba672d20b09eed"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:a5e87248b4ea",
+        "entity:51ff63a5b532",
+        "entity:f075dda8cf85",
+        "entity:9c67abda8f82",
+        "entity:d173b03c1f86",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:5fe885f77d7a",
+        "entity:b715b5f36c90",
+        "entity:fc0f21105964",
+        "entity:e1c3a5261b5b",
+        "entity:dbd18ccdb4e0",
+        "entity:91a071fd39cd",
+        "entity:1c947f192611",
+        "entity:cbfbc831fe39",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:182f98eda208",
+        "entity:6dd0f1a277be",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1",
+        "entity:8dc19e705e03",
+        "entity:db96464a7abe"
+      ]
+    }
+  },
+  {
+    "id": "q004",
+    "question": "What telephone number is listed for Apple on the cover page?",
+    "answer": "(408) 996-1010",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_b7d67417ee702285"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:a5e87248b4ea",
+        "entity:78883c6a3332",
+        "entity:51ff63a5b532",
+        "entity:f075dda8cf85",
+        "entity:9c67abda8f82",
+        "entity:d173b03c1f86",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:7fd24e76a517",
+        "entity:b715b5f36c90",
+        "entity:a65b736836c0",
+        "entity:48e261b365f4",
+        "entity:39e9e90ea08c",
+        "entity:fb0da033a758",
+        "entity:1ae6d1e2e4f6",
+        "entity:fcf2afeb2cf8",
+        "entity:080f2c616f05",
+        "entity:85325c2ba6b1",
+        "entity:1c947f192611",
+        "entity:cbfbc831fe39",
+        "entity:cf7409bb5ed1",
+        "entity:61f1cc4cd1e2",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:6dd0f1a277be",
+        "entity:7dd8d4cf29be",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1"
+      ]
+    }
+  },
+  {
+    "id": "q005",
+    "question": "What telephone number is listed for Apple on the cover page?",
+    "answer": "(408) 996-1010",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_1b88b2c3a9e0919d"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:a5e87248b4ea",
+        "entity:51ff63a5b532",
+        "entity:f075dda8cf85",
+        "entity:9c67abda8f82",
+        "entity:8d8818c8e140",
+        "entity:d173b03c1f86",
+        "entity:f89fbf247431",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:646b4c57ee83",
+        "entity:c455201e9329",
+        "entity:817fa3ceb09a",
+        "entity:b715b5f36c90",
+        "entity:5b75a55311ab",
+        "entity:4422a506fb80",
+        "entity:9f8b43a123ad",
+        "entity:fb0da033a758",
+        "entity:1ae6d1e2e4f6",
+        "entity:dfc0c3a983e4",
+        "entity:fcf2afeb2cf8",
+        "entity:85325c2ba6b1",
+        "entity:275f61217834",
+        "entity:1c947f192611",
+        "entity:6124bf2ff8b3",
+        "entity:03271d336bfb",
+        "entity:cbfbc831fe39",
+        "entity:cf7409bb5ed1",
+        "entity:5fddc7852fef",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:6dd0f1a277be",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1",
+        "entity:8dc19e705e03"
+      ]
+    }
+  },
+  {
+    "id": "q007",
+    "question": "What telephone number is listed for Apple on the cover page?",
+    "answer": "(408) 996-1010",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_961d042629ae3e52"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:833d58e592a1",
+        "entity:a5e87248b4ea",
+        "entity:78883c6a3332",
+        "entity:51ff63a5b532",
+        "entity:f075dda8cf85",
+        "entity:d173b03c1f86",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:b715b5f36c90",
+        "entity:5b75a55311ab",
+        "entity:a65b736836c0",
+        "entity:74459ca3cf85",
+        "entity:fb0da033a758",
+        "entity:b05ffe8dd2be",
+        "entity:1c947f192611",
+        "entity:cbfbc831fe39",
+        "entity:cf7409bb5ed1",
+        "entity:4b8c66e39b72",
+        "entity:c6698873b4f1",
+        "entity:dd0a7c3e1271",
+        "entity:f69620208da8",
+        "entity:3dbbbbb9a99f"
+      ]
+    }
+  },
+  {
+    "id": "q008",
+    "question": "What telephone number is listed for Apple on the cover page?",
+    "answer": "(408) 996-1010",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_42f33346fc876221"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:6fafea82f19d",
+        "entity:a5e87248b4ea",
+        "entity:35e75c0619b6",
+        "entity:51ff63a5b532",
+        "entity:8e4eb6fbd328",
+        "entity:9c67abda8f82",
+        "entity:f075dda8cf85",
+        "entity:ad777a5b36d8",
+        "entity:f761a0c7baaf",
+        "entity:ff58ef5dd0a4",
+        "entity:ddefdac6750f",
+        "entity:d173b03c1f86",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:b715b5f36c90",
+        "entity:e63d5a2d6b78",
+        "entity:e6125791e303",
+        "entity:e1c3a5261b5b",
+        "entity:9f8b43a123ad",
+        "entity:1ae6d1e2e4f6",
+        "entity:fcf2afeb2cf8",
+        "entity:060b073289fb",
+        "entity:85325c2ba6b1",
+        "entity:1c947f192611",
+        "entity:194f34bdb5d1",
+        "entity:d1f2a0838a5a",
+        "entity:d095314e3d9b",
+        "entity:cbfbc831fe39",
+        "entity:2b8782018ff9",
+        "entity:4b8c66e39b72",
+        "entity:f9f271f2d9d3",
+        "entity:9de5240df532",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1",
+        "entity:776bd6490dca"
+      ]
+    }
+  },
+  {
+    "id": "q009",
+    "question": "What telephone number is listed for Apple on the cover page?",
+    "answer": "(408) 996-1010",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_faa055e1b4765115"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:c92a10324374",
+        "entity:a5e87248b4ea",
+        "entity:05a5cf06982b",
+        "entity:51ff63a5b532",
+        "entity:f075dda8cf85",
+        "entity:d173b03c1f86",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:fda34efd2cd9",
+        "entity:b715b5f36c90",
+        "entity:2accd7f698dd",
+        "entity:5b75a55311ab",
+        "entity:9f8b43a123ad",
+        "entity:1ae6d1e2e4f6",
+        "entity:d0fb963ff976",
+        "entity:b50b3a83de10",
+        "entity:1c947f192611",
+        "entity:6124bf2ff8b3",
+        "entity:d095314e3d9b",
+        "entity:cf7409bb5ed1",
+        "entity:0ac01e2e3e71",
+        "entity:4b8c66e39b72",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1"
+      ]
+    }
+  },
+  {
+    "id": "q010",
+    "question": "What SEC form type is the Apple filing?",
+    "answer": "DEF 14A",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:74459ca3cf85"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_3a3d7c42b861b59e"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q012",
+    "question": "What period ended is reported on the cover page of Home Depot's 10-Q filing?",
+    "answer": "August 3, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_10e011ceac9fcd0a"
+      ],
+      "entity": [
+        "entity:0d799a582826",
+        "entity:e5a5b240baca",
+        "entity:8ec5f0fa4b90",
+        "entity:72a21fc2d8d5",
+        "entity:8202589ef690",
+        "entity:e664af891658",
+        "entity:5fe885f77d7a",
+        "entity:fc0f21105964",
+        "entity:c0a9527b9319",
+        "entity:cf82205dec52",
+        "entity:2bf5a3bb7e98",
+        "entity:280c74dca546",
+        "entity:dfda3839409e",
+        "entity:e4f4869b15df",
+        "entity:03271d336bfb",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:182f98eda208",
+        "entity:6dd0f1a277be",
+        "entity:c58ad2bc1fef"
+      ]
+    }
+  },
+  {
+    "id": "q013",
+    "question": "What period ended is reported on the cover page of Home Depot's 10-Q filing?",
+    "answer": "November 2, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_69610b5c1e1a510b"
+      ],
+      "entity": [
+        "entity:0d799a582826",
+        "entity:8135d1bf2850",
+        "entity:8ec5f0fa4b90",
+        "entity:b25ffa68ad76",
+        "entity:72a21fc2d8d5",
+        "entity:8202589ef690",
+        "entity:5fe885f77d7a",
+        "entity:fc0f21105964",
+        "entity:d113843d5de1",
+        "entity:c0d9b650f0fe",
+        "entity:acccccdf2256",
+        "entity:2bf5a3bb7e98",
+        "entity:dfda3839409e",
+        "entity:e4f4869b15df",
+        "entity:03271d336bfb",
+        "entity:6c75f8da9772",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:182f98eda208",
+        "entity:6dd0f1a277be",
+        "entity:c58ad2bc1fef",
+        "entity:e7238cec143b"
+      ]
+    }
+  },
+  {
+    "id": "q014",
+    "question": "What is the Date of Report for Home Depot's 8-K filing?",
+    "answer": "September 8, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_e63b76f36c9b0414"
+      ],
+      "entity": [
+        "entity:ae6056aee6a9",
+        "entity:25953ae55fab",
+        "entity:43cb0eafd78e",
+        "entity:a633866a42fa",
+        "entity:b2569a46adee",
+        "entity:49f687b4e7a3",
+        "entity:a25e2a5a4ff9",
+        "entity:c682689a414e",
+        "entity:a4bcaee7d57e",
+        "entity:805e96fab545",
+        "entity:fcf2afeb2cf8",
+        "entity:d2aca8e59d34",
+        "entity:2bf5a3bb7e98",
+        "entity:dfda3839409e",
+        "entity:335cfac2622b",
+        "entity:83f7e1d5315e",
+        "entity:8808c2a57a7f",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:5827da54edf0",
+        "entity:c58ad2bc1fef",
+        "entity:69443870327d",
+        "entity:3f7d1380f9f7",
+        "entity:d2dbf5ccfd8a",
+        "entity:f6df34ae7bc1"
+      ]
+    }
+  },
+  {
+    "id": "q015",
+    "question": "What is the Date of Report for Home Depot's 8-K filing?",
+    "answer": "September 15, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_06dafe8814e55293"
+      ],
+      "entity": [
+        "entity:25953ae55fab",
+        "entity:8ec5f0fa4b90",
+        "entity:64bf3e23efe8",
+        "entity:b25ffa68ad76",
+        "entity:72a21fc2d8d5",
+        "entity:c8b69bfd02e4",
+        "entity:c0a9527b9319",
+        "entity:c0d9b650f0fe",
+        "entity:805e96fab545",
+        "entity:fcf2afeb2cf8",
+        "entity:d2aca8e59d34",
+        "entity:2bf5a3bb7e98",
+        "entity:96fdcf911081",
+        "entity:dfda3839409e",
+        "entity:e4f4869b15df",
+        "entity:335cfac2622b",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:5827da54edf0",
+        "entity:c58ad2bc1fef",
+        "entity:59e35cde5ddc",
+        "entity:69443870327d",
+        "entity:f6df34ae7bc1"
+      ]
+    }
+  },
+  {
+    "id": "q017",
+    "question": "What is the Date of Report for Home Depot's 8-K filing?",
+    "answer": "November 18, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_2874ee79b92c684f"
+      ],
+      "entity": [
+        "entity:65872b1413e8",
+        "entity:9bab08d28e9c",
+        "entity:c682689a414e",
+        "entity:e1ac86f8fa7e",
+        "entity:9de5240df532",
+        "entity:a113e03517d5",
+        "entity:fcf2afeb2cf8",
+        "entity:6dd0f1a277be",
+        "entity:b99de6ad7401",
+        "entity:8a03a3c2b1c4",
+        "entity:c58ad2bc1fef",
+        "entity:e7238cec143b",
+        "entity:2bf5a3bb7e98",
+        "entity:8c4bed5ee7ea",
+        "entity:b25ffa68ad76",
+        "entity:d2dbf5ccfd8a",
+        "entity:72a21fc2d8d5"
+      ]
+    }
+  },
+  {
+    "id": "q018",
+    "question": "What is the Date of Report for Home Depot's 8-K filing?",
+    "answer": "November 20, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:8cebb51fb05f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_8a4e9ec71b668a04"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q019",
+    "question": "What is the Date of Report for Home Depot's 8-K filing?",
+    "answer": "February 24, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_6ab2e6a6a557408b"
+      ],
+      "entity": [
+        "entity:14d66e97ccc5",
+        "entity:777273271109",
+        "entity:4b8c66e39b72",
+        "entity:c682689a414e",
+        "entity:9de5240df532",
+        "entity:fcf2afeb2cf8",
+        "entity:c58ad2bc1fef",
+        "entity:2bf5a3bb7e98",
+        "entity:0cf59739c653",
+        "entity:a65b736836c0",
+        "entity:7153416490e2",
+        "entity:b25ffa68ad76",
+        "entity:ad777a5b36d8",
+        "entity:c7c2881f5cca",
+        "entity:72a21fc2d8d5"
+      ]
+    }
+  },
+  {
+    "id": "q020",
+    "question": "What SEC form type is the Home Depot filing?",
+    "answer": "DEF 14A",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:74459ca3cf85"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_f9a1c4125d5ac2c1"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q022",
+    "question": "What period ended is reported on the cover page of Intuit's 10-Q filing?",
+    "answer": "January 31, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_6da62dd8ffaa6657"
+      ],
+      "entity": [
+        "entity:71380b18c0f1",
+        "entity:b354bd467819",
+        "entity:a05add7a4c82",
+        "entity:60bf01f9a2f6",
+        "entity:d37cc2f8301d",
+        "entity:c0a51805762a",
+        "entity:1f851f5eb07f",
+        "entity:b4706c1ee90d",
+        "entity:925145e2df94",
+        "entity:5a8b93606dea",
+        "entity:f2df242c3439",
+        "entity:c455201e9329",
+        "entity:5fe885f77d7a",
+        "entity:f89affb34da2",
+        "entity:fc0f21105964",
+        "entity:bf04e295b942",
+        "entity:56f5e9351fcc",
+        "entity:a93954c9050a",
+        "entity:cde1d25a1ac9",
+        "entity:46336e86dd42",
+        "entity:85325c2ba6b1",
+        "entity:acd1bc21d20c",
+        "entity:2bf5a3bb7e98",
+        "entity:03271d336bfb",
+        "entity:68051f382774",
+        "entity:0b43922563d9",
+        "entity:4fa3e91d3a5d",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:dbdb7197d9c6",
+        "entity:622a79f61571",
+        "entity:db96464a7abe",
+        "entity:628c97b426c3",
+        "entity:d8fe25c30fdb",
+        "entity:7153416490e2"
+      ]
+    }
+  },
+  {
+    "id": "q023",
+    "question": "What is the Date of Report for Intuit's 8-K filing?",
+    "answer": "November 20, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_2906f3b84bdbb7b5"
+      ],
+      "entity": [
+        "entity:98cf8da48f19",
+        "entity:b354bd467819",
+        "entity:b4706c1ee90d",
+        "entity:585c4680ef57",
+        "entity:c455201e9329",
+        "entity:7fd24e76a517",
+        "entity:fcf2afeb2cf8",
+        "entity:85325c2ba6b1",
+        "entity:2bf5a3bb7e98",
+        "entity:5f8a863853df",
+        "entity:0b43922563d9",
+        "entity:cc47ab989c26",
+        "entity:4fa3e91d3a5d",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:ca5edae278d7",
+        "entity:ea6488da17ae",
+        "entity:d295c922dd55",
+        "entity:d8fe25c30fdb",
+        "entity:9dd9f4a8756b"
+      ]
+    }
+  },
+  {
+    "id": "q024",
+    "question": "What is the Date of Report for Intuit's 8-K filing?",
+    "answer": "November 20, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_8a8b8482b23d5c82"
+      ],
+      "entity": [
+        "entity:98cf8da48f19",
+        "entity:b354bd467819",
+        "entity:da2584b22f01",
+        "entity:e5aca93ee94e",
+        "entity:10dfe8738115",
+        "entity:c2547d0f567b",
+        "entity:b4706c1ee90d",
+        "entity:839428169927",
+        "entity:6d28d048b3b4",
+        "entity:b3b567506d62",
+        "entity:b47e89498cd5",
+        "entity:62fec36449f0",
+        "entity:9b1f22d5eb77",
+        "entity:cade986d3778",
+        "entity:868ed71ae9fd",
+        "entity:c455201e9329",
+        "entity:817fa3ceb09a",
+        "entity:1005b14bd294",
+        "entity:f9a3cdc632c0",
+        "entity:dfc0c3a983e4",
+        "entity:fcf2afeb2cf8",
+        "entity:258ec14f2983",
+        "entity:080f2c616f05",
+        "entity:8a03a3c2b1c4",
+        "entity:defcf64db9a5",
+        "entity:2bf5a3bb7e98",
+        "entity:5f8a863853df",
+        "entity:3df101f6f349",
+        "entity:01a000bf56cd",
+        "entity:0b43922563d9",
+        "entity:cc47ab989c26",
+        "entity:c1c1142cbad1",
+        "entity:386aed82cce4",
+        "entity:4fa3e91d3a5d",
+        "entity:bdd7ec1b8831",
+        "entity:9de5240df532",
+        "entity:ca5edae278d7",
+        "entity:ea6488da17ae",
+        "entity:622a79f61571",
+        "entity:902d9d9c2f21",
+        "entity:d295c922dd55",
+        "entity:d8fe25c30fdb",
+        "entity:9dd9f4a8756b",
+        "entity:e31c5d64fd01"
+      ]
+    }
+  },
+  {
+    "id": "q025",
+    "question": "What is the Date of Report for Intuit's 8-K filing?",
+    "answer": "January 9, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_d9c81d51dcf61dba"
+      ],
+      "entity": [
+        "entity:2fa77f77f776",
+        "entity:779a6da84b42",
+        "entity:98cf8da48f19",
+        "entity:b354bd467819",
+        "entity:d39189c8ab01",
+        "entity:b4706c1ee90d",
+        "entity:43cb0eafd78e",
+        "entity:a6732234757c",
+        "entity:b4374bb23d36",
+        "entity:5a511374ed91",
+        "entity:fe1185e2f00d",
+        "entity:6534b056ab91",
+        "entity:8d5cecae452c",
+        "entity:817fa3ceb09a",
+        "entity:792e156ea4bd",
+        "entity:7776a13a78a1",
+        "entity:e4d35684c00c",
+        "entity:e3fa0cd0d2a1",
+        "entity:a87e522403f9",
+        "entity:c2173d882397",
+        "entity:dfc0c3a983e4",
+        "entity:fcf2afeb2cf8",
+        "entity:080f2c616f05",
+        "entity:2bf5a3bb7e98",
+        "entity:5f8a863853df",
+        "entity:295a2b1a89e6",
+        "entity:8eb69fe48cee",
+        "entity:0b43922563d9",
+        "entity:3887000a7aad",
+        "entity:2b8782018ff9",
+        "entity:4fa3e91d3a5d",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:ca5edae278d7",
+        "entity:ea6488da17ae",
+        "entity:d295c922dd55",
+        "entity:d8fe25c30fdb",
+        "entity:9dd9f4a8756b",
+        "entity:e31c5d64fd01"
+      ]
+    }
+  },
+  {
+    "id": "q027",
+    "question": "What is the Date of Report for Intuit's 8-K filing?",
+    "answer": "January 30, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_bfa38fcafd4a8de7"
+      ],
+      "entity": [
+        "entity:b354bd467819",
+        "entity:1bc9931b37a8",
+        "entity:d39189c8ab01",
+        "entity:8ace3e08f9f6",
+        "entity:e3fa0cd0d2a1",
+        "entity:6a55596c15df",
+        "entity:604571a3be2c",
+        "entity:fcf2afeb2cf8",
+        "entity:2bf5a3bb7e98",
+        "entity:5f8a863853df",
+        "entity:82caacd39024",
+        "entity:295a2b1a89e6",
+        "entity:0b43922563d9",
+        "entity:2e74352e1e06",
+        "entity:4fa3e91d3a5d",
+        "entity:7f99dd3d6899",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:0fbe11736b09",
+        "entity:ea6488da17ae",
+        "entity:94d54a327a59",
+        "entity:d8fe25c30fdb"
+      ]
+    }
+  },
+  {
+    "id": "q028",
+    "question": "What is the Date of Report for Intuit's 8-K filing?",
+    "answer": "February 26, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:0b43922563d9"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_e065ebf30dd823db"
+      ],
+      "entity": [
+        "entity:98cf8da48f19",
+        "entity:e31c5d64fd01",
+        "entity:b354bd467819",
+        "entity:3a806204e1c6",
+        "entity:b4706c1ee90d",
+        "entity:b0dae2392507",
+        "entity:868ed71ae9fd",
+        "entity:755c7c764c1d",
+        "entity:c455201e9329",
+        "entity:817fa3ceb09a",
+        "entity:4b947f9dcc6f",
+        "entity:dfc0c3a983e4",
+        "entity:fcf2afeb2cf8",
+        "entity:2bf5a3bb7e98",
+        "entity:5f8a863853df",
+        "entity:d0a9a174b6ae",
+        "entity:0ac01e2e3e71",
+        "entity:0b43922563d9",
+        "entity:ee44697b9235",
+        "entity:4fa3e91d3a5d",
+        "entity:8ac0fb95dfc5",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:ca5edae278d7",
+        "entity:ea6488da17ae",
+        "entity:d295c922dd55",
+        "entity:7479c538c79f",
+        "entity:9dd9f4a8756b",
+        "entity:d8fe25c30fdb"
+      ]
+    }
+  },
+  {
+    "id": "q029",
+    "question": "What is the Date of Report for Intuit's 8-K filing?",
+    "answer": "March 16, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_d28edb1bfa100ebb"
+      ],
+      "entity": [
+        "entity:673e9f564032",
+        "entity:ee44697b9235",
+        "entity:448bc8170bcd",
+        "entity:e1e2c867b73c",
+        "entity:f89affb34da2",
+        "entity:0b892df29f19",
+        "entity:7479c538c79f",
+        "entity:93c731f1c3a8",
+        "entity:72d906dd15dd",
+        "entity:4b947f9dcc6f",
+        "entity:9bb2ffd4c9c6"
+      ]
+    }
+  },
+  {
+    "id": "q030",
+    "question": "What SEC form type is the Intuit filing?",
+    "answer": "DEF 14A",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:74459ca3cf85"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_6720fab1678bdcb1"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q032",
+    "question": "What period ended is reported on the cover page of Morgan Stanley's 10-Q filing?",
+    "answer": "June 30, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_1416a3e3b07f7eb0"
+      ],
+      "entity": [
+        "entity:4575b4856f77",
+        "entity:eb17166b91f3",
+        "entity:6b61491188cb"
+      ]
+    }
+  },
+  {
+    "id": "q033",
+    "question": "What period ended is reported on the cover page of Morgan Stanley's 10-Q filing?",
+    "answer": "September 30, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_11d8185e54a4b603"
+      ],
+      "entity": [
+        "entity:5875c1fbbeb5",
+        "entity:53ebb3b4bcd7",
+        "entity:9b5eb3501fc1",
+        "entity:c13125bebd24",
+        "entity:ad3b0399bf3b",
+        "entity:486a0853a12f"
+      ]
+    }
+  },
+  {
+    "id": "q034",
+    "question": "What is the Date of Report for Morgan Stanley's 8-K filing?",
+    "answer": "September 23, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:5074737f2205"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_be3a7f51bd42e51f"
+      ],
+      "entity": [
+        "entity:1b523127f61e",
+        "entity:c53df944379b",
+        "entity:10759405bd61",
+        "entity:c137dfd99dfa",
+        "entity:ffbcb361dceb",
+        "entity:c6fbf3a9142f",
+        "entity:aa4326ddb2b2",
+        "entity:a05759a51245",
+        "entity:72a21fc2d8d5",
+        "entity:0b799e9f759e",
+        "entity:9ee8474da624",
+        "entity:6b97ee590baa",
+        "entity:a578c9ae856d",
+        "entity:55c05c30713d",
+        "entity:83de03f2cc5e",
+        "entity:7b57481a344c",
+        "entity:11d5aabe1e6b",
+        "entity:47742c9cafff",
+        "entity:6219a89d0ea6",
+        "entity:1d06b628f57b",
+        "entity:59cd88a059a0",
+        "entity:00b217584255",
+        "entity:210bfd42b64b",
+        "entity:02d5796de404",
+        "entity:2c622692856f",
+        "entity:7344a2e14c9f",
+        "entity:8c5def57c240",
+        "entity:0375f4ebfc83",
+        "entity:fcf2afeb2cf8",
+        "entity:2bf5a3bb7e98",
+        "entity:dfeceb1098e6",
+        "entity:6f26b2230f76",
+        "entity:4b8c66e39b72",
+        "entity:ee33e909372d",
+        "entity:9de5240df532",
+        "entity:dedc441eb52e",
+        "entity:4d7e2a1e1420"
+      ]
+    }
+  },
+  {
+    "id": "q035",
+    "question": "What is the Date of Report for Morgan Stanley's 8-K filing?",
+    "answer": "September 30, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_c7596504d2b0b5c2"
+      ],
+      "entity": [
+        "entity:5a22d99eb7aa",
+        "entity:a7aabf82eebe",
+        "entity:c6fbf3a9142f",
+        "entity:668a7ee77782",
+        "entity:486a0853a12f",
+        "entity:aa4326ddb2b2",
+        "entity:72a21fc2d8d5",
+        "entity:0b799e9f759e",
+        "entity:9ee8474da624",
+        "entity:55c05c30713d",
+        "entity:7b57481a344c",
+        "entity:6219a89d0ea6",
+        "entity:a65b736836c0",
+        "entity:59cd88a059a0",
+        "entity:2f329c10709d",
+        "entity:95a84db9eb64",
+        "entity:210bfd42b64b",
+        "entity:2c622692856f",
+        "entity:7344a2e14c9f",
+        "entity:8c5def57c240",
+        "entity:b689f87536e1",
+        "entity:fcf2afeb2cf8",
+        "entity:63799e59d81e",
+        "entity:2bf5a3bb7e98",
+        "entity:dfeceb1098e6",
+        "entity:4b8c66e39b72",
+        "entity:ee33e909372d",
+        "entity:4575b4856f77",
+        "entity:9de5240df532",
+        "entity:def00174bb70"
+      ]
+    }
+  },
+  {
+    "id": "q037",
+    "question": "What is the Date of Report for Morgan Stanley's 8-K filing?",
+    "answer": "January 15, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:e2792d348848"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_1184985f927d2646"
+      ],
+      "entity": [
+        "entity:bc01bb20b225",
+        "entity:0bbdc9016081",
+        "entity:5caecdf6c864",
+        "entity:b66320e96c0c",
+        "entity:0881b6eea6ff",
+        "entity:72a21fc2d8d5",
+        "entity:cd1e1c735ea2",
+        "entity:59cd88a059a0",
+        "entity:a62de842f2c5",
+        "entity:f00941a1ab5c",
+        "entity:cd0288c04ef7",
+        "entity:24ad318d879a",
+        "entity:fcf2afeb2cf8",
+        "entity:2bf5a3bb7e98",
+        "entity:1f46d5885506",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:6dd0f1a277be",
+        "entity:6567e406dcea",
+        "entity:b32fd79a0e52",
+        "entity:80723ed2d36b"
+      ]
+    }
+  },
+  {
+    "id": "q038",
+    "question": "What is the Date of Report for Morgan Stanley's 8-K filing?",
+    "answer": "February 11, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_19c60e034869659d"
+      ],
+      "entity": [
+        "entity:bc01bb20b225",
+        "entity:0bbdc9016081",
+        "entity:5caecdf6c864",
+        "entity:c6fbf3a9142f",
+        "entity:aa4326ddb2b2",
+        "entity:b66320e96c0c",
+        "entity:0881b6eea6ff",
+        "entity:72a21fc2d8d5",
+        "entity:0b799e9f759e",
+        "entity:9ee8474da624",
+        "entity:55c05c30713d",
+        "entity:7b57481a344c",
+        "entity:11d5aabe1e6b",
+        "entity:6219a89d0ea6",
+        "entity:cd1e1c735ea2",
+        "entity:1d06b628f57b",
+        "entity:59cd88a059a0",
+        "entity:a62de842f2c5",
+        "entity:f00941a1ab5c",
+        "entity:00b217584255",
+        "entity:210bfd42b64b",
+        "entity:3492ff5d1f56",
+        "entity:cd0288c04ef7",
+        "entity:24ad318d879a",
+        "entity:2c622692856f",
+        "entity:7344a2e14c9f",
+        "entity:8c5def57c240",
+        "entity:e065f40b353e",
+        "entity:fcf2afeb2cf8",
+        "entity:2bf5a3bb7e98",
+        "entity:dfeceb1098e6",
+        "entity:1f46d5885506",
+        "entity:4b8c66e39b72",
+        "entity:ee33e909372d",
+        "entity:9de5240df532",
+        "entity:6dd0f1a277be",
+        "entity:87b3529e1218",
+        "entity:80723ed2d36b"
+      ]
+    }
+  },
+  {
+    "id": "q039",
+    "question": "What is the Date of Report for Morgan Stanley's 8-K filing?",
+    "answer": "April 15, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:5074737f2205"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_c588786079883a4c"
+      ],
+      "entity": [
+        "entity:c53df944379b",
+        "entity:70b1fbc86a03",
+        "entity:c6fbf3a9142f",
+        "entity:668a7ee77782",
+        "entity:72a21fc2d8d5",
+        "entity:0b799e9f759e",
+        "entity:9ee8474da624",
+        "entity:d3f6e59c6705",
+        "entity:8202589ef690",
+        "entity:55c05c30713d",
+        "entity:5fe885f77d7a",
+        "entity:7b57481a344c",
+        "entity:6219a89d0ea6",
+        "entity:a65b736836c0",
+        "entity:59cd88a059a0",
+        "entity:210bfd42b64b",
+        "entity:2c622692856f",
+        "entity:7344a2e14c9f",
+        "entity:8c5def57c240",
+        "entity:63799e59d81e",
+        "entity:2bf5a3bb7e98",
+        "entity:dfeceb1098e6",
+        "entity:de2aa69ee3be",
+        "entity:4b8c66e39b72",
+        "entity:ee33e909372d",
+        "entity:9de5240df532",
+        "entity:000638ba2123",
+        "entity:0fbe11736b09",
+        "entity:f69620208da8"
+      ]
+    }
+  },
+  {
+    "id": "q040",
+    "question": "What SEC form type is the Morgan Stanley filing?",
+    "answer": "DEF 14A",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:74459ca3cf85"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_7be7fd4791b347eb"
+      ],
+      "entity": [
+        "entity:5bf75444072a",
+        "entity:c92a10324374",
+        "entity:a09272b53419",
+        "entity:ca79845e1bfe",
+        "entity:59cd88a059a0",
+        "entity:44a82bfb0ada",
+        "entity:72b32a1f754b",
+        "entity:d03c2c6168ce"
+      ]
+    }
+  },
+  {
+    "id": "q042",
+    "question": "What period ended is reported on the cover page of NVIDIA's 10-Q filing?",
+    "answer": "July 27, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_91e75c12f6820a2f"
+      ],
+      "entity": [
+        "entity:851c442a070d",
+        "entity:50a090bb0654",
+        "entity:8c406dc2bcf8",
+        "entity:6c38dd3ac83c",
+        "entity:7545b14d520c",
+        "entity:0a5c50501dd5",
+        "entity:ce79ff40ed8b",
+        "entity:5fe885f77d7a",
+        "entity:5a1be4df9858",
+        "entity:fc0f21105964",
+        "entity:c291773c3629",
+        "entity:e1fdf3910b0a",
+        "entity:59f8562a1c01",
+        "entity:2bf5a3bb7e98",
+        "entity:03271d336bfb",
+        "entity:e4c8a9442e87",
+        "entity:85ba7ffe3a4b",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:85ec7314ab3a",
+        "entity:182f98eda208",
+        "entity:db96464a7abe",
+        "entity:d8fe25c30fdb"
+      ]
+    }
+  },
+  {
+    "id": "q043",
+    "question": "What period ended is reported on the cover page of NVIDIA's 10-Q filing?",
+    "answer": "October 26, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_08d0eae2e1253cf9"
+      ],
+      "entity": [
+        "entity:747396092ea5",
+        "entity:851c442a070d",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:59f8562a1c01",
+        "entity:5fe885f77d7a",
+        "entity:50a090bb0654",
+        "entity:8c406dc2bcf8",
+        "entity:2bf5a3bb7e98",
+        "entity:5a1be4df9858",
+        "entity:db96464a7abe",
+        "entity:d8fe25c30fdb",
+        "entity:7545b14d520c",
+        "entity:fc0f21105964",
+        "entity:0a5c50501dd5",
+        "entity:fed932079b86",
+        "entity:6910937f80da",
+        "entity:c291773c3629"
+      ]
+    }
+  },
+  {
+    "id": "q044",
+    "question": "What is the Date of Report for NVIDIA's 8-K filing?",
+    "answer": "June 25, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_b7c26209cfb63da8"
+      ],
+      "entity": [
+        "entity:98cf8da48f19",
+        "entity:8c406dc2bcf8",
+        "entity:0a5c50501dd5",
+        "entity:52c338f3fce9",
+        "entity:472a70dbbba7",
+        "entity:c455201e9329",
+        "entity:5fe885f77d7a",
+        "entity:817fa3ceb09a",
+        "entity:5a1be4df9858",
+        "entity:b4908fe31ab9",
+        "entity:dfc0c3a983e4",
+        "entity:fcf2afeb2cf8",
+        "entity:2bf5a3bb7e98",
+        "entity:65e387d9c8b2",
+        "entity:9de5240df532",
+        "entity:ca5edae278d7",
+        "entity:fe8c4ebbdebc",
+        "entity:aa7f72f0561e",
+        "entity:d295c922dd55",
+        "entity:9dd9f4a8756b",
+        "entity:d8fe25c30fdb"
+      ]
+    }
+  },
+  {
+    "id": "q045",
+    "question": "What is the Date of Report for NVIDIA's 8-K filing?",
+    "answer": "July 31, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_68c764aeea63a174"
+      ],
+      "entity": [
+        "entity:f2df242c3439",
+        "entity:a05add7a4c82",
+        "entity:65e387d9c8b2",
+        "entity:9de5240df532",
+        "entity:fcf2afeb2cf8",
+        "entity:8c406dc2bcf8",
+        "entity:2bf5a3bb7e98",
+        "entity:5a1be4df9858",
+        "entity:b4908fe31ab9",
+        "entity:aa7f72f0561e",
+        "entity:c315995eeb99",
+        "entity:12fbe8bc4ff8",
+        "entity:0a5c50501dd5",
+        "entity:d8fe25c30fdb",
+        "entity:f5240a4f191f",
+        "entity:442889609891"
+      ]
+    }
+  },
+  {
+    "id": "q047",
+    "question": "What is the Date of Report for NVIDIA's 8-K filing?",
+    "answer": "November 19, 2025",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_ffc44fb2440462e3"
+      ],
+      "entity": [
+        "entity:2f929f90b05e",
+        "entity:59f8562a1c01",
+        "entity:fcf2afeb2cf8",
+        "entity:e1dd84b41057",
+        "entity:b8d47df2ba80",
+        "entity:8c406dc2bcf8",
+        "entity:2bf5a3bb7e98",
+        "entity:5a1be4df9858",
+        "entity:aa7f72f0561e",
+        "entity:d8fe25c30fdb",
+        "entity:38f9102631f7",
+        "entity:0a5c50501dd5",
+        "entity:fed932079b86",
+        "entity:74459ca3cf85"
+      ]
+    }
+  },
+  {
+    "id": "q048",
+    "question": "What is the Date of Report for NVIDIA's 8-K filing?",
+    "answer": "January 20, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_39777c21b55b3dba"
+      ],
+      "entity": [
+        "entity:98cf8da48f19",
+        "entity:086143711261",
+        "entity:8c406dc2bcf8",
+        "entity:0a5c50501dd5",
+        "entity:184b64738b7f",
+        "entity:c455201e9329",
+        "entity:5fe885f77d7a",
+        "entity:817fa3ceb09a",
+        "entity:5a1be4df9858",
+        "entity:b4908fe31ab9",
+        "entity:dfc0c3a983e4",
+        "entity:f8ed098e5c44",
+        "entity:2bf5a3bb7e98",
+        "entity:65e387d9c8b2",
+        "entity:9de5240df532",
+        "entity:ca5edae278d7",
+        "entity:aa7f72f0561e",
+        "entity:d295c922dd55",
+        "entity:9dd9f4a8756b",
+        "entity:d8fe25c30fdb",
+        "entity:442889609891"
+      ]
+    }
+  },
+  {
+    "id": "q049",
+    "question": "What is the Date of Report for NVIDIA's 8-K filing?",
+    "answer": "February 25, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_b5e3384d864d054c"
+      ],
+      "entity": [
+        "entity:1e14817a8496",
+        "entity:8dc24f39f66d",
+        "entity:de2aa69ee3be",
+        "entity:b1a3761cff7d",
+        "entity:3b908b44862b",
+        "entity:9de5240df532",
+        "entity:1a51f0af782a",
+        "entity:3fe78958e0b8",
+        "entity:fcf2afeb2cf8",
+        "entity:3f4b0003f76e",
+        "entity:b8d47df2ba80",
+        "entity:8c406dc2bcf8",
+        "entity:2bf5a3bb7e98",
+        "entity:5a1be4df9858",
+        "entity:f84a398d7256",
+        "entity:a65b736836c0",
+        "entity:d8fe25c30fdb",
+        "entity:38f9102631f7"
+      ]
+    }
+  },
+  {
+    "id": "q050",
+    "question": "What is the Date of Report for NVIDIA's 8-K filing?",
+    "answer": "March 2, 2026",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_a245cf8fe66caffc"
+      ],
+      "entity": [
+        "entity:2b8782018ff9",
+        "entity:64230aa97770",
+        "entity:de47d0641f52",
+        "entity:25ea23aed19d",
+        "entity:782f30225806",
+        "entity:dfe5ff703d46",
+        "entity:8c406dc2bcf8",
+        "entity:42dcecacf7d0",
+        "entity:5a1be4df9858",
+        "entity:aa7f72f0561e",
+        "entity:d8fe25c30fdb",
+        "entity:38f9102631f7",
+        "entity:668a7ee77782",
+        "entity:d0bfdbf6c0e8",
+        "entity:442889609891",
+        "entity:bda792aa8d7e"
+      ]
+    }
+  },
+  {
+    "id": "q052",
+    "question": "What is the SEC Commission File Number shown for Apple?",
+    "answer": "001-36743",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_0281f2023809c503"
+      ],
+      "entity": [
+        "entity:d7ff8939d7f3",
+        "entity:61f1cc4cd1e2",
+        "entity:a5e87248b4ea",
+        "entity:4b8c66e39b72",
+        "entity:fe1fd04a4f8a",
+        "entity:9de5240df532",
+        "entity:fe7f2bba2acf",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1",
+        "entity:0a66750f752b",
+        "entity:db96464a7abe",
+        "entity:fc0f21105964",
+        "entity:51ff63a5b532",
+        "entity:4d349a3d6db9",
+        "entity:74459ca3cf85"
+      ]
+    }
+  },
+  {
+    "id": "q053",
+    "question": "What is the SEC Commission File Number shown for Apple?",
+    "answer": "001-36743",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_e8ba672d20b09eed"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:a5e87248b4ea",
+        "entity:51ff63a5b532",
+        "entity:f075dda8cf85",
+        "entity:9c67abda8f82",
+        "entity:d173b03c1f86",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:5fe885f77d7a",
+        "entity:b715b5f36c90",
+        "entity:fc0f21105964",
+        "entity:e1c3a5261b5b",
+        "entity:dbd18ccdb4e0",
+        "entity:91a071fd39cd",
+        "entity:1c947f192611",
+        "entity:cbfbc831fe39",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:182f98eda208",
+        "entity:6dd0f1a277be",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1",
+        "entity:8dc19e705e03",
+        "entity:db96464a7abe"
+      ]
+    }
+  },
+  {
+    "id": "q054",
+    "question": "What SEC form type is the Apple filing?",
+    "answer": "8-K",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:74459ca3cf85"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_c5ee212ae2895b43"
+      ],
+      "entity": [
+        "entity:fe7f2bba2acf",
+        "entity:4ea3eb454872",
+        "entity:fcf2afeb2cf8",
+        "entity:7dd8d4cf29be",
+        "entity:c9e1074f5b3f"
+      ]
+    }
+  },
+  {
+    "id": "q055",
+    "question": "On which exchange is Apple's common stock registered?",
+    "answer": "The Nasdaq Stock Market LLC",
+    "start_nodes": {
+      "entity": [
+        "entity:5c731c8c4ee0",
+        "entity:1f3870be274f",
+        "entity:6dd0f1a277be"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_280d99cdb90f74a6"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:12e9c50691b7",
+        "entity:a5e87248b4ea",
+        "entity:168a5aa95a00",
+        "entity:6dd0f1a277be",
+        "entity:8dc19e705e03",
+        "entity:51ff63a5b532"
+      ]
+    }
+  },
+  {
+    "id": "q057",
+    "question": "On which exchange is Apple's common stock registered?",
+    "answer": "The Nasdaq Stock Market LLC",
+    "start_nodes": {
+      "entity": [
+        "entity:5c731c8c4ee0",
+        "entity:1f3870be274f",
+        "entity:6dd0f1a277be"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_2efbb871bbeed819"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:12e9c50691b7",
+        "entity:a5e87248b4ea",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:6dd0f1a277be",
+        "entity:8dc19e705e03",
+        "entity:51ff63a5b532"
+      ]
+    }
+  },
+  {
+    "id": "q058",
+    "question": "On which exchange is Apple's common stock registered?",
+    "answer": "The Nasdaq Stock Market LLC",
+    "start_nodes": {
+      "entity": [
+        "entity:5c731c8c4ee0",
+        "entity:6dd0f1a277be"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_784a80950e3a4ad1"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:12e9c50691b7",
+        "entity:a5e87248b4ea",
+        "entity:168a5aa95a00",
+        "entity:6dd0f1a277be",
+        "entity:8dc19e705e03",
+        "entity:51ff63a5b532"
+      ]
+    }
+  },
+  {
+    "id": "q059",
+    "question": "On which exchange is Apple's common stock registered?",
+    "answer": "The Nasdaq Stock Market LLC",
+    "start_nodes": {
+      "entity": [
+        "entity:5c731c8c4ee0",
+        "entity:6dd0f1a277be"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_69dcc1255914ca70"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:12e9c50691b7",
+        "entity:a5e87248b4ea",
+        "entity:168a5aa95a00",
+        "entity:6dd0f1a277be",
+        "entity:8dc19e705e03",
+        "entity:51ff63a5b532"
+      ]
+    }
+  },
+  {
+    "id": "q060",
+    "question": "What is the SEC Commission File Number shown for Home Depot?",
+    "answer": "1-8207",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:8cebb51fb05f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_64a215815887929d"
+      ],
+      "entity": [
+        "entity:ecf06aedc2eb",
+        "entity:c92a10324374",
+        "entity:47f0b6e61a44",
+        "entity:8135d1bf2850",
+        "entity:8ec5f0fa4b90",
+        "entity:b25ffa68ad76",
+        "entity:72a21fc2d8d5",
+        "entity:8202589ef690",
+        "entity:5fe885f77d7a",
+        "entity:312351bff079",
+        "entity:d113843d5de1",
+        "entity:2bf5a3bb7e98",
+        "entity:dfda3839409e",
+        "entity:e4f4869b15df",
+        "entity:03271d336bfb",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:6dd0f1a277be",
+        "entity:b99de6ad7401",
+        "entity:c58ad2bc1fef",
+        "entity:f05fa6c16530",
+        "entity:2f885c3e58d9"
+      ]
+    }
+  },
+  {
+    "id": "q062",
+    "question": "What is the SEC Commission File Number shown for Home Depot?",
+    "answer": "1-8207",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_69610b5c1e1a510b"
+      ],
+      "entity": [
+        "entity:0d799a582826",
+        "entity:8135d1bf2850",
+        "entity:8ec5f0fa4b90",
+        "entity:b25ffa68ad76",
+        "entity:72a21fc2d8d5",
+        "entity:8202589ef690",
+        "entity:5fe885f77d7a",
+        "entity:fc0f21105964",
+        "entity:d113843d5de1",
+        "entity:c0d9b650f0fe",
+        "entity:acccccdf2256",
+        "entity:2bf5a3bb7e98",
+        "entity:dfda3839409e",
+        "entity:e4f4869b15df",
+        "entity:03271d336bfb",
+        "entity:6c75f8da9772",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:182f98eda208",
+        "entity:6dd0f1a277be",
+        "entity:c58ad2bc1fef",
+        "entity:e7238cec143b"
+      ]
+    }
+  },
+  {
+    "id": "q063",
+    "question": "What telephone number is listed for Home Depot on the cover page?",
+    "answer": "(770) 433-8211",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_e63b76f36c9b0414"
+      ],
+      "entity": [
+        "entity:ae6056aee6a9",
+        "entity:25953ae55fab",
+        "entity:43cb0eafd78e",
+        "entity:a633866a42fa",
+        "entity:b2569a46adee",
+        "entity:49f687b4e7a3",
+        "entity:a25e2a5a4ff9",
+        "entity:c682689a414e",
+        "entity:a4bcaee7d57e",
+        "entity:805e96fab545",
+        "entity:fcf2afeb2cf8",
+        "entity:d2aca8e59d34",
+        "entity:2bf5a3bb7e98",
+        "entity:dfda3839409e",
+        "entity:335cfac2622b",
+        "entity:83f7e1d5315e",
+        "entity:8808c2a57a7f",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:5827da54edf0",
+        "entity:c58ad2bc1fef",
+        "entity:69443870327d",
+        "entity:3f7d1380f9f7",
+        "entity:d2dbf5ccfd8a",
+        "entity:f6df34ae7bc1"
+      ]
+    }
+  },
+  {
+    "id": "q064",
+    "question": "What telephone number is listed for Home Depot on the cover page?",
+    "answer": "(770) 433-8211",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_06dafe8814e55293"
+      ],
+      "entity": [
+        "entity:25953ae55fab",
+        "entity:8ec5f0fa4b90",
+        "entity:64bf3e23efe8",
+        "entity:b25ffa68ad76",
+        "entity:72a21fc2d8d5",
+        "entity:c8b69bfd02e4",
+        "entity:c0a9527b9319",
+        "entity:c0d9b650f0fe",
+        "entity:805e96fab545",
+        "entity:fcf2afeb2cf8",
+        "entity:d2aca8e59d34",
+        "entity:2bf5a3bb7e98",
+        "entity:96fdcf911081",
+        "entity:dfda3839409e",
+        "entity:e4f4869b15df",
+        "entity:335cfac2622b",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:5827da54edf0",
+        "entity:c58ad2bc1fef",
+        "entity:59e35cde5ddc",
+        "entity:69443870327d",
+        "entity:f6df34ae7bc1"
+      ]
+    }
+  },
+  {
+    "id": "q065",
+    "question": "What telephone number is listed for Home Depot on the cover page?",
+    "answer": "(770) 433-8211",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_4ee85b9d00144d5e"
+      ],
+      "entity": [
+        "entity:1917c7c06714",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:a113e03517d5",
+        "entity:fcf2afeb2cf8",
+        "entity:c58ad2bc1fef",
+        "entity:e7238cec143b",
+        "entity:2bf5a3bb7e98",
+        "entity:dfda3839409e",
+        "entity:a65b736836c0",
+        "entity:e4f4869b15df",
+        "entity:d2dbf5ccfd8a",
+        "entity:c0a9527b9319",
+        "entity:72a21fc2d8d5"
+      ]
+    }
+  },
+  {
+    "id": "q067",
+    "question": "What telephone number is listed for Home Depot on the cover page?",
+    "answer": "(770) 433-8211",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_8a4e9ec71b668a04"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q068",
+    "question": "What telephone number is listed for Home Depot on the cover page?",
+    "answer": "(770) 433-8211",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_6ab2e6a6a557408b"
+      ],
+      "entity": [
+        "entity:14d66e97ccc5",
+        "entity:777273271109",
+        "entity:4b8c66e39b72",
+        "entity:c682689a414e",
+        "entity:9de5240df532",
+        "entity:fcf2afeb2cf8",
+        "entity:c58ad2bc1fef",
+        "entity:2bf5a3bb7e98",
+        "entity:0cf59739c653",
+        "entity:a65b736836c0",
+        "entity:7153416490e2",
+        "entity:b25ffa68ad76",
+        "entity:ad777a5b36d8",
+        "entity:c7c2881f5cca",
+        "entity:72a21fc2d8d5"
+      ]
+    }
+  },
+  {
+    "id": "q069",
+    "question": "What is the SEC Commission File Number shown for Intuit?",
+    "answer": "0-21180",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_008598bf649f73e3"
+      ],
+      "entity": [
+        "entity:71380b18c0f1",
+        "entity:b354bd467819",
+        "entity:86455c996242",
+        "entity:a05add7a4c82",
+        "entity:bb43c819dc00",
+        "entity:1f851f5eb07f",
+        "entity:5a8b93606dea",
+        "entity:000509a5fc2b",
+        "entity:f2df242c3439",
+        "entity:f89affb34da2",
+        "entity:fc0f21105964",
+        "entity:74459ca3cf85",
+        "entity:bf04e295b942",
+        "entity:a93954c9050a",
+        "entity:f9a3cdc632c0",
+        "entity:604571a3be2c",
+        "entity:8562ae5e2865",
+        "entity:acd1bc21d20c",
+        "entity:2bf5a3bb7e98",
+        "entity:12fbe8bc4ff8",
+        "entity:0b43922563d9",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:dbdb7197d9c6",
+        "entity:259f45754be7",
+        "entity:622a79f61571",
+        "entity:db96464a7abe",
+        "entity:d8fe25c30fdb",
+        "entity:e31c5d64fd01"
+      ]
+    }
+  },
+  {
+    "id": "q070",
+    "question": "What is the SEC Commission File Number shown for Intuit?",
+    "answer": "0-21180",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_6da62dd8ffaa6657"
+      ],
+      "entity": [
+        "entity:71380b18c0f1",
+        "entity:b354bd467819",
+        "entity:a05add7a4c82",
+        "entity:60bf01f9a2f6",
+        "entity:d37cc2f8301d",
+        "entity:c0a51805762a",
+        "entity:1f851f5eb07f",
+        "entity:b4706c1ee90d",
+        "entity:925145e2df94",
+        "entity:5a8b93606dea",
+        "entity:f2df242c3439",
+        "entity:c455201e9329",
+        "entity:5fe885f77d7a",
+        "entity:f89affb34da2",
+        "entity:fc0f21105964",
+        "entity:bf04e295b942",
+        "entity:56f5e9351fcc",
+        "entity:a93954c9050a",
+        "entity:cde1d25a1ac9",
+        "entity:46336e86dd42",
+        "entity:85325c2ba6b1",
+        "entity:acd1bc21d20c",
+        "entity:2bf5a3bb7e98",
+        "entity:03271d336bfb",
+        "entity:68051f382774",
+        "entity:0b43922563d9",
+        "entity:4fa3e91d3a5d",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:dbdb7197d9c6",
+        "entity:622a79f61571",
+        "entity:db96464a7abe",
+        "entity:628c97b426c3",
+        "entity:d8fe25c30fdb",
+        "entity:7153416490e2"
+      ]
+    }
+  },
+  {
+    "id": "q072",
+    "question": "What telephone number is listed for Intuit on the cover page?",
+    "answer": "(650) 944-6000",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_f81e600c48dd65c9"
+      ],
+      "entity": [
+        "entity:0b43922563d9",
+        "entity:cc47ab989c26",
+        "entity:5fe885f77d7a",
+        "entity:288ec9d53298"
+      ]
+    }
+  },
+  {
+    "id": "q073",
+    "question": "What telephone number is listed for Intuit on the cover page?",
+    "answer": "(650) 944-6000",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_d9c81d51dcf61dba"
+      ],
+      "entity": [
+        "entity:2fa77f77f776",
+        "entity:779a6da84b42",
+        "entity:98cf8da48f19",
+        "entity:b354bd467819",
+        "entity:d39189c8ab01",
+        "entity:b4706c1ee90d",
+        "entity:43cb0eafd78e",
+        "entity:a6732234757c",
+        "entity:b4374bb23d36",
+        "entity:5a511374ed91",
+        "entity:fe1185e2f00d",
+        "entity:6534b056ab91",
+        "entity:8d5cecae452c",
+        "entity:817fa3ceb09a",
+        "entity:792e156ea4bd",
+        "entity:7776a13a78a1",
+        "entity:e4d35684c00c",
+        "entity:e3fa0cd0d2a1",
+        "entity:a87e522403f9",
+        "entity:c2173d882397",
+        "entity:dfc0c3a983e4",
+        "entity:fcf2afeb2cf8",
+        "entity:080f2c616f05",
+        "entity:2bf5a3bb7e98",
+        "entity:5f8a863853df",
+        "entity:295a2b1a89e6",
+        "entity:8eb69fe48cee",
+        "entity:0b43922563d9",
+        "entity:3887000a7aad",
+        "entity:2b8782018ff9",
+        "entity:4fa3e91d3a5d",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:ca5edae278d7",
+        "entity:ea6488da17ae",
+        "entity:d295c922dd55",
+        "entity:d8fe25c30fdb",
+        "entity:9dd9f4a8756b",
+        "entity:e31c5d64fd01"
+      ]
+    }
+  },
+  {
+    "id": "q074",
+    "question": "What telephone number is listed for Intuit on the cover page?",
+    "answer": "(650) 944-6000",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_18b8ccc553ff5152"
+      ],
+      "entity": [
+        "entity:0b43922563d9",
+        "entity:41126d97dee1",
+        "entity:b354bd467819",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:fcf2afeb2cf8",
+        "entity:288ec9d53298",
+        "entity:d1d55dffa2d8",
+        "entity:367619c73768",
+        "entity:2bf5a3bb7e98",
+        "entity:5f8a863853df",
+        "entity:ea6488da17ae",
+        "entity:d8fe25c30fdb",
+        "entity:e31c5d64fd01",
+        "entity:e6125791e303",
+        "entity:401e0c1e9e54"
+      ]
+    }
+  },
+  {
+    "id": "q075",
+    "question": "What telephone number is listed for Intuit on the cover page?",
+    "answer": "(650) 944-6000",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_bfa38fcafd4a8de7"
+      ],
+      "entity": [
+        "entity:b354bd467819",
+        "entity:1bc9931b37a8",
+        "entity:d39189c8ab01",
+        "entity:8ace3e08f9f6",
+        "entity:e3fa0cd0d2a1",
+        "entity:6a55596c15df",
+        "entity:604571a3be2c",
+        "entity:fcf2afeb2cf8",
+        "entity:2bf5a3bb7e98",
+        "entity:5f8a863853df",
+        "entity:82caacd39024",
+        "entity:295a2b1a89e6",
+        "entity:0b43922563d9",
+        "entity:2e74352e1e06",
+        "entity:4fa3e91d3a5d",
+        "entity:7f99dd3d6899",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:0fbe11736b09",
+        "entity:ea6488da17ae",
+        "entity:94d54a327a59",
+        "entity:d8fe25c30fdb"
+      ]
+    }
+  },
+  {
+    "id": "q077",
+    "question": "In the table described as '(In millions, except number of shares, which are reflected in thousands, and per-share amounts)', what value does Apple report for Products under June 28, 2025?",
+    "answer": "66,613",
+    "start_nodes": {
+      "entity": [
+        "entity:fe1fd04a4f8a",
+        "entity:86024cad1e83",
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_e69d905d9c249b99"
+      ],
+      "entity": [
+        "entity:e1a0282c6a62",
+        "entity:fe1fd04a4f8a",
+        "entity:44db0a5c8dd0",
+        "entity:5992b88446c2",
+        "entity:01ecb022f506",
+        "entity:dd21c9c63267",
+        "entity:78a0da4c7209"
+      ]
+    }
+  },
+  {
+    "id": "q078",
+    "question": "In the table described as '(In millions, except number of shares, which are reflected in thousands, and per-share amounts)', what value does Apple report for Products under December 27, 2025?",
+    "answer": "113,743",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_64d44a32c0c4b74e"
+      ],
+      "entity": [
+        "entity:707649d622ce",
+        "entity:b05ffe8dd2be"
+      ]
+    }
+  },
+  {
+    "id": "q079",
+    "question": "In the table described as 'The following table shows the fees billed by Apple’s independent registered public accounting firm for the years ended September 27, 2025, and September 28, 2024 (in thousands).', what value does Apple report for Audit Fees (1) under 2025 ($)?",
+    "answer": "24,703",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_693a1b93bc544a72"
+      ],
+      "entity": [
+        "entity:62fec36449f0",
+        "entity:3db9d74687d1",
+        "entity:1f3870be274f",
+        "entity:a2d8c85f70f8",
+        "entity:a5a63d9b90e6",
+        "entity:9c3aba6c2ca8",
+        "entity:312351bff079",
+        "entity:06565e5611f2",
+        "entity:651d3e6def8e",
+        "entity:07811dc6c422",
+        "entity:fcba87f7cbf3",
+        "entity:48e261b365f4"
+      ]
+    }
+  },
+  {
+    "id": "q080",
+    "question": "In the table described as 'The following table presents the percentage relationship between net sales and major categories in our consolidated statements of earnings:', what value does Home Depot report for Net sales under 2025?",
+    "answer": "164,683",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:312351bff079",
+        "entity:78a0da4c7209"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_6464daaa3c41bd73"
+      ],
+      "entity": [
+        "entity:b0e42d9aaec8",
+        "entity:a6ade0b3e081",
+        "entity:947257861b6f",
+        "entity:312351bff079",
+        "entity:4969b1e15f10",
+        "entity:07811dc6c422",
+        "entity:5531a5834816",
+        "entity:78a0da4c7209"
+      ]
+    }
+  },
+  {
+    "id": "q082",
+    "question": "In the table described as 'CONSOLIDATED BALANCE SHEETS', what value does Home Depot report for Cash and cash equivalents under November 2, 2025?",
+    "answer": "1,684",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:6c75f8da9772",
+        "entity:132426a24ec4",
+        "entity:6cafd109e5df"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_50eaf3d8b10f4dc8"
+      ],
+      "entity": [
+        "entity:46bcddca1e32",
+        "entity:6c75f8da9772",
+        "entity:6cafd109e5df"
+      ]
+    }
+  },
+  {
+    "id": "q083",
+    "question": "In the table described as 'Key Financial Performance Metrics', what value does Home Depot report for $164.7 billion under Compared to 31.3% in Fiscal 2024?",
+    "answer": "25.7%",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:8cebb51fb05f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_5ef768e7b7fc78dc"
+      ],
+      "entity": [
+        "entity:7718428b0c7d",
+        "entity:83afa84e7574",
+        "entity:28162af1658f",
+        "entity:02c7fada2280",
+        "entity:9ed083b1436e",
+        "entity:afda01b99025",
+        "entity:390af7395f28",
+        "entity:f4d49817000c",
+        "entity:76d85b6f91aa",
+        "entity:6a7cf2bc9b26"
+      ]
+    }
+  },
+  {
+    "id": "q084",
+    "question": "In the table described as 'ITEM 1 - FINANCIAL STATEMENTS', what value does Intuit report for Service under October 31, 2025?",
+    "answer": "3,497",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:f9a3cdc632c0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_1bc93d7d547237b2"
+      ],
+      "entity": [
+        "entity:f9a3cdc632c0",
+        "entity:000509a5fc2b",
+        "entity:cde1d25a1ac9",
+        "entity:d0c1c71ac274",
+        "entity:a5ade5255805",
+        "entity:96b5c2c25f1d"
+      ]
+    }
+  },
+  {
+    "id": "q085",
+    "question": "In the table described as 'ITEM 1 - FINANCIAL STATEMENTS', what value does Intuit report for Service under January 31, 2026?",
+    "answer": "3,872",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:9bb2ffd4c9c6"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_27a0af67e206cc16"
+      ],
+      "entity": [
+        "entity:0b43922563d9",
+        "entity:d1654484a286",
+        "entity:ab75a9f4edde",
+        "entity:c92a10324374",
+        "entity:a6ade0b3e081",
+        "entity:cde1d25a1ac9",
+        "entity:20809aba06cc",
+        "entity:d0c1c71ac274",
+        "entity:312351bff079",
+        "entity:bb26615c7fae",
+        "entity:a5ade5255805",
+        "entity:9bb2ffd4c9c6"
+      ]
+    }
+  },
+  {
+    "id": "q087",
+    "question": "In the table described as 'Selected Financial Information and Other Statistical Data', what value does Morgan Stanley report for Net revenues under 2025?",
+    "answer": "70,645",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:312351bff079",
+        "entity:4be4228f5d69"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_dfdc81d3f153a508"
+      ],
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:4be4228f5d69",
+        "entity:312351bff079",
+        "entity:665fd9a18faa",
+        "entity:22048c9ca240",
+        "entity:07811dc6c422",
+        "entity:5531a5834816"
+      ]
+    }
+  },
+  {
+    "id": "q088",
+    "question": "In the table described as 'Selected Financial Information and Other Statistical Data', what value does Morgan Stanley report for Net revenues under 2025?",
+    "answer": "16,792",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:312351bff079",
+        "entity:4be4228f5d69"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_57f77fd0c03cee03"
+      ],
+      "entity": [
+        "entity:ad5881eb043c",
+        "entity:4eff4442a024",
+        "entity:eb17166b91f3",
+        "entity:4575b4856f77",
+        "entity:59cd88a059a0"
+      ]
+    }
+  },
+  {
+    "id": "q089",
+    "question": "In the table described as 'Selected Financial Information and Other Statistical Data', what value does Morgan Stanley report for Net revenues under 2025?",
+    "answer": "18,224",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:312351bff079",
+        "entity:4be4228f5d69"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_3bf6964becd8530a"
+      ],
+      "entity": [
+        "entity:348967c39bb6",
+        "entity:9b5eb3501fc1",
+        "entity:a6ade0b3e081",
+        "entity:bc6249acce91",
+        "entity:312351bff079",
+        "entity:07811dc6c422",
+        "entity:9d6251bba689",
+        "entity:59cd88a059a0",
+        "entity:486a0853a12f",
+        "entity:4c290319041a",
+        "entity:a76c2cfb2df4",
+        "entity:dafaa0647755"
+      ]
+    }
+  },
+  {
+    "id": "q090",
+    "question": "In the table described as 'The following table summarizes the aggregate fees (including related expenses; $ in millions) for professional services provided by Deloitte & Touche related to 2025 and 2024.', what value does Morgan Stanley report for Audit Fees (1) under 2025 ($)?",
+    "answer": "66.2",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_0d3abc7266a17845"
+      ],
+      "entity": [
+        "entity:d8220e1573e7",
+        "entity:eaf2f97729e8",
+        "entity:367c2e2e259c",
+        "entity:f82f50748d06",
+        "entity:bf3b5ed87218",
+        "entity:1d5762aacd3e",
+        "entity:312351bff079",
+        "entity:45243b60bb7e",
+        "entity:54fbf38cf649",
+        "entity:07811dc6c422",
+        "entity:7387ae95b5d7"
+      ]
+    }
+  },
+  {
+    "id": "q092",
+    "question": "In the table described as '(In millions, except per share data)', what value does NVIDIA report for Revenue under Jul 27, 2025?",
+    "answer": "46,743",
+    "start_nodes": {
+      "entity": [
+        "entity:67362dfbd0df",
+        "entity:540df7f83845",
+        "entity:41b6946efcca"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_1cf69309c90effae"
+      ],
+      "entity": [
+        "entity:d1654484a286",
+        "entity:41b6946efcca",
+        "entity:687b1f40f103",
+        "entity:67362dfbd0df",
+        "entity:a5ade5255805",
+        "entity:297555f5b9ae"
+      ]
+    }
+  },
+  {
+    "id": "q093",
+    "question": "In the table described as '(In millions, except per share data)', what value does NVIDIA report for Revenue under Oct 26, 2025?",
+    "answer": "57,006",
+    "start_nodes": {
+      "entity": [
+        "entity:67362dfbd0df",
+        "entity:540df7f83845",
+        "entity:616face68b79"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_9419cc672eaf3013"
+      ],
+      "entity": [
+        "entity:4ba8d9719150",
+        "entity:747396092ea5",
+        "entity:e845b1cfc02f",
+        "entity:fed932079b86",
+        "entity:f3e900a7f5a4",
+        "entity:49ca8cd78922",
+        "entity:54f98e2f585f",
+        "entity:687b1f40f103",
+        "entity:67362dfbd0df",
+        "entity:82b04cd5aa01",
+        "entity:6511e8c845ba",
+        "entity:f07bdaf0e636",
+        "entity:eb4ccb5a339d",
+        "entity:a5ade5255805",
+        "entity:dbfa1f49a6e9"
+      ]
+    }
+  },
+  {
+    "id": "q094",
+    "question": "In the table described as 'Products and Services gross margin and gross margin percentage for 2025, 2024 and 2023 were as follows (dollars in millions):', what value does Apple report for Services under 2025?",
+    "answer": "82,314",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_d605ad3446c8aa05"
+      ],
+      "entity": [
+        "entity:10cd395cf71c",
+        "entity:46c4f3cb8b51",
+        "entity:b08a406f40b5",
+        "entity:617a7acfb96e",
+        "entity:99ba70c18597",
+        "entity:c33b03b2385d",
+        "entity:312351bff079",
+        "entity:86024cad1e83",
+        "entity:dbe06ff4c910",
+        "entity:aa9438b02f49",
+        "entity:07811dc6c422",
+        "entity:5531a5834816",
+        "entity:09baf77c0fc4",
+        "entity:2face219b9e0",
+        "entity:6c479a8af1dc"
+      ]
+    }
+  },
+  {
+    "id": "q095",
+    "question": "In the table described as '(In millions, except number of shares, which are reflected in thousands, and per-share amounts)', what value does Apple report for Services under June 28, 2025?",
+    "answer": "27,423",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_e69d905d9c249b99"
+      ],
+      "entity": [
+        "entity:e1a0282c6a62",
+        "entity:fe1fd04a4f8a",
+        "entity:44db0a5c8dd0",
+        "entity:5992b88446c2",
+        "entity:01ecb022f506",
+        "entity:dd21c9c63267",
+        "entity:78a0da4c7209"
+      ]
+    }
+  },
+  {
+    "id": "q097",
+    "question": "In the table described as 'The following table shows the fees billed by Apple’s independent registered public accounting firm for the years ended September 27, 2025, and September 28, 2024 (in thousands).', what value does Apple report for Audit-Related Fees (2) under 2025 ($)?",
+    "answer": "2,274",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_693a1b93bc544a72"
+      ],
+      "entity": [
+        "entity:62fec36449f0",
+        "entity:3db9d74687d1",
+        "entity:1f3870be274f",
+        "entity:a2d8c85f70f8",
+        "entity:a5a63d9b90e6",
+        "entity:9c3aba6c2ca8",
+        "entity:312351bff079",
+        "entity:06565e5611f2",
+        "entity:651d3e6def8e",
+        "entity:07811dc6c422",
+        "entity:fcba87f7cbf3",
+        "entity:48e261b365f4"
+      ]
+    }
+  },
+  {
+    "id": "q098",
+    "question": "In the table described as 'Note: Fiscal 2025 and fiscal 2023 include 52 weeks. Fiscal 2024 includes 53 weeks. Certain percentages may not sum to totals due to rounding.', what value does Home Depot report for Comparable sales (% change) (1) under 2023?",
+    "answer": "0.3",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:8cebb51fb05f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_7cf7da920038ca27"
+      ],
+      "entity": [
+        "entity:acff46b161a3",
+        "entity:bdcff0b9e911",
+        "entity:2d51af82ba94",
+        "entity:312351bff079",
+        "entity:e85b79abfd76",
+        "entity:f932bed2d124",
+        "entity:07811dc6c422",
+        "entity:5531a5834816"
+      ]
+    }
+  },
+  {
+    "id": "q099",
+    "question": "In the table described as 'CONSOLIDATED BALANCE SHEETS', what value does Home Depot report for Receivables, net under August 3, 2025?",
+    "answer": "5,878",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:730274dfa56c",
+        "entity:e5a5b240baca",
+        "entity:6cafd109e5df"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_ee46c454cb9d5576"
+      ],
+      "entity": [
+        "entity:46bcddca1e32",
+        "entity:132426a24ec4",
+        "entity:e5a5b240baca",
+        "entity:6cafd109e5df"
+      ]
+    }
+  },
+  {
+    "id": "q100",
+    "question": "In the table described as 'CONSOLIDATED BALANCE SHEETS', what value does Home Depot report for Receivables, net under November 2, 2025?",
+    "answer": "6,765",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:6c75f8da9772",
+        "entity:730274dfa56c",
+        "entity:6cafd109e5df"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_50eaf3d8b10f4dc8"
+      ],
+      "entity": [
+        "entity:46bcddca1e32",
+        "entity:6c75f8da9772",
+        "entity:6cafd109e5df"
+      ]
+    }
+  },
+  {
+    "id": "q102",
+    "question": "In the table described as 'ITEM 1 - FINANCIAL STATEMENTS', what value does Intuit report for Product and other under October 31, 2025?",
+    "answer": "388",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:f9a3cdc632c0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_1bc93d7d547237b2"
+      ],
+      "entity": [
+        "entity:f9a3cdc632c0",
+        "entity:000509a5fc2b",
+        "entity:cde1d25a1ac9",
+        "entity:d0c1c71ac274",
+        "entity:a5ade5255805",
+        "entity:96b5c2c25f1d"
+      ]
+    }
+  },
+  {
+    "id": "q103",
+    "question": "In the table described as 'ITEM 1 - FINANCIAL STATEMENTS', what value does Intuit report for Product and other under January 31, 2026?",
+    "answer": "779",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:9bb2ffd4c9c6"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_27a0af67e206cc16"
+      ],
+      "entity": [
+        "entity:0b43922563d9",
+        "entity:d1654484a286",
+        "entity:ab75a9f4edde",
+        "entity:c92a10324374",
+        "entity:a6ade0b3e081",
+        "entity:cde1d25a1ac9",
+        "entity:20809aba06cc",
+        "entity:d0c1c71ac274",
+        "entity:312351bff079",
+        "entity:bb26615c7fae",
+        "entity:a5ade5255805",
+        "entity:9bb2ffd4c9c6"
+      ]
+    }
+  },
+  {
+    "id": "q104",
+    "question": "In the table described as 'Fiscal 2025 Compensation Actions CD&A INTUIT 2026 Proxy Statement 51', what value does Intuit report for CD&A under INTUIT 2026 Proxy Statement?",
+    "answer": "51",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:0b43922563d9"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_5be9347ed5c870c0"
+      ],
+      "entity": [
+        "entity:675ff7566498",
+        "entity:a27b498321ac",
+        "entity:c20ad4d76fe9",
+        "entity:f899139df5e1",
+        "entity:92cdee9d9be2",
+        "entity:da4fb5c6e93e",
+        "entity:48512a0e8e3f",
+        "entity:56d09938e15d",
+        "entity:915088b785a5",
+        "entity:d1ce9fe17371",
+        "entity:79296bea19ab",
+        "entity:b69283ca7512",
+        "entity:f89affb34da2",
+        "entity:5b740b2cc2e0",
+        "entity:7332b474987d",
+        "entity:1359917ff63c",
+        "entity:453bebcd52a5",
+        "entity:1c684a19d366",
+        "entity:abe3d99be513",
+        "entity:60fa05c82939",
+        "entity:d5893ca46795",
+        "entity:91d274b7545c",
+        "entity:6691dea2c380",
+        "entity:8453fb3dc507",
+        "entity:1bb55b1d5cf4",
+        "entity:15a30b66f7ce",
+        "entity:231e537a8794",
+        "entity:7eac8c83cd4d",
+        "entity:a081017d2991",
+        "entity:e2c280d4f22f",
+        "entity:551399f6ff82",
+        "entity:f857e8570d9f"
+      ]
+    }
+  },
+  {
+    "id": "q105",
+    "question": "In the table described as 'Selected Financial Information and Other Statistical Data', what value does Morgan Stanley report for Earnings applicable to Morgan Stanley common shareholders under 2025?",
+    "answer": "16,249",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_dfdc81d3f153a508"
+      ],
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:4be4228f5d69",
+        "entity:312351bff079",
+        "entity:665fd9a18faa",
+        "entity:22048c9ca240",
+        "entity:07811dc6c422",
+        "entity:5531a5834816"
+      ]
+    }
+  },
+  {
+    "id": "q107",
+    "question": "In the table described as 'Selected Financial Information and Other Statistical Data', what value does Morgan Stanley report for Earnings applicable to Morgan Stanley common shareholders under 2025?",
+    "answer": "4,450",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:418d821ccf2a",
+        "entity:312351bff079",
+        "entity:22048c9ca240"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_3bf6964becd8530a"
+      ],
+      "entity": [
+        "entity:348967c39bb6",
+        "entity:9b5eb3501fc1",
+        "entity:a6ade0b3e081",
+        "entity:bc6249acce91",
+        "entity:312351bff079",
+        "entity:07811dc6c422",
+        "entity:9d6251bba689",
+        "entity:59cd88a059a0",
+        "entity:486a0853a12f",
+        "entity:4c290319041a",
+        "entity:a76c2cfb2df4",
+        "entity:dafaa0647755"
+      ]
+    }
+  },
+  {
+    "id": "q108",
+    "question": "In the table described as 'The following table summarizes the aggregate fees (including related expenses; $ in millions) for professional services provided by Deloitte & Touche related to 2025 and 2024.', what value does Morgan Stanley report for Audit-Related Fees (2) under 2025 ($)?",
+    "answer": "9.6",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_0d3abc7266a17845"
+      ],
+      "entity": [
+        "entity:d8220e1573e7",
+        "entity:eaf2f97729e8",
+        "entity:367c2e2e259c",
+        "entity:f82f50748d06",
+        "entity:bf3b5ed87218",
+        "entity:1d5762aacd3e",
+        "entity:312351bff079",
+        "entity:45243b60bb7e",
+        "entity:54fbf38cf649",
+        "entity:07811dc6c422",
+        "entity:7387ae95b5d7"
+      ]
+    }
+  },
+  {
+    "id": "q109",
+    "question": "In the table described as 'Fiscal Year 2026 Summary', what value does NVIDIA report for Gross margin under Jan 25, 2026?",
+    "answer": "71.1",
+    "start_nodes": {
+      "entity": [
+        "entity:49442c3e476a",
+        "entity:540df7f83845",
+        "entity:617a7acfb96e"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_9ee0681f26663db6"
+      ],
+      "entity": [
+        "entity:32b640886327",
+        "entity:024d960ba339",
+        "entity:deff006a18f3",
+        "entity:4ee7f864bc5f",
+        "entity:50a090bb0654",
+        "entity:cfcb374b8732"
+      ]
+    }
+  },
+  {
+    "id": "q110",
+    "question": "In the table described as '(In millions, except per share data)', what value does NVIDIA report for Cost of revenue under Jul 27, 2025?",
+    "answer": "12,890",
+    "start_nodes": {
+      "entity": [
+        "entity:687b1f40f103",
+        "entity:540df7f83845",
+        "entity:41b6946efcca"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_1cf69309c90effae"
+      ],
+      "entity": [
+        "entity:d1654484a286",
+        "entity:41b6946efcca",
+        "entity:687b1f40f103",
+        "entity:67362dfbd0df",
+        "entity:a5ade5255805",
+        "entity:297555f5b9ae"
+      ]
+    }
+  },
+  {
+    "id": "q112",
+    "question": "Which report checkbox is selected on the cover page of Apple's 10-Q filing?",
+    "answer": "Quarterly report",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_0281f2023809c503"
+      ],
+      "entity": [
+        "entity:d7ff8939d7f3",
+        "entity:61f1cc4cd1e2",
+        "entity:a5e87248b4ea",
+        "entity:4b8c66e39b72",
+        "entity:fe1fd04a4f8a",
+        "entity:9de5240df532",
+        "entity:fe7f2bba2acf",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1",
+        "entity:0a66750f752b",
+        "entity:db96464a7abe",
+        "entity:fc0f21105964",
+        "entity:51ff63a5b532",
+        "entity:4d349a3d6db9",
+        "entity:74459ca3cf85"
+      ]
+    }
+  },
+  {
+    "id": "q113",
+    "question": "Which report checkbox is selected on the cover page of Apple's 10-Q filing?",
+    "answer": "Quarterly report",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_e8ba672d20b09eed"
+      ],
+      "entity": [
+        "entity:e84f08a1bc63",
+        "entity:a5e87248b4ea",
+        "entity:51ff63a5b532",
+        "entity:f075dda8cf85",
+        "entity:9c67abda8f82",
+        "entity:d173b03c1f86",
+        "entity:168a5aa95a00",
+        "entity:fe7f2bba2acf",
+        "entity:5fe885f77d7a",
+        "entity:b715b5f36c90",
+        "entity:fc0f21105964",
+        "entity:e1c3a5261b5b",
+        "entity:dbd18ccdb4e0",
+        "entity:91a071fd39cd",
+        "entity:1c947f192611",
+        "entity:cbfbc831fe39",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:182f98eda208",
+        "entity:6dd0f1a277be",
+        "entity:afd53de4b517",
+        "entity:c6698873b4f1",
+        "entity:8dc19e705e03",
+        "entity:db96464a7abe"
+      ]
+    }
+  },
+  {
+    "id": "q114",
+    "question": "Which report checkbox is selected on the cover page of Home Depot's 10-K filing?",
+    "answer": "Annual report",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:671e289aff92"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_2daab5aabeb52883"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q115",
+    "question": "Which report checkbox is selected on the cover page of Home Depot's 10-Q filing?",
+    "answer": "Quarterly report",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_809f94ad4e4d4fa9"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q117",
+    "question": "Which embedded image marker appears on page 3 of Morgan Stanley's filing?",
+    "answer": "Image2.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_09a67d284f567823"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q118",
+    "question": "Which embedded image marker appears on page 3 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_6082f1b9d7f6f1df"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q119",
+    "question": "Which embedded image marker appears on page 3 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_faadd33ad19d7d9b"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q120",
+    "question": "Which report checkbox is selected on the cover page of NVIDIA's 10-K filing?",
+    "answer": "Annual report",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_b2dae803cdc403ee"
+      ],
+      "entity": [
+        "entity:ecf06aedc2eb",
+        "entity:57df2af0a8ad",
+        "entity:d37cc2f8301d",
+        "entity:8c406dc2bcf8",
+        "entity:e55e23232adf",
+        "entity:60037c2e1a5a",
+        "entity:0a5c50501dd5",
+        "entity:c7acb2c7d345",
+        "entity:12e9c50691b7",
+        "entity:8202589ef690",
+        "entity:a0c1ce8043ad",
+        "entity:5a1be4df9858",
+        "entity:a3e0f5514839",
+        "entity:56f5e9351fcc",
+        "entity:c83fb69905dc",
+        "entity:85325c2ba6b1",
+        "entity:2bf5a3bb7e98",
+        "entity:bf9e95e7ed12",
+        "entity:0b15fa7f60cc",
+        "entity:4b8c66e39b72",
+        "entity:85ba7ffe3a4b",
+        "entity:9d892632891f",
+        "entity:9de5240df532",
+        "entity:6dd0f1a277be",
+        "entity:db96464a7abe",
+        "entity:628c97b426c3",
+        "entity:d8fe25c30fdb"
+      ]
+    }
+  },
+  {
+    "id": "q122",
+    "question": "Which report checkbox is selected on the cover page of NVIDIA's 10-Q filing?",
+    "answer": "Quarterly report",
+    "start_nodes": {
+      "entity": [
+        "entity:540df7f83845",
+        "entity:5a1be4df9858"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:text_08d0eae2e1253cf9"
+      ],
+      "entity": [
+        "entity:747396092ea5",
+        "entity:851c442a070d",
+        "entity:4b8c66e39b72",
+        "entity:9de5240df532",
+        "entity:59f8562a1c01",
+        "entity:5fe885f77d7a",
+        "entity:50a090bb0654",
+        "entity:8c406dc2bcf8",
+        "entity:2bf5a3bb7e98",
+        "entity:5a1be4df9858",
+        "entity:db96464a7abe",
+        "entity:d8fe25c30fdb",
+        "entity:7545b14d520c",
+        "entity:fc0f21105964",
+        "entity:0a5c50501dd5",
+        "entity:fed932079b86",
+        "entity:6910937f80da",
+        "entity:c291773c3629"
+      ]
+    }
+  },
+  {
+    "id": "q123",
+    "question": "Which embedded image marker appears on page 4 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:d174bc3d04ea"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_09a67d284f567823"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q124",
+    "question": "Which embedded image marker appears on page 5 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_6082f1b9d7f6f1df"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q125",
+    "question": "Which embedded image marker appears on page 5 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_faadd33ad19d7d9b"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q127",
+    "question": "Which embedded image marker appears on page 6 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_6082f1b9d7f6f1df"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q128",
+    "question": "Which embedded image marker appears on page 6 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_faadd33ad19d7d9b"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q129",
+    "question": "Which embedded image marker appears on page 6 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_09a67d284f567823"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q130",
+    "question": "Which embedded image marker appears on page 7 of Morgan Stanley's filing?",
+    "answer": "Image4.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_6082f1b9d7f6f1df"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q132",
+    "question": "Which embedded image marker appears on page 8 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_09a67d284f567823"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q133",
+    "question": "Which embedded image marker appears on page 8 of Morgan Stanley's filing?",
+    "answer": "Image4.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_6082f1b9d7f6f1df"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q134",
+    "question": "Which embedded image marker appears on page 8 of Morgan Stanley's filing?",
+    "answer": "Image4.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_faadd33ad19d7d9b"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q135",
+    "question": "Which embedded image marker appears on page 10 of Morgan Stanley's filing?",
+    "answer": "Image3.jpg",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:image_09a67d284f567823"
+      ],
+      "entity": []
+    }
+  },
+  {
+    "id": "q137",
+    "question": "For Apple's filing period ended June 28, 2025, what value is reported for Products under June 28, 2025?",
+    "answer": "66,613",
+    "start_nodes": {
+      "entity": [
+        "entity:fe1fd04a4f8a",
+        "entity:86024cad1e83",
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_e69d905d9c249b99"
+      ],
+      "entity": [
+        "entity:e1a0282c6a62",
+        "entity:fe1fd04a4f8a",
+        "entity:44db0a5c8dd0",
+        "entity:5992b88446c2",
+        "entity:01ecb022f506",
+        "entity:dd21c9c63267",
+        "entity:78a0da4c7209"
+      ]
+    }
+  },
+  {
+    "id": "q138",
+    "question": "For Apple's filing period ended December 27, 2025, what value is reported for Products under December 27, 2025?",
+    "answer": "113,743",
+    "start_nodes": {
+      "entity": [
+        "entity:86024cad1e83",
+        "entity:b05ffe8dd2be",
+        "entity:1f3870be274f"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_64d44a32c0c4b74e"
+      ],
+      "entity": [
+        "entity:707649d622ce",
+        "entity:b05ffe8dd2be"
+      ]
+    }
+  },
+  {
+    "id": "q139",
+    "question": "For Home Depot's filing period ended February 1, 2026, what value is reported for Net sales under 2025?",
+    "answer": "164,683",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:312351bff079",
+        "entity:78a0da4c7209",
+        "entity:c47221a9e249"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_6464daaa3c41bd73"
+      ],
+      "entity": [
+        "entity:b0e42d9aaec8",
+        "entity:a6ade0b3e081",
+        "entity:947257861b6f",
+        "entity:312351bff079",
+        "entity:4969b1e15f10",
+        "entity:07811dc6c422",
+        "entity:5531a5834816",
+        "entity:78a0da4c7209"
+      ]
+    }
+  },
+  {
+    "id": "q140",
+    "question": "For Home Depot's filing period ended August 3, 2025, what value is reported for Cash and cash equivalents under August 3, 2025?",
+    "answer": "2,804",
+    "start_nodes": {
+      "entity": [
+        "entity:b48f54115140",
+        "entity:132426a24ec4",
+        "entity:e5a5b240baca"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_ee46c454cb9d5576"
+      ],
+      "entity": [
+        "entity:46bcddca1e32",
+        "entity:132426a24ec4",
+        "entity:e5a5b240baca",
+        "entity:6cafd109e5df"
+      ]
+    }
+  },
+  {
+    "id": "q142",
+    "question": "For Intuit's filing period ended October 31, 2025, what value is reported for Service under October 31, 2025?",
+    "answer": "3,497",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:f9a3cdc632c0"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_1bc93d7d547237b2"
+      ],
+      "entity": [
+        "entity:f9a3cdc632c0",
+        "entity:000509a5fc2b",
+        "entity:cde1d25a1ac9",
+        "entity:d0c1c71ac274",
+        "entity:a5ade5255805",
+        "entity:96b5c2c25f1d"
+      ]
+    }
+  },
+  {
+    "id": "q143",
+    "question": "For Intuit's filing period ended January 31, 2026, what value is reported for Service under January 31, 2026?",
+    "answer": "3,872",
+    "start_nodes": {
+      "entity": [
+        "entity:f89affb34da2",
+        "entity:9bb2ffd4c9c6"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_27a0af67e206cc16"
+      ],
+      "entity": [
+        "entity:0b43922563d9",
+        "entity:d1654484a286",
+        "entity:ab75a9f4edde",
+        "entity:c92a10324374",
+        "entity:a6ade0b3e081",
+        "entity:cde1d25a1ac9",
+        "entity:20809aba06cc",
+        "entity:d0c1c71ac274",
+        "entity:312351bff079",
+        "entity:bb26615c7fae",
+        "entity:a5ade5255805",
+        "entity:9bb2ffd4c9c6"
+      ]
+    }
+  },
+  {
+    "id": "q144",
+    "question": "For Morgan Stanley's filing period ended June 30, 2025, what value is reported for Net revenues under 2025?",
+    "answer": "16,792",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:4575b4856f77",
+        "entity:4be4228f5d69",
+        "entity:312351bff079"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_57f77fd0c03cee03"
+      ],
+      "entity": [
+        "entity:ad5881eb043c",
+        "entity:4eff4442a024",
+        "entity:eb17166b91f3",
+        "entity:4575b4856f77",
+        "entity:59cd88a059a0"
+      ]
+    }
+  },
+  {
+    "id": "q145",
+    "question": "For Morgan Stanley's filing period ended September 30, 2025, what value is reported for Net revenues under 2025?",
+    "answer": "18,224",
+    "start_nodes": {
+      "entity": [
+        "entity:59cd88a059a0",
+        "entity:486a0853a12f",
+        "entity:312351bff079",
+        "entity:4be4228f5d69"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_3bf6964becd8530a"
+      ],
+      "entity": [
+        "entity:348967c39bb6",
+        "entity:9b5eb3501fc1",
+        "entity:a6ade0b3e081",
+        "entity:bc6249acce91",
+        "entity:312351bff079",
+        "entity:07811dc6c422",
+        "entity:9d6251bba689",
+        "entity:59cd88a059a0",
+        "entity:486a0853a12f",
+        "entity:4c290319041a",
+        "entity:a76c2cfb2df4",
+        "entity:dafaa0647755"
+      ]
+    }
+  },
+  {
+    "id": "q147",
+    "question": "For NVIDIA's filing period ended July 27, 2025, what value is reported for Revenue under Jul 27, 2025?",
+    "answer": "46,743",
+    "start_nodes": {
+      "entity": [
+        "entity:67362dfbd0df",
+        "entity:540df7f83845",
+        "entity:41b6946efcca"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_1cf69309c90effae"
+      ],
+      "entity": [
+        "entity:d1654484a286",
+        "entity:41b6946efcca",
+        "entity:687b1f40f103",
+        "entity:67362dfbd0df",
+        "entity:a5ade5255805",
+        "entity:297555f5b9ae"
+      ]
+    }
+  },
+  {
+    "id": "q148",
+    "question": "For NVIDIA's filing period ended October 26, 2025, what value is reported for Revenue under Oct 26, 2025?",
+    "answer": "57,006",
+    "start_nodes": {
+      "entity": [
+        "entity:67362dfbd0df",
+        "entity:fed932079b86",
+        "entity:540df7f83845",
+        "entity:616face68b79"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_9419cc672eaf3013"
+      ],
+      "entity": [
+        "entity:4ba8d9719150",
+        "entity:747396092ea5",
+        "entity:e845b1cfc02f",
+        "entity:fed932079b86",
+        "entity:f3e900a7f5a4",
+        "entity:49ca8cd78922",
+        "entity:54f98e2f585f",
+        "entity:687b1f40f103",
+        "entity:67362dfbd0df",
+        "entity:82b04cd5aa01",
+        "entity:6511e8c845ba",
+        "entity:f07bdaf0e636",
+        "entity:eb4ccb5a339d",
+        "entity:a5ade5255805",
+        "entity:dbfa1f49a6e9"
+      ]
+    }
+  },
+  {
+    "id": "q149",
+    "question": "For Apple's filing period ended September 27, 2025, what value is reported for Services under 2025?",
+    "answer": "82,314",
+    "start_nodes": {
+      "entity": [
+        "entity:312351bff079",
+        "entity:48e261b365f4",
+        "entity:10cd395cf71c"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_d605ad3446c8aa05"
+      ],
+      "entity": [
+        "entity:10cd395cf71c",
+        "entity:46c4f3cb8b51",
+        "entity:b08a406f40b5",
+        "entity:617a7acfb96e",
+        "entity:99ba70c18597",
+        "entity:c33b03b2385d",
+        "entity:312351bff079",
+        "entity:86024cad1e83",
+        "entity:dbe06ff4c910",
+        "entity:aa9438b02f49",
+        "entity:07811dc6c422",
+        "entity:5531a5834816",
+        "entity:09baf77c0fc4",
+        "entity:2face219b9e0",
+        "entity:6c479a8af1dc"
+      ]
+    }
+  },
+  {
+    "id": "q150",
+    "question": "For Apple's filing period ended June 28, 2025, what value is reported for Services under June 28, 2025?",
+    "answer": "27,423",
+    "start_nodes": {
+      "entity": [
+        "entity:1f3870be274f",
+        "entity:fe7f2bba2acf",
+        "entity:4008e4a2500d"
+      ]
+    },
+    "target_nodes": {
+      "chunk": [
+        "chunk:table_e69d905d9c249b99"
+      ],
+      "entity": [
+        "entity:e1a0282c6a62",
+        "entity:fe1fd04a4f8a",
+        "entity:44db0a5c8dd0",
+        "entity:5992b88446c2",
+        "entity:01ecb022f506",
+        "entity:dd21c9c63267",
+        "entity:78a0da4c7209"
+      ]
+    }
+  }
+]
