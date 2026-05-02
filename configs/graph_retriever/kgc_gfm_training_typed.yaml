@@ -1,5 +1,5 @@
-# Để null nếu đã copy `gfmrag/` vào root project.
-# Có thể override bằng --gfmrag-path khi cần.
+# Fine-tune KGC sau patch QueryGNN.forward gather candidate scores.
+# Giữ file riêng để không ghi đè checkpoint fine-tune cũ trước patch.
 gfmrag_path: null
 disable_custom_rspmm: true
 
@@ -10,17 +10,14 @@ graph:
   build_relation_graph: false
   mention_relation_key: is_mentioned_in
 
-  # QueryGNN cần graph.rel_attr. Graph tensor hiện tại chưa có, nên ta build từ rel2id.json.
   relation_embedding_model: BAAI/bge-base-en-v1.5
   relation_embedding_device: null
   relation_embedding_batch_size: 32
   force_rebuild_rel_attr: false
 
 model:
-  # entity_model chính là QueryNBFNet của tác giả
   entity_model:
     _target_: gfmrag.models.ultra.models.QueryNBFNet
-    # Khi finetune từ pretrained của tác giả, kiến trúc phải khớp tuyệt đối.
     input_dim: 512
     hidden_dims: [512, 512, 512, 512, 512, 512]
     message_func: distmult
@@ -29,14 +26,15 @@ model:
     layer_norm: true
 
 training:
-  output_dir: outputs/graph_retriever/kgc_gfm_pretrained
+  output_dir: outputs/graph_retriever/kgc_gfm_typed_after_patch
   pretrained_model_path: model/model.pth
-  # Cấu hình ưu tiên GPU T4
   device: cuda
   lr: 5.0e-5
   epochs: 2
+  max_steps_per_epoch: null
   train_batch_size: 2
-  eval_batch_size: 2
+  # eval_batch_size=1 giảm peak memory khi all_negative rank toàn bộ node.
+  eval_batch_size: 1
   logging_steps: 50
   dtype: float32
 
@@ -46,6 +44,5 @@ training:
   fast_test: 500
   metrics: [mr, mrr, hits@1, hits@3, hits@10]
   save_best_only: true
-  metric_for_best_model: mrr
+  metric_for_best_model: typed_mrr
   eval_strategy: epoch
-
