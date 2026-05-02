@@ -172,6 +172,7 @@ class KGCTrainer(BaseTrainer):
         self.model.eval()
         all_metrics = {}
         all_mrr = []
+        all_typed_mrr = []
 
         # Set epoch for evaluation
         if hasattr(self.eval_graph_dataset_loader, "set_epoch"):
@@ -192,6 +193,8 @@ class KGCTrainer(BaseTrainer):
             rankings = []
             num_negatives = []
             tail_rankings, num_tail_negs = [], []
+            typed_rankings = []
+            typed_num_negatives = []
 
             for batch in tqdm(
                 data_loader,
@@ -219,6 +222,28 @@ class KGCTrainer(BaseTrainer):
                     num_t_negative = t_mask.sum(dim=-1)
                     num_h_negative = h_mask.sum(dim=-1)
 
+                    if hasattr(graph, "node_type") and graph.node_type is not None:
+                        node_type = graph.node_type.to(self.device)
+                        t_type_mask = node_type.unsqueeze(0).eq(
+                            node_type[pos_t_index].unsqueeze(-1)
+                        )
+                        h_type_mask = node_type.unsqueeze(0).eq(
+                            node_type[pos_h_index].unsqueeze(-1)
+                        )
+                        typed_t_mask = t_mask & t_type_mask
+                        typed_h_mask = h_mask & h_type_mask
+                        typed_t_ranking = tasks.compute_ranking(
+                            t_pred, pos_t_index, typed_t_mask
+                        )
+                        typed_h_ranking = tasks.compute_ranking(
+                            h_pred, pos_h_index, typed_h_mask
+                        )
+                        typed_rankings += [typed_t_ranking, typed_h_ranking]
+                        typed_num_negatives += [
+                            typed_t_mask.sum(dim=-1),
+                            typed_h_mask.sum(dim=-1),
+                        ]
+
                     rankings += [t_ranking, h_ranking]
                     num_negatives += [num_t_negative, num_h_negative]
 
@@ -227,10 +252,24 @@ class KGCTrainer(BaseTrainer):
 
             ranking = torch.cat(rankings)
             num_negative = torch.cat(num_negatives)
+            typed_ranking = (
+                torch.cat(typed_rankings)
+                if typed_rankings
+                else torch.empty(0, dtype=torch.long, device=self.device)
+            )
+            typed_num_negative = (
+                torch.cat(typed_num_negatives)
+                if typed_num_negatives
+                else torch.empty(0, dtype=torch.long, device=self.device)
+            )
             all_size = torch.zeros(
                 self.world_size, dtype=torch.long, device=self.device
             )
             all_size[self.rank] = len(ranking)
+            all_size_typed = torch.zeros(
+                self.world_size, dtype=torch.long, device=self.device
+            )
+            all_size_typed[self.rank] = len(typed_ranking)
 
             # ugly repetitive code for tail-only ranks processing
             tail_ranking = torch.cat(tail_rankings)
@@ -242,6 +281,7 @@ class KGCTrainer(BaseTrainer):
             if self.world_size > 1:
                 dist.all_reduce(all_size, op=dist.ReduceOp.SUM)
                 dist.all_reduce(all_size_t, op=dist.ReduceOp.SUM)
+                dist.all_reduce(all_size_typed, op=dist.ReduceOp.SUM)
 
             # obtaining all ranks
             cum_size = all_size.cumsum(0)
@@ -257,6 +297,23 @@ class KGCTrainer(BaseTrainer):
             all_num_negative[
                 cum_size[self.rank] - all_size[self.rank] : cum_size[self.rank]
             ] = num_negative
+
+            cum_size_typed = all_size_typed.cumsum(0)
+            all_typed_ranking = torch.zeros(
+                all_size_typed.sum(), dtype=torch.long, device=self.device
+            )
+            all_typed_num_negative = torch.zeros(
+                all_size_typed.sum(), dtype=torch.long, device=self.device
+            )
+            if len(typed_ranking) > 0:
+                all_typed_ranking[
+                    cum_size_typed[self.rank]
+                    - all_size_typed[self.rank] : cum_size_typed[self.rank]
+                ] = typed_ranking
+                all_typed_num_negative[
+                    cum_size_typed[self.rank]
+                    - all_size_typed[self.rank] : cum_size_typed[self.rank]
+                ] = typed_num_negative
 
             # the same for tails-only ranks
             cum_size_t = all_size_t.cumsum(0)
@@ -275,11 +332,42 @@ class KGCTrainer(BaseTrainer):
             if self.world_size > 1:
                 dist.all_reduce(all_ranking, op=dist.ReduceOp.SUM)
                 dist.all_reduce(all_num_negative, op=dist.ReduceOp.SUM)
+                dist.all_reduce(all_typed_ranking, op=dist.ReduceOp.SUM)
+                dist.all_reduce(all_typed_num_negative, op=dist.ReduceOp.SUM)
                 dist.all_reduce(all_ranking_t, op=dist.ReduceOp.SUM)
                 dist.all_reduce(all_num_negative_t, op=dist.ReduceOp.SUM)
 
             metrics = {}
             if self.rank == 0:
+                def compute_metric(metric_name, ranking_tensor, num_neg_tensor):
+                    if metric_name == "mr":
+                        return ranking_tensor.float().mean()
+                    if metric_name == "mrr":
+                        return (1 / ranking_tensor.float()).mean()
+                    if metric_name.startswith("hits@"):
+                        values = metric_name[5:].split("_")
+                        threshold = int(values[0])
+                        if len(values) > 1:
+                            num_sample = int(values[1])
+                            # unbiased estimation
+                            fp_rate = (ranking_tensor - 1).float() / num_neg_tensor
+                            score = 0
+                            for i in range(threshold):
+                                # choose i false positive from num_sample - 1 negatives
+                                num_comb = (
+                                    math.factorial(num_sample - 1)
+                                    / math.factorial(i)
+                                    / math.factorial(num_sample - i - 1)
+                                )
+                                score += (
+                                    num_comb
+                                    * (fp_rate**i)
+                                    * ((1 - fp_rate) ** (num_sample - i - 1))
+                                )
+                            return score.mean()
+                        return (ranking_tensor <= threshold).float().mean()
+                    raise ValueError(f"Unsupported metric: {metric_name}")
+
                 for metric in self.metrics:
                     if "-tail" in metric:
                         _metric_name, direction = metric.split("-")
@@ -294,40 +382,25 @@ class KGCTrainer(BaseTrainer):
                         _num_neg = all_num_negative
                         _metric_name = metric
 
-                    if _metric_name == "mr":
-                        score = _ranking.float().mean()
-                    elif _metric_name == "mrr":
-                        score = (1 / _ranking.float()).mean()
-                    elif _metric_name.startswith("hits@"):
-                        values = _metric_name[5:].split("_")
-                        threshold = int(values[0])
-                        if len(values) > 1:
-                            num_sample = int(values[1])
-                            # unbiased estimation
-                            fp_rate = (_ranking - 1).float() / _num_neg
-                            score = 0
-                            for i in range(threshold):
-                                # choose i false positive from num_sample - 1 negatives
-                                num_comb = (
-                                    math.factorial(num_sample - 1)
-                                    / math.factorial(i)
-                                    / math.factorial(num_sample - i - 1)
-                                )
-                                score += (
-                                    num_comb
-                                    * (fp_rate**i)
-                                    * ((1 - fp_rate) ** (num_sample - i - 1))
-                                )
-                            score = score.mean()
-                        else:
-                            score = (_ranking <= threshold).float().mean()
+                    score = compute_metric(_metric_name, _ranking, _num_neg)
                     metrics[metric] = score
+                    if len(all_typed_ranking) > 0 and "-tail" not in metric:
+                        metrics[f"typed_{metric}"] = compute_metric(
+                            _metric_name,
+                            all_typed_ranking,
+                            all_typed_num_negative,
+                        )
                 # Log evaluation metrics to wandb
                 if self.rank == 0:
                     eval_metrics = {f"{data_name}/{k}": v for k, v in metrics.items()}
                     all_metrics.update(eval_metrics)
             mrr = (1 / all_ranking.float()).mean()
             all_mrr.append(mrr)
+            if len(all_typed_ranking) > 0:
+                typed_mrr = (1 / all_typed_ranking.float()).mean()
+                all_typed_mrr.append(typed_mrr)
         avg_mrr = sum(all_mrr) / len(all_mrr)
         all_metrics["mrr"] = avg_mrr
+        if all_typed_mrr:
+            all_metrics["typed_mrr"] = sum(all_typed_mrr) / len(all_typed_mrr)
         return all_metrics
