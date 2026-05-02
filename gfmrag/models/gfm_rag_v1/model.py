@@ -141,6 +141,12 @@ class QueryGNN(BaseGNNModel):
             graph, node_embedding, relation_representations, query_embedding
         )
 
+        # QueryNBFNet returns scores for all graph nodes. KGC training passes
+        # sampled candidate tails with the positive triple in column 0, so gather
+        # those candidate columns before returning. During all-negative eval,
+        # t_index already enumerates every node, making this a no-op in shape.
+        score = score.gather(1, t_index)
+
         return score
 
 

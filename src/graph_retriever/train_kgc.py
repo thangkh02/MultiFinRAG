@@ -136,10 +136,12 @@ def run_training(*, cfg: dict) -> Path:
         num_epoch=int(cfg["training"]["epochs"]),
         train_batch_size=int(cfg["training"]["train_batch_size"]),
         eval_batch_size=int(cfg["training"]["eval_batch_size"]),
+        max_steps_per_epoch=cfg["training"].get("max_steps_per_epoch"),
         logging_steps=int(cfg["training"]["logging_steps"]),
         save_best_only=bool(cfg["training"].get("save_best_only", True)),
         metric_for_best_model=str(cfg["training"].get("metric_for_best_model", "mrr")),
         eval_strategy=str(cfg["training"].get("eval_strategy", "epoch")),
+        eval_steps=cfg["training"].get("eval_steps"),
         dtype=str(cfg["training"].get("dtype", "float32")),
     )
 
@@ -186,6 +188,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--output-dir", type=Path, default=None, help="Ghi đè training.output_dir.")
     p.add_argument("--epochs", type=int, default=None, help="Ghi đè training.epochs.")
     p.add_argument(
+        "--max-steps-per-epoch",
+        type=int,
+        default=None,
+        help="Ghi đè training.max_steps_per_epoch để chạy smoke/short run.",
+    )
+    p.add_argument(
         "--pretrained",
         type=Path,
         default=None,
@@ -217,6 +225,8 @@ def main(argv: list[str] | None = None) -> None:
         raw.training.output_dir = str(ns.output_dir.resolve())
     if ns.epochs is not None:
         raw.training.epochs = ns.epochs
+    if ns.max_steps_per_epoch is not None:
+        raw.training.max_steps_per_epoch = ns.max_steps_per_epoch
     if ns.pretrained is not None:
         raw.training.pretrained_model_path = str(ns.pretrained)
 
