@@ -387,50 +387,169 @@ python src/graph_extraction/build_graph_tensor.py \
   --embedding-model BAAI/bge-base-en-v1.5
 ```
 
-## Step 4 - Train GFM-RAG graph reasoning
+## Step 4 - GFM-RAG Graph Retriever (KGC + Stage 2 SFT)
 
-This project keeps the financial graph in `data/graph`, while the GFM-RAG code
-is used as the model/trainer implementation. The adapter below converts the
-local graph and benchmark queries into the GFM-RAG stage1 format:
+Pipeline GFM-RAG gom 2 giai doan: **Stage 1 KGC** fine-tune model hieu bieu do, **Stage 2 SFT** fine-tune model lay chunk lien quan den cau hoi.
 
-```bash
-python src/graph_reasoning/prepare_gfmrag_dataset.py \
-  --graph-dir data/graph \
-  --queries data/benchmark_report/queries_tagged.jsonl \
-  --output-root data/gfmrag_reasoning \
-  --data-name multifin_graph
-```
-
-It creates:
+### Graph stats
 
 ```text
-data/gfmrag_reasoning/multifin_graph/raw/documents.json
-data/gfmrag_reasoning/multifin_graph/processed/stage1/nodes.csv
-data/gfmrag_reasoning/multifin_graph/processed/stage1/relations.csv
-data/gfmrag_reasoning/multifin_graph/processed/stage1/edges.csv
-data/gfmrag_reasoning/multifin_graph/processed/stage1/train.json
-data/gfmrag_reasoning/multifin_graph/processed/stage1/test.json
+nodes:     17,262  (13,728 entity + 3,534 chunk)
+relations: 24 forward + 24 inverse = 48 total
+edges:     79,592  (3,714 entity-entity + 75,878 entity-chunk via is_mentioned_in)
 ```
 
-Train the reasoning model by pointing to the local `gfm-rag` repo:
+---
+
+### Stage 1 - KGC Fine-tuning
+
+Fine-tune model tu checkpoint pretrain cua tac gia (`model/model.pth`) tren graph entity-entity.
+
+**Model**: `QueryNBFNet` — `input_dim=512`, `hidden_dims=[512]*6`, `message_func=distmult`
+
+**Config**:
+```text
+configs/graph_retriever/kgc_gfm_ee_finetune.yaml
+```
+
+**Chay**:
+```bash
+python src/graph_retriever/train_kgc.py \
+  --config configs/graph_retriever/kgc_gfm_ee_finetune.yaml
+```
+
+**Ket qua**:
+```text
+typed_mrr: 0.2666  (epoch 13)
+checkpoint: outputs/graph_retriever/kgc_gfm_typed_after_patch_full/model_besteefinal.pth
+```
+
+**Luu y**: `disable_custom_rspmm: true` de dung PyG message-passing fallback, khong can compile rspmm C++ extension.
+
+---
+
+### Stage 2 - Data Preparation
+
+Chuan bi data train Stage 2 tu `data/qa/test_qa.jsonl` (120 mau).
+
+**Pipeline**:
+```text
+test_qa.jsonl
+  -> NER (GPT-OSS-20B API) trich entity tu cau hoi
+  -> Entity Linking (exact match + company fallback tu ticker)
+  -> Chunk Mapping (loc theo source_pdf + Jaccard overlap voi evidence)
+  -> Target Entity (entity lien ket voi chunk qua is_mentioned_in)
+  -> test_qa_stage2.json
+```
+
+**Config**:
+```text
+configs/graph_retriever/stage2_data_prep.yaml
+```
+
+**Chay**:
+```bash
+python src/graph_retriever/prepare_stage2_data.py \
+  --config configs/graph_retriever/stage2_data_prep.yaml
+```
+
+**Ket qua**:
+```text
+output: data/qa/test_qa_stage2.json
+total:  120 samples
+start_nodes.entity co data: 120/120 (100%)
+target_nodes.chunk co data: 120/120 (100%)
+target_nodes.entity co data: 99/120 (82.5%)
+```
+
+**Yeu cau API** (dat trong `.env`):
+```text
+OPENAI_API_KEY=...
+OPENAI_BASE_URL=https://integrate.api.nvidia.com/v1
+OPENAI_MODEL=openai/gpt-oss-20b
+```
+
+---
+
+### Stage 2 - Sanity Test
+
+Kiem tra pipeline truoc khi full train: overfit 20 mau, xac nhan `chunk_mrr > 0.1` va tang.
 
 ```bash
-python src/graph_reasoning/train_gfmrag_reasoner.py \
-  --config configs/gfmrag_reasoning/sft_training.yaml \
-  --gfmrag-path d:/Project/gfm-rag
+python src/graph_retriever/sanity_stage2.py \
+  --config configs/graph_retriever/stage2_sft.yaml \
+  --sanity-steps 300
 ```
 
-The config uses `gfmrag.models.gfm_rag_v1.GNNRetriever` with
-`QueryNBFNet`. It reasons over entity nodes and learns to rank evidence chunk
-nodes through the `entity -> chunk` `is_mentioned_in` edges. The main supervised
-target node type is `chunk`.
+**Ket qua sanity**: `chunk_mrr: 0.0014 -> 0.3359` (300 steps) — PASS.
 
-The local config sets `disable_custom_rspmm: true`, so `QueryNBFNet` uses the
-standard PyG message-passing fallback and runs on the current Windows/CPU
-environment without compiling Ultra's `rspmm` C++ extension. This is slower but
-portable. Set `disable_custom_rspmm: false` only when running in an environment
-that can compile PyTorch extensions, such as Linux/CUDA or Windows with Visual
-Studio C++ Build Tools (`cl.exe`).
+---
+
+### Stage 2 - SFT Fine-tuning
+
+Fine-tune `GNNRetriever` tu KGC checkpoint, hoc lay chunk lien quan den cau hoi.
+
+**Model**: `GNNRetriever` = `QueryNBFNet` (entity scorer) + `SimpleRanker` (entity -> chunk mapping)
+
+**Config**:
+```text
+configs/graph_retriever/stage2_sft.yaml
+```
+
+**Chay** (can GPU, khuyen nghi T4 tro len):
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft.yaml
+```
+
+**Luu y quan trong**:
+- Phai dung `dtype: float32` — `torch.sparse.mm` khong ho tro float16 tren CUDA
+- `train_batch_size: 1` do forward pass qua toan bo graph
+- BGE encoder nen chay tren CPU (`relation_embedding_device: cpu`)
+
+**Ket qua training** (100 train / 20 val, 20 epochs):
+```text
+chunk_mrr:      0.2149  (epoch 19, best)
+chunk_hits@1:   0.0952
+chunk_hits@5:   0.4286
+chunk_hits@10:  0.5238
+entity_mrr:     0.3503
+checkpoint: outputs/graph_retriever/kgc_stage2_sft/model_best.pth
+```
+
+**So sanh voi random baseline**: `chunk_mrr` cao hon random ~740 lan (random ≈ 1/3534).
+
+---
+
+### Stage 2 - Retrieval Evaluation
+
+Chua co script danh gia retrieval doc lap cho Stage 2. Metrics hien tai chi tinh tren 20 mau validation trong qua trinh training.
+
+De danh gia day du tren tap test 120 mau, can chay inference voi `model_best.pth` va tinh `Recall@k`, `Hit@k`, `MRR` tren tat ca test_qa_stage2.json.
+
+---
+
+### Files GFM-RAG Graph Retriever
+
+```text
+src/graph_retriever/
+  train_kgc.py              Stage 1 KGC training
+  prepare_stage2_data.py    Chuan bi data Stage 2 (NER + EL + chunk mapping)
+  stage2_dataset.py         Dataset loader cho SFTTrainer
+  train_stage2.py           Stage 2 SFT training
+  sanity_stage2.py          Sanity check pipeline
+  graph_adapter.py          Load graph + build target_to_other_types
+  rel_features.py           Encode relation embeddings (BGE)
+
+configs/graph_retriever/
+  kgc_gfm_ee_finetune.yaml  Config KGC Stage 1
+  stage2_data_prep.yaml     Config data prep Stage 2
+  stage2_sft.yaml           Config training Stage 2
+
+outputs/graph_retriever/
+  kgc_gfm_typed_after_patch_full/model_besteefinal.pth  KGC checkpoint (typed_mrr=0.2666)
+  kgc_stage2_sft/model_best.pth                         Stage 2 checkpoint (chunk_mrr=0.2149)
+```
 
 ---
 
