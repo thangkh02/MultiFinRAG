@@ -12,7 +12,7 @@ graph:
   tensor_dir: data/graph_tensor
   mention_relation_key: is_mentioned_in
   relation_embedding_model: BAAI/bge-base-en-v1.5
-  relation_embedding_device: null
+  relation_embedding_device: cpu   
   relation_embedding_batch_size: 32
   force_rebuild_rel_attr: false
 
@@ -60,8 +60,8 @@ training:
   lr: 5.0e-5
   weight_decay: 0.01
   epochs: 20
-  train_batch_size: 4
-  eval_batch_size: 4
+  train_batch_size: 1
+  eval_batch_size: 1
   logging_steps: 10
   save_best_only: true
   metric_for_best_model: chunk_mrr   # metrics format: {type}_{metric}

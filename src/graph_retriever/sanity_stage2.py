@@ -22,7 +22,6 @@ import sys
 from pathlib import Path
 
 import torch
-import torch.nn.functional as F
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -58,7 +57,7 @@ def run_sanity(cfg: dict, sanity_steps: int = SANITY_STEPS) -> None:
     from src.graph_retriever.graph_adapter import build_target_to_other_types, load_graph_bundle
     from src.graph_retriever.gfm_bootstrap import bootstrap_gfmrag, disable_custom_rspmm
     from src.graph_retriever.rel_features import ensure_rel_attr
-    from src.graph_retriever.stage2_dataset import load_stage2_sft_data
+    from src.graph_retriever.stage2_dataset import Stage2TorchDataset
 
     import json
 
@@ -108,26 +107,34 @@ def run_sanity(cfg: dict, sanity_steps: int = SANITY_STEPS) -> None:
     sanity_samples = all_samples[:SANITY_N]
     logger.info("Sanity: lấy %d samples đầu tiên từ %s", len(sanity_samples), stage2_json)
 
-    # Tạo sft_data từ 20 samples (không split - dùng tất cả làm train và test)
-    sft_data = load_stage2_sft_data(
-        stage2_json=stage2_json,
-        graph=graph,
-        node2id=node2id,
-        id2node_raw=id2node_raw,
-        text_emb_model_name=str(data_cfg.get("text_emb_model", "BAAI/bge-base-en-v1.5")),
-        emb_device=data_cfg.get("emb_device"),
-        emb_cache=Path(str(data_cfg["emb_cache"])) if data_cfg.get("emb_cache") else None,
-        train_ratio=1.0,  # Tất cả làm train
-        seed=42,
-    )
-
-    # Override: dùng chỉ 20 samples
-    from src.graph_retriever.stage2_dataset import Stage2TorchDataset, Stage2SFTData
+    # Dùng đúng embedding của 20 sample đầu. Không gọi load_stage2_sft_data ở đây
+    # vì hàm đó shuffle train split, dễ làm lệch sample ↔ embedding trong sanity.
     from torch.utils.data import DataLoader
 
-    question_embs = sft_data.train_data.question_embeddings[:SANITY_N]
+    emb_cache = Path(str(data_cfg["emb_cache"])) if data_cfg.get("emb_cache") else None
+    if emb_cache is not None and emb_cache.exists():
+        all_question_embs = torch.load(emb_cache, map_location="cpu", weights_only=False)
+        question_embs = all_question_embs[: len(sanity_samples)].float()
+        logger.info("Load %d sanity question embeddings từ cache: %s", len(question_embs), emb_cache)
+    else:
+        from sentence_transformers import SentenceTransformer
+
+        text_model_name = str(data_cfg.get("text_emb_model", "BAAI/bge-base-en-v1.5"))
+        logger.info("Encode %d sanity questions bằng %s", len(sanity_samples), text_model_name)
+        text_model = SentenceTransformer(text_model_name, device=data_cfg.get("emb_device"))
+        embs = text_model.encode(
+            [s["question"] for s in sanity_samples],
+            batch_size=32,
+            normalize_embeddings=True,
+            show_progress_bar=True,
+        )
+        question_embs = torch.tensor(embs, dtype=torch.float32)
+
     tiny_ds = Stage2TorchDataset(sanity_samples, question_embs, int(graph.num_nodes), node2id)
-    tiny_loader = DataLoader(tiny_ds, batch_size=4, shuffle=False)
+    sanity_batch_size = int(cfg["training"].get("train_batch_size", 1))
+    sanity_batch_size = max(1, min(sanity_batch_size, len(tiny_ds)))
+    tiny_loader = DataLoader(tiny_ds, batch_size=sanity_batch_size, shuffle=False)
+    logger.info("Sanity batch_size=%d", sanity_batch_size)
 
     # Khởi tạo model
     from gfmrag.models.gfm_rag_v1 import model as gfm_model_module
@@ -153,10 +160,13 @@ def run_sanity(cfg: dict, sanity_steps: int = SANITY_STEPS) -> None:
         if not pre_path.is_absolute():
             pre_path = (_REPO_ROOT / pre_path).resolve()
         if pre_path.exists():
-            payload = torch.load(pre_path, map_location=device, weights_only=False)
+            payload = torch.load(pre_path, map_location="cpu", weights_only=False)
             state = payload.get("model") if isinstance(payload, dict) else payload
             missing, unexpected = model.load_state_dict(state, strict=False)
             logger.info("Pretrained load OK: missing=%d, unexpected=%d", len(missing), len(unexpected))
+            del payload, state
+            if device.type == "cuda":
+                torch.cuda.empty_cache()
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
     bce_fn = BCELoss()
@@ -186,12 +196,22 @@ def run_sanity(cfg: dict, sanity_steps: int = SANITY_STEPS) -> None:
     logger.info("=== SANITY STEP 0 EVAL ===")
     step0_metrics = eval_model()
     logger.info("  chunk_mrr=%.4f | entity_mrr=%.4f", step0_metrics["chunk_mrr"], step0_metrics["entity_mrr"])
+    if device.type == "cuda":
+        torch.cuda.empty_cache()
 
     # ─── Overfit loop ─────────────────────────────────────────
     model.train()
     step = 0
     epoch = 0
     loss_history: list[float] = []
+    skipped_empty_entity_batches = 0
+    # GNNRetriever.map_entities_to_docs uses torch.sparse.mm. CUDA sparse addmm
+    # does not support float16 on this PyTorch build, so keep sanity in fp32.
+    dtype_name = "float32"
+    amp_dtype = torch.float32
+    use_amp = False
+    scaler = torch.amp.GradScaler("cuda", enabled=use_amp and amp_dtype is torch.float16)
+    logger.info("Sanity AMP: enabled=%s dtype=%s", use_amp, amp_dtype if use_amp else "float32")
 
     while step < sanity_steps:
         epoch += 1
@@ -199,16 +219,23 @@ def run_sanity(cfg: dict, sanity_steps: int = SANITY_STEPS) -> None:
             if step >= sanity_steps:
                 break
             batch = {k: v.to(device) for k, v in batch.items()}
-            optimizer.zero_grad()
-            pred = model(graph, batch)
-            tgt = batch["target_nodes_mask"]
+            optimizer.zero_grad(set_to_none=True)
+            with torch.amp.autocast(device_type=device.type, dtype=amp_dtype, enabled=use_amp):
+                pred = model(graph, batch)
+                tgt = batch["target_nodes_mask"]
 
-            # Loss chỉ trên entity nodes (bám theo official config)
-            ent_pred = pred[:, entity_nodes]
-            ent_tgt = tgt[:, entity_nodes]
-            loss = 0.3 * bce_fn(ent_pred, ent_tgt) + 0.7 * listce_fn(ent_pred, ent_tgt)
-            loss.backward()
-            optimizer.step()
+                # Loss chỉ trên entity nodes (bám theo official config)
+                ent_pred = pred[:, entity_nodes]
+                ent_tgt = tgt[:, entity_nodes]
+                if ent_tgt.sum() == 0:
+                    loss = ent_pred.sum() * 0.0
+                else:
+                    loss = 0.3 * bce_fn(ent_pred, ent_tgt) + 0.7 * listce_fn(ent_pred, ent_tgt)
+            if loss.item() == 0.0 and ent_tgt.sum().item() == 0:
+                skipped_empty_entity_batches += 1
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
             loss_history.append(loss.item())
             step += 1
 
@@ -218,6 +245,8 @@ def run_sanity(cfg: dict, sanity_steps: int = SANITY_STEPS) -> None:
 
     # ─── Final eval ───────────────────────────────────────────
     logger.info("=== SANITY FINAL EVAL (step %d) ===", step)
+    if skipped_empty_entity_batches:
+        logger.info("Skipped %d empty-entity target batches in sanity loss", skipped_empty_entity_batches)
     final_metrics = eval_model()
     logger.info("  chunk_mrr=%.4f | entity_mrr=%.4f", final_metrics["chunk_mrr"], final_metrics["entity_mrr"])
 
