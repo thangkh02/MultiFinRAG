@@ -5,7 +5,10 @@ __pycache__/
 
 data/index_bge/
 data/index/
-outputs/
+outputs/**
+!outputs/**/
+!outputs/**/model_best.pth
+!outputs/**/model_last.pth
 
 data/chunks/*_sample*.jsonl
 data/chunks/*_assets.jsonl
