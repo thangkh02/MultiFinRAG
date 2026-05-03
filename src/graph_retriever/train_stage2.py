@@ -27,6 +27,13 @@ if str(_REPO_ROOT) not in sys.path:
 from src.graph_retriever.graph_adapter import build_target_to_other_types, load_graph_bundle
 from src.graph_retriever.gfm_bootstrap import bootstrap_gfmrag, disable_custom_rspmm
 from src.graph_retriever.rel_features import ensure_rel_attr
+from src.graph_retriever.stage2_common import (
+    LoggingSFTTrainerMixin,
+    build_stage2_loss_functions,
+    log_stage2_runtime_context,
+    reject_external_gfmrag_path,
+    validate_graph_x,
+)
 from src.graph_retriever.stage2_dataset import (
     Stage2SFTData,
     _SingleSFTDatasetLoader,
@@ -90,6 +97,7 @@ def run_stage2(*, cfg: dict) -> Path:
     )
     graph = bundle.data
     mappings = bundle.mappings
+    validate_graph_x(graph, context="Stage 2 train graph")
 
     # ─── Đảm bảo rel_attr (BGE embeddings) ───────────────────
     rel2id_path = tensor_dir / "rel2id.json"
@@ -102,6 +110,7 @@ def run_stage2(*, cfg: dict) -> Path:
         force=bool(cfg["graph"].get("force_rebuild_rel_attr", False)),
     )
     logger.info("feat_dim (BGE embedding dim): %d", feat_dim)
+    validate_graph_x(graph, feat_dim=feat_dim, context="Stage 2 train graph")
 
     # ─── Build target_to_other_types (entity→chunk sparse) ────
     target_to_other = build_target_to_other_types(
@@ -140,6 +149,19 @@ def run_stage2(*, cfg: dict) -> Path:
         train_ratio=float(data_cfg.get("train_ratio", 0.8)),
         seed=int(data_cfg.get("seed", 42)),
     )
+    validate_graph_x(
+        graph,
+        question_embeddings=sft_data.train_data.question_embeddings,
+        feat_dim=feat_dim,
+        context="Stage 2 train split",
+    )
+    if len(sft_data.test_data) > 0:
+        validate_graph_x(
+            graph,
+            question_embeddings=sft_data.test_data.question_embeddings,
+            feat_dim=feat_dim,
+            context="Stage 2 eval split",
+        )
 
     # ─── Khởi tạo GNNRetriever ────────────────────────────────
     from gfmrag.models.gfm_rag_v1 import model as gfm_model_module
@@ -183,33 +205,15 @@ def run_stage2(*, cfg: dict) -> Path:
     )
 
     # ─── Loss functions ───────────────────────────────────────
-    from gfmrag.losses import BCELoss, ListCELoss
-    from gfmrag.trainers.sft_trainer import SFTLoss, SFTTrainer
+    from gfmrag.losses import BCELoss, KLDivLoss, ListCELoss, MSELoss  # noqa:F401
+    from gfmrag.trainers.sft_trainer import SFTTrainer
     from gfmrag.trainers.training_args import TrainingArguments
 
     loss_cfg_list = cfg.get("losses", [
-        {"name": "bce_entity", "weight": 0.3, "target_node_type": "entity", "is_distillation_loss": False},
-        {"name": "listce_entity", "weight": 0.7, "target_node_type": "entity", "is_distillation_loss": False},
+        {"name": "bce_chunk", "loss_type": "bce", "weight": 0.3, "target_node_type": "chunk", "is_distillation_loss": False},
+        {"name": "listce_chunk", "loss_type": "listce", "weight": 0.7, "target_node_type": "chunk", "is_distillation_loss": False},
     ])
-
-    _loss_fn_map = {
-        "bce": BCELoss(),
-        "listce": ListCELoss(),
-    }
-
-    loss_functions: list[SFTLoss] = []
-    for lc in loss_cfg_list:
-        name = lc["name"]
-        fn_key = "bce" if "bce" in name else "listce"
-        loss_functions.append(
-            SFTLoss(
-                name=name,
-                loss_fn=_loss_fn_map[fn_key],
-                weight=float(lc["weight"]),
-                target_node_type=str(lc["target_node_type"]),
-                is_distillation_loss=bool(lc.get("is_distillation_loss", False)),
-            )
-        )
+    loss_functions = build_stage2_loss_functions(list(loss_cfg_list))
 
     # ─── TrainingArguments ────────────────────────────────────
     tcfg = cfg["training"]
@@ -232,7 +236,10 @@ def run_stage2(*, cfg: dict) -> Path:
     eval_loader = _SingleSFTDatasetLoader(graph_name, sft_data)
 
     # ─── SFTTrainer ───────────────────────────────────────────
-    trainer = SFTTrainer(
+    class Stage2LoggingSFTTrainer(LoggingSFTTrainerMixin, SFTTrainer):
+        pass
+
+    trainer = Stage2LoggingSFTTrainer(
         output_dir=str(output_dir),
         args=args,
         model=model,
@@ -275,6 +282,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--pretrained", type=Path, default=None)
     p.add_argument("--stage2-json", type=Path, default=None)
     p.add_argument("--disable-custom-rspmm", action="store_true")
+    p.add_argument("--run-sanity-first", action="store_true")
     return p.parse_args(argv)
 
 
@@ -303,12 +311,23 @@ def main(argv: list[str] | None = None) -> None:
     if ns.stage2_json is not None:
         raw.data.stage2_json = str(ns.stage2_json)
 
-    bootstrap_gfmrag(ns.gfmrag_path or raw.get("gfmrag_path"))
+    effective_gfmrag_path = ns.gfmrag_path or raw.get("gfmrag_path")
+    reject_external_gfmrag_path(effective_gfmrag_path)
+    bootstrap_gfmrag(effective_gfmrag_path)
     if ns.disable_custom_rspmm or bool(raw.get("disable_custom_rspmm", True)):
         disable_custom_rspmm()
+    log_stage2_runtime_context(ns.config)
 
     cfg_all = OmegaConf.to_container(raw, resolve=True)
     assert isinstance(cfg_all, dict)
+
+    if ns.run_sanity_first:
+        from src.graph_retriever.sanity_stage2 import run_sanity
+
+        sanity_cfg = cfg_all.get("sanity", {})
+        sanity_steps = int(sanity_cfg.get("steps", 300)) if isinstance(sanity_cfg, dict) else 300
+        logger.info("=== RUN SANITY FIRST ===")
+        run_sanity(cfg_all, sanity_steps=sanity_steps, already_bootstrapped=True)
 
     ckpt = run_stage2(cfg=cfg_all)
     logger.info("Hoàn thành Stage 2 — checkpoint: %s", ckpt)
