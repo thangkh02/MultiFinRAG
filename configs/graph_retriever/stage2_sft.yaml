@@ -40,16 +40,23 @@ model:
   init_nodes_weight: true
   init_nodes_type: chunk
 
-# ─── Losses (BCE 0.3 + ListCE 0.7 trên entity nodes) ────────
+# ─── Losses (hard chunk labels + optional distillation) ───────
 losses:
-  - name: bce_entity
+  - name: bce_chunk
+    loss_type: bce
     weight: 0.3
-    target_node_type: entity
+    target_node_type: chunk
     is_distillation_loss: false
-  - name: listce_entity
+  - name: listce_chunk
+    loss_type: listce
     weight: 0.7
-    target_node_type: entity
+    target_node_type: chunk
     is_distillation_loss: false
+  - name: mse_distill_chunk
+    loss_type: mse
+    weight: 0.1
+    target_node_type: chunk
+    is_distillation_loss: true
 
 # ─── Training Arguments ──────────────────────────────────────
 training:
@@ -79,3 +86,12 @@ metrics:
   - hits@5
   - hits@10
   - hits@20
+  - recall@5
+  - recall@10
+  - recall@20
+
+sanity:
+  samples: 20
+  steps: 300
+  max_metric_drop_abs: 0.05
+  max_metric_drop_rel: 0.25
