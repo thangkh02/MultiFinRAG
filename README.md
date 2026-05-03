@@ -523,9 +523,67 @@ checkpoint: outputs/graph_retriever/kgc_stage2_sft/model_best.pth
 
 ### Stage 2 - Retrieval Evaluation
 
-Chua co script danh gia retrieval doc lap cho Stage 2. Metrics hien tai chi tinh tren 20 mau validation trong qua trinh training.
+Da co script danh gia retrieval doc lap cho Stage 2:
 
-De danh gia day du tren tap test 120 mau, can chay inference voi `model_best.pth` va tinh `Recall@k`, `Hit@k`, `MRR` tren tat ca test_qa_stage2.json.
+```bash
+python src/graph_retriever/eval_stage2.py \
+  --config configs/graph_retriever/stage2_sft.yaml \
+  --checkpoint outputs/graph_retriever/kgc_stage2_sft/model_best.pth \
+  --data data/qa/test_qa_stage2.json \
+  --output outputs/graph_retriever/kgc_stage2_sft/eval_results.json \
+  --top-k 20
+```
+
+**Bang so sanh ket qua retrieval (full test 120 samples)**
+
+| Metric | Stage2 Model (GNNRetriever) | HippoRAG (baseline lite) | LightRAG (dense baseline) | HippoRAG full-style + LLM rerank |
+|---|---:|---:|---:|---:|
+| chunk_mrr | **0.3897** | 0.0691 | 0.2579 | 0.1501 |
+| chunk_hits@1 | **0.2750** | 0.0500 | 0.1167 | 0.0667 |
+| chunk_hits@2 | **0.3583** | 0.0583 | 0.1833 | 0.1000 |
+| chunk_hits@5 | **0.5583** | 0.0667 | 0.4083 | 0.2167 |
+| chunk_hits@10 | 0.6667 | 0.1083 | **0.6750** | 0.3833 |
+| chunk_hits@20 | 0.6833 | 0.1333 | **0.8083** | 0.4833 |
+| chunk_recall@5 | **0.5583** | 0.0667 | 0.4083 | 0.2167 |
+| chunk_recall@10 | 0.6667 | 0.1083 | **0.6750** | 0.3833 |
+| chunk_recall@20 | 0.6833 | 0.1333 | **0.8083** | 0.4833 |
+| entity_mrr | **0.4595** | 0.1046 | 0.0171 | 0.0366 |
+| entity_hits@1 | **0.3460** | 0.0452 | 0.0038 | 0.0093 |
+| entity_hits@2 | **0.4481** | 0.1053 | 0.0144 | 0.0469 |
+| entity_hits@5 | **0.5972** | 0.1498 | 0.0183 | 0.0637 |
+| entity_hits@10 | **0.6755** | 0.2125 | 0.0365 | 0.0798 |
+| entity_hits@20 | **0.7651** | 0.2745 | 0.0571 | 0.0910 |
+| entity_recall@5 | **0.3431** | 0.1259 | 0.0183 | 0.0616 |
+| entity_recall@10 | **0.5098** | 0.1890 | 0.0365 | 0.0780 |
+| entity_recall@20 | **0.6606** | 0.2598 | 0.0565 | 0.0893 |
+
+Ngoai ra da co them script baseline retrieval:
+
+```bash
+python src/graph_retriever/eval_retrieval_baselines.py \
+  --config configs/graph_retriever/stage2_sft.yaml \
+  --data data/qa/test_qa_stage2.json \
+  --output outputs/graph_retriever/baseline_eval_results.json \
+  --methods hipporag,lightrag \
+  --top-k 20
+```
+
+HippoRAG full-style (fact retrieval + aggregate) kem LLM rerank tren top-K fact bang NVIDIA NIM/`chat/completions` (request `requests` trong script, dong bo voi tagging; can `.env` `OPENAI_API_KEY`/`NVIDIA_API_KEY`, `OPENAI_BASE_URL`):
+
+```bash
+python src/graph_retriever/eval_retrieval_baselines.py \
+  --config configs/graph_retriever/stage2_sft.yaml \
+  --data data/qa/test_qa_stage2.json \
+  --output outputs/graph_retriever/baseline_nvidia_hipporag_full_llm.json \
+  --methods hipporag_full \
+  --top-k 20 \
+  --hipporag-full-llm-rerank
+```
+
+Ghi chu:
+- LightRAG entity la dense query->entity baseline, chua co graph propagation.
+- HippoRAG cot "baseline lite" la propagation entity->chunk sparse, khong LLM rerank fact.
+- Cot "full-style + LLM rerank": retrieve facts bang embedding edge, LM chon subset fact (top nhap ~80 fact, output ~20); chunk_mrr cao hon lite va cao nhieu so voi full-style khong LM, nhung van thua Stage2 va LightRAG chunk (dense + graph entity da train).
 
 ---
 
@@ -538,6 +596,8 @@ src/graph_retriever/
   stage2_dataset.py         Dataset loader cho SFTTrainer
   train_stage2.py           Stage 2 SFT training
   sanity_stage2.py          Sanity check pipeline
+  eval_stage2.py            Danh gia retrieval full test set cho Stage 2 model
+  eval_retrieval_baselines.py  Baseline HippoRAG/LightRAG retrieval evaluation
   graph_adapter.py          Load graph + build target_to_other_types
   rel_features.py           Encode relation embeddings (BGE)
 

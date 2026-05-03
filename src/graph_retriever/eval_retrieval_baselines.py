@@ -19,10 +19,13 @@ import argparse
 import ast
 import json
 import logging
+import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 import torch
 from omegaconf import OmegaConf
@@ -30,6 +33,13 @@ from omegaconf import OmegaConf
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(_REPO_ROOT / ".env", override=False)
+except ImportError:
+    pass
 
 from src.graph_retriever.graph_adapter import build_target_to_other_types, load_graph_bundle
 from src.graph_retriever.gfm_bootstrap import bootstrap_gfmrag, disable_custom_rspmm
@@ -83,8 +93,8 @@ def _compute_metrics(
     return gfm_evaluate(node_pred, node_target, metrics)
 
 
-def _load_chunk_texts(graph_dir: Path) -> dict[str, str]:
-    """Đọc nội dung text đại diện cho mỗi chunk từ nodes.csv."""
+def _load_node_texts(graph_dir: Path, node_type: str) -> dict[str, str]:
+    """Đọc nội dung text đại diện cho node_type từ nodes.csv."""
     nodes_path = graph_dir / "nodes.csv"
     if not nodes_path.exists():
         raise FileNotFoundError(f"Thiếu file: {nodes_path}")
@@ -92,7 +102,7 @@ def _load_chunk_texts(graph_dir: Path) -> dict[str, str]:
     df = pd.read_csv(nodes_path, keep_default_na=False)
     out: dict[str, str] = {}
     for _, row in df.iterrows():
-        if str(row.get("type", "")) != "chunk":
+        if str(row.get("type", "")) != node_type:
             continue
         uid = str(row.get("uid", ""))
         if not uid:
@@ -177,14 +187,14 @@ def _hipporag_scores(
 
 def _lightrag_scores(
     questions: list[str],
-    chunk_uids: list[str],
-    chunk_text_map: dict[str, str],
+    target_uids: list[str],
+    target_text_map: dict[str, str],
     emb_cache: Path | None,
-    chunk_emb_cache: Path | None,
+    target_emb_cache: Path | None,
     text_emb_model: str,
     emb_device: str | None,
 ) -> torch.Tensor:
-    """LightRAG-lite: dense retrieval query->chunk theo cosine."""
+    """LightRAG-lite: dense retrieval query->target theo cosine."""
     from sentence_transformers import SentenceTransformer
 
     if emb_cache is not None and emb_cache.exists():
@@ -201,26 +211,26 @@ def _lightrag_scores(
         )
         q_emb = torch.tensor(q_np, dtype=torch.float32)
 
-    chunk_emb: torch.Tensor
-    if chunk_emb_cache is not None and chunk_emb_cache.exists():
-        chunk_emb = torch.load(chunk_emb_cache, map_location="cpu", weights_only=False).float()
-        if chunk_emb.size(0) != len(chunk_uids):
-            raise ValueError("Chunk embedding cache không khớp số lượng chunk.")
+    target_emb: torch.Tensor
+    if target_emb_cache is not None and target_emb_cache.exists():
+        target_emb = torch.load(target_emb_cache, map_location="cpu", weights_only=False).float()
+        if target_emb.size(0) != len(target_uids):
+            raise ValueError("Target embedding cache không khớp số lượng target nodes.")
     else:
         model = SentenceTransformer(text_emb_model, device=emb_device)
-        chunk_texts = [chunk_text_map.get(uid, uid) for uid in chunk_uids]
-        chunk_np = model.encode(
-            chunk_texts,
+        target_texts = [target_text_map.get(uid, uid) for uid in target_uids]
+        target_np = model.encode(
+            target_texts,
             normalize_embeddings=True,
             show_progress_bar=True,
         )
-        chunk_emb = torch.tensor(chunk_np, dtype=torch.float32)
-        if chunk_emb_cache is not None:
-            chunk_emb_cache.parent.mkdir(parents=True, exist_ok=True)
-            torch.save(chunk_emb, chunk_emb_cache)
+        target_emb = torch.tensor(target_np, dtype=torch.float32)
+        if target_emb_cache is not None:
+            target_emb_cache.parent.mkdir(parents=True, exist_ok=True)
+            torch.save(target_emb, target_emb_cache)
 
     # Cosine similarity vì embeddings đã normalize.
-    return q_emb @ chunk_emb.transpose(0, 1)
+    return q_emb @ target_emb.transpose(0, 1)
 
 
 def _topk_chunk_predictions(
@@ -241,6 +251,234 @@ def _topk_chunk_predictions(
     return out
 
 
+def _topk_entity_predictions(
+    entity_scores: torch.Tensor,
+    entity_uids: list[str],
+    top_k: int,
+) -> list[list[dict[str, Any]]]:
+    out: list[list[dict[str, Any]]] = []
+    k = min(top_k, len(entity_uids))
+    for i in range(entity_scores.size(0)):
+        vals, idx = torch.topk(entity_scores[i], k=k)
+        out.append(
+            [
+                {"uid": entity_uids[int(j)], "score": float(v)}
+                for v, j in zip(vals.tolist(), idx.tolist())
+            ]
+        )
+    return out
+
+
+def _build_hipporag_full_resources(
+    graph_dir: Path,
+    mention_relation_key: str,
+) -> dict[str, Any]:
+    """Load nodes/edges và tạo resources cần cho HippoRAG-full (no-LLM rerank)."""
+    nodes_df = pd.read_csv(graph_dir / "nodes.csv", keep_default_na=False)
+    edges_df = pd.read_csv(graph_dir / "edges.csv", keep_default_na=False)
+
+    uid2name: dict[str, str] = {}
+    uid2type: dict[str, str] = {}
+    for _, row in nodes_df.iterrows():
+        uid = str(row.get("uid", ""))
+        if not uid:
+            continue
+        uid2name[uid] = str(row.get("name", uid))
+        uid2type[uid] = str(row.get("type", ""))
+
+    # entity -> chunk mentions
+    ent_to_chunks: dict[str, set[str]] = {}
+    mention_df = edges_df[edges_df["relation"] == mention_relation_key]
+    for _, row in mention_df.iterrows():
+        src = str(row["source"])
+        tgt = str(row["target"])
+        if uid2type.get(src) != "entity" or uid2type.get(tgt) != "chunk":
+            continue
+        ent_to_chunks.setdefault(src, set()).add(tgt)
+
+    # facts: bo mention edges, uu tien facts co 2 dau mut la entity
+    fact_df = edges_df[edges_df["relation"] != mention_relation_key].copy()
+    keep_mask = fact_df["source"].map(uid2type).eq("entity") & fact_df["target"].map(uid2type).eq("entity")
+    fact_df = fact_df[keep_mask]
+
+    facts: list[tuple[str, str, str]] = []
+    fact_texts: list[str] = []
+    for _, row in fact_df.iterrows():
+        src_uid = str(row["source"])
+        rel = str(row["relation"])
+        tgt_uid = str(row["target"])
+        src_name = uid2name.get(src_uid, src_uid)
+        tgt_name = uid2name.get(tgt_uid, tgt_uid)
+        facts.append((src_uid, rel, tgt_uid))
+        fact_texts.append(f"{src_name} [SEP] {rel} [SEP] {tgt_name}")
+
+    return {
+        "uid2name": uid2name,
+        "uid2type": uid2type,
+        "ent_to_chunks": ent_to_chunks,
+        "facts": facts,
+        "fact_texts": fact_texts,
+    }
+
+
+def _hipporag_full_scores(
+    questions: list[str],
+    chunk_uids: list[str],
+    entity_uids: list[str],
+    chunk_scores_dense: torch.Tensor,
+    resources: dict[str, Any],
+    text_emb_model: str,
+    emb_device: str | None,
+    top_k: int,
+    passage_node_weight: float = 0.05,
+    llm_rerank: bool = False,
+    llm_input_topk: int = 80,
+    llm_output_topk: int = 20,
+    llm_model: str | None = None,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """
+    HippoRAG-full style (khong LLM rerank):
+    - retrieve facts theo query/fact embeddings
+    - aggregate score ve entity tu facts
+    - merge them dense chunk score vao chunk nodes
+    """
+    from sentence_transformers import SentenceTransformer
+
+    facts: list[tuple[str, str, str]] = resources["facts"]
+    fact_texts: list[str] = resources["fact_texts"]
+    ent_to_chunks: dict[str, set[str]] = resources["ent_to_chunks"]
+
+    if len(facts) == 0:
+        raise RuntimeError("HippoRAG-full: khong co fact nao (non-mention edges).")
+
+    model = SentenceTransformer(text_emb_model, device=emb_device)
+    q_np = model.encode(
+        questions,
+        normalize_embeddings=True,
+        show_progress_bar=False,
+    )
+    f_np = model.encode(
+        fact_texts,
+        normalize_embeddings=True,
+        show_progress_bar=False,
+    )
+    q_emb = torch.tensor(q_np, dtype=torch.float32)
+    f_emb = torch.tensor(f_np, dtype=torch.float32)
+    fact_scores = q_emb @ f_emb.transpose(0, 1)  # [B, F]
+
+    llm_client = None
+    llm_base_url: str | None = None
+    if llm_rerank:
+        import requests as _requests
+
+        api_key = (os.getenv("OPENAI_API_KEY") or os.getenv("NVIDIA_API_KEY") or "").strip()
+        llm_base_url = (os.getenv("OPENAI_BASE_URL") or "").strip().rstrip("/") or "https://api.openai.com/v1"
+        if not api_key:
+            raise RuntimeError(
+                "Thieu OPENAI_API_KEY hoac NVIDIA_API_KEY trong moi truong (co the them file .env o goc repo)."
+            )
+        llm_client = {"api_key": api_key, "base_url": llm_base_url, "_requests": _requests}
+        llm_model = llm_model or os.getenv("OPENAI_MODEL", "openai/gpt-oss-20b")
+
+    ent_pos = {uid: i for i, uid in enumerate(entity_uids)}
+    chunk_pos = {uid: i for i, uid in enumerate(chunk_uids)}
+
+    ent_scores = torch.zeros((len(questions), len(entity_uids)), dtype=torch.float32)
+    chunk_scores = torch.zeros((len(questions), len(chunk_uids)), dtype=torch.float32)
+
+    top_fact_k = min(max(1, top_k * 4), fact_scores.size(1))
+    llm_input_topk = min(max(1, llm_input_topk), fact_scores.size(1))
+    llm_output_topk = min(max(1, llm_output_topk), llm_input_topk)
+    for i in range(len(questions)):
+        vals, idxs = torch.topk(fact_scores[i], k=top_fact_k)
+        selected_pairs = list(zip(vals.tolist(), idxs.tolist()))
+
+        if llm_client is not None:
+            cand_vals, cand_idxs = torch.topk(fact_scores[i], k=llm_input_topk)
+            cand_pairs = list(zip(cand_vals.tolist(), cand_idxs.tolist()))
+            fact_lines = []
+            for j, (score, fid) in enumerate(cand_pairs, start=1):
+                s_uid, rel, o_uid = facts[int(fid)]
+                fact_lines.append(
+                    f"{j}. ({resources['uid2name'].get(s_uid, s_uid)}) -[{rel}]-> ({resources['uid2name'].get(o_uid, o_uid)}) | score={score:.4f}"
+                )
+            prompt = (
+                "Chon cac fact lien quan nhat de tra loi cau hoi.\n"
+                f"Cau hoi: {questions[i]}\n"
+                f"Tra ve JSON object duy nhat: {{\"top_indices\": [..]}} voi chi so 1-based, toi da {llm_output_topk} phan tu.\n"
+                "Khong giai thich them.\n"
+                "Danh sach fact:\n"
+                + "\n".join(fact_lines)
+            )
+            try:
+                _req = llm_client["_requests"]
+                _payload: dict = {
+                    "model": llm_model,
+                    "messages": [
+                        {"role": "system", "content": "Ban la bo loc fact cho retrieval graph."},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "temperature": 0,
+                    "max_tokens": 300,
+                    "stream": False,
+                }
+                if "gpt-oss" in (llm_model or ""):
+                    _payload["reasoning_effort"] = "low"
+                _resp = _req.post(
+                    f"{llm_client['base_url']}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {llm_client['api_key']}",
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    json=_payload,
+                    timeout=60,
+                )
+                _resp.raise_for_status()
+                content = (_resp.json()["choices"][0]["message"].get("content") or "").strip()
+                match = re.search(r"\{[\s\S]*\}", content)
+                if match:
+                    obj = json.loads(match.group(0))
+                    picks = obj.get("top_indices", [])
+                    reranked: list[tuple[float, int]] = []
+                    for p in picks:
+                        if isinstance(p, int) and 1 <= p <= len(cand_pairs):
+                            reranked.append(cand_pairs[p - 1])
+                    if len(reranked) > 0:
+                        selected_pairs = reranked[:llm_output_topk]
+            except Exception as exc:
+                logger.warning("LLM rerank fail sample %d: %s", i, exc)
+
+        phrase_acc: dict[str, list[float]] = {}
+        for v, fid in selected_pairs:
+            s_uid, _, o_uid = facts[int(fid)]
+            for ent_uid in (s_uid, o_uid):
+                w = float(v)
+                deg = len(ent_to_chunks.get(ent_uid, set()))
+                if deg > 0:
+                    w /= deg
+                phrase_acc.setdefault(ent_uid, []).append(w)
+
+        # score entity tu facts
+        for ent_uid, ws in phrase_acc.items():
+            pos = ent_pos.get(ent_uid)
+            if pos is not None:
+                ent_scores[i, pos] = float(np.mean(ws))
+
+        # score chunk tu entity facts (entity -> mentioned chunks)
+        for ent_uid, ws in phrase_acc.items():
+            s = float(np.mean(ws))
+            for chunk_uid in ent_to_chunks.get(ent_uid, set()):
+                cpos = chunk_pos.get(chunk_uid)
+                if cpos is not None:
+                    chunk_scores[i, cpos] += s
+
+        # merge dense chunk retrieval nhu HippoRAG2 constructor
+        chunk_scores[i] += passage_node_weight * chunk_scores_dense[i]
+
+    return ent_scores, chunk_scores
+
+
 @torch.no_grad()
 def run_eval(
     cfg: dict[str, Any],
@@ -249,6 +487,11 @@ def run_eval(
     top_k: int,
     hipporag_alpha: float,
     methods: list[str],
+    max_samples: int | None = None,
+    hipporag_full_llm_rerank: bool = False,
+    hipporag_full_llm_input_topk: int = 80,
+    hipporag_full_llm_output_topk: int = 20,
+    hipporag_full_llm_model: str | None = None,
 ) -> dict[str, Any]:
     tensor_dir = Path(str(cfg["graph"]["tensor_dir"]))
     graph_dir = Path(str(cfg["graph"]["graph_dir"]))
@@ -263,6 +506,8 @@ def run_eval(
 
     with open(data_path, encoding="utf-8") as f:
         samples: list[dict[str, Any]] = json.load(f)
+    if max_samples is not None and max_samples > 0:
+        samples = samples[:max_samples]
 
     node2id = {str(k): int(v) for k, v in mappings.entity2id.items()}
     chunk_nodes = graph.nodes_by_type["chunk"].cpu()
@@ -301,11 +546,63 @@ def run_eval(
             "chunk_metrics": chunk_metrics,
             "entity_metrics": entity_metrics,
             "predicted_chunks": _topk_chunk_predictions(chunk_scores, chunk_uids, top_k),
+            "predicted_entities": _topk_entity_predictions(ent_scores, entity_uids, top_k),
             "params": {"alpha": hipporag_alpha},
         }
 
+    if "hipporag_full" in methods:
+        chunk_text_map = _load_node_texts(graph_dir, node_type="chunk")
+        chunk_emb_cache = Path(
+            str(data_cfg.get("chunk_emb_cache", "data/qa/chunk_embeddings_lightrag.pt"))
+        )
+        emb_cache = Path(str(data_cfg["emb_cache"])) if data_cfg.get("emb_cache") else None
+        chunk_scores_dense = _lightrag_scores(
+            questions=questions,
+            target_uids=chunk_uids,
+            target_text_map=chunk_text_map,
+            emb_cache=emb_cache,
+            target_emb_cache=chunk_emb_cache,
+            text_emb_model=str(data_cfg.get("text_emb_model", "BAAI/bge-base-en-v1.5")),
+            emb_device=data_cfg.get("emb_device"),
+        )
+        resources = _build_hipporag_full_resources(
+            graph_dir=graph_dir,
+            mention_relation_key=str(cfg["graph"].get("mention_relation_key", "is_mentioned_in")),
+        )
+        ent_scores, chunk_scores = _hipporag_full_scores(
+            questions=questions,
+            chunk_uids=chunk_uids,
+            entity_uids=entity_uids,
+            chunk_scores_dense=chunk_scores_dense,
+            resources=resources,
+            text_emb_model=str(data_cfg.get("text_emb_model", "BAAI/bge-base-en-v1.5")),
+            emb_device=data_cfg.get("emb_device"),
+            top_k=top_k,
+            llm_rerank=hipporag_full_llm_rerank,
+            llm_input_topk=hipporag_full_llm_input_topk,
+            llm_output_topk=hipporag_full_llm_output_topk,
+            llm_model=hipporag_full_llm_model,
+        )
+        chunk_metrics = _compute_metrics(chunk_scores, tgt_chunk, METRICS, "hipporag_full_chunk")
+        entity_metrics = _compute_metrics(ent_scores, tgt_entity, METRICS, "hipporag_full_entity")
+        results["hipporag_full"] = {
+            "chunk_metrics": chunk_metrics,
+            "entity_metrics": entity_metrics,
+            "predicted_chunks": _topk_chunk_predictions(chunk_scores, chunk_uids, top_k),
+            "predicted_entities": _topk_entity_predictions(ent_scores, entity_uids, top_k),
+            "params": {
+                "passage_node_weight": 0.05,
+                "fact_topk_multiplier": 4,
+                "llm_rerank": hipporag_full_llm_rerank,
+                "llm_input_topk": hipporag_full_llm_input_topk,
+                "llm_output_topk": hipporag_full_llm_output_topk,
+                "llm_model": hipporag_full_llm_model,
+            },
+        }
+
     if "lightrag" in methods:
-        chunk_text_map = _load_chunk_texts(graph_dir)
+        chunk_text_map = _load_node_texts(graph_dir, node_type="chunk")
+        entity_text_map = _load_node_texts(graph_dir, node_type="entity")
         chunk_emb_cache = Path(
             str(
                 data_cfg.get(
@@ -314,20 +611,40 @@ def run_eval(
                 )
             )
         )
+        entity_emb_cache = Path(
+            str(
+                data_cfg.get(
+                    "entity_emb_cache",
+                    "data/qa/entity_embeddings_lightrag.pt",
+                )
+            )
+        )
         emb_cache = Path(str(data_cfg["emb_cache"])) if data_cfg.get("emb_cache") else None
         chunk_scores = _lightrag_scores(
             questions=questions,
-            chunk_uids=chunk_uids,
-            chunk_text_map=chunk_text_map,
+            target_uids=chunk_uids,
+            target_text_map=chunk_text_map,
             emb_cache=emb_cache,
-            chunk_emb_cache=chunk_emb_cache,
+            target_emb_cache=chunk_emb_cache,
+            text_emb_model=str(data_cfg.get("text_emb_model", "BAAI/bge-base-en-v1.5")),
+            emb_device=data_cfg.get("emb_device"),
+        )
+        entity_scores = _lightrag_scores(
+            questions=questions,
+            target_uids=entity_uids,
+            target_text_map=entity_text_map,
+            emb_cache=emb_cache,
+            target_emb_cache=entity_emb_cache,
             text_emb_model=str(data_cfg.get("text_emb_model", "BAAI/bge-base-en-v1.5")),
             emb_device=data_cfg.get("emb_device"),
         )
         chunk_metrics = _compute_metrics(chunk_scores, tgt_chunk, METRICS, "lightrag_chunk")
+        entity_metrics = _compute_metrics(entity_scores, tgt_entity, METRICS, "lightrag_entity")
         results["lightrag"] = {
             "chunk_metrics": chunk_metrics,
+            "entity_metrics": entity_metrics,
             "predicted_chunks": _topk_chunk_predictions(chunk_scores, chunk_uids, top_k),
+            "predicted_entities": _topk_entity_predictions(entity_scores, entity_uids, top_k),
             "params": {"embedding_model": str(data_cfg.get("text_emb_model", "BAAI/bge-base-en-v1.5"))},
         }
 
@@ -341,7 +658,14 @@ def run_eval(
             "predictions": {},
         }
         for method in results.keys():
-            row["predictions"][method] = results[method]["predicted_chunks"][i]
+            row["predictions"][method] = {
+                "chunk": results[method]["predicted_chunks"][i],
+                "entity": (
+                    results[method]["predicted_entities"][i]
+                    if "predicted_entities" in results[method]
+                    else []
+                ),
+            }
         merged_predictions.append(row)
 
     output = {
@@ -357,6 +681,7 @@ def run_eval(
     # Không cần giữ toàn bộ prediction lặp hai lần trong output.
     for method in output["methods"].values():
         method.pop("predicted_chunks", None)
+        method.pop("predicted_entities", None)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
@@ -380,7 +705,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--data", type=Path, default=Path("data/qa/test_qa_stage2.json"))
     p.add_argument("--output", type=Path, default=Path("outputs/graph_retriever/baseline_eval_results.json"))
     p.add_argument("--top-k", type=int, default=20)
+    p.add_argument("--max-samples", type=int, default=None, help="Chay thu tren N sample dau.")
     p.add_argument("--hipporag-alpha", type=float, default=0.7)
+    p.add_argument("--hipporag-full-llm-rerank", action="store_true")
+    p.add_argument("--hipporag-full-llm-input-topk", type=int, default=80)
+    p.add_argument("--hipporag-full-llm-output-topk", type=int, default=20)
+    p.add_argument("--hipporag-full-llm-model", type=str, default=None)
     p.add_argument("--gfmrag-path", type=str, default=None)
     p.add_argument("--disable-custom-rspmm", action="store_true")
     p.add_argument(
@@ -413,7 +743,7 @@ def main(argv: list[str] | None = None) -> None:
     assert isinstance(cfg, dict)
 
     methods = [m.strip().lower() for m in ns.methods.split(",") if m.strip()]
-    valid = {"hipporag", "lightrag"}
+    valid = {"hipporag", "hipporag_full", "lightrag"}
     invalid = [m for m in methods if m not in valid]
     if invalid:
         raise ValueError(f"Method không hợp lệ: {invalid}. Hợp lệ: {sorted(valid)}")
@@ -427,6 +757,11 @@ def main(argv: list[str] | None = None) -> None:
         top_k=ns.top_k,
         hipporag_alpha=ns.hipporag_alpha,
         methods=methods,
+        max_samples=ns.max_samples,
+        hipporag_full_llm_rerank=bool(ns.hipporag_full_llm_rerank),
+        hipporag_full_llm_input_topk=int(ns.hipporag_full_llm_input_topk),
+        hipporag_full_llm_output_topk=int(ns.hipporag_full_llm_output_topk),
+        hipporag_full_llm_model=ns.hipporag_full_llm_model,
     )
 
 
