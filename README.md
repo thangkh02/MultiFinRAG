@@ -995,4 +995,59 @@ File metric chinh:
 outputs/financebench_eval_bge/retrieval_eval_filtered/metrics_summary.json
 ```
 
+---
+
+# 🎯 Stage 2 Fine-tuning Results
+
+## Hybrid Training (Hard Labels + Distillation)
+
+Training configuration: `configs/graph_retriever/stage2_sft.yaml`
+
+**Losses:**
+- `bce_chunk` (weight: 0.3) - Hard chunk labels
+- `listce_chunk` (weight: 0.7) - Ranking loss  
+- `mse_distill_chunk` (weight: 0.1) - Distillation loss
+
+### Evaluation Metrics (Test Split)
+
+**Chunk Retrieval:**
+
+| Metric | Score |
+|--------|-------|
+| chunk_mrr | 0.1828 |
+| chunk_hits@1 | 0.0952 |
+| chunk_hits@2 | 0.1429 |
+| chunk_hits@5 | 0.2857 |
+| chunk_hits@10 | 0.4286 |
+| chunk_hits@20 | 0.5238 |
+| chunk_recall@5 | 0.2857 |
+| chunk_recall@10 | 0.4286 |
+| chunk_recall@20 | 0.5238 |
+
+**Entity Retrieval:**
+
+| Metric | Score |
+|--------|-------|
+| entity_mrr | 0.1073 |
+| entity_hits@1 | 0.0501 |
+| entity_hits@2 | 0.0688 |
+| entity_hits@5 | 0.1717 |
+| entity_hits@10 | 0.2334 |
+| entity_hits@20 | 0.2871 |
+| entity_recall@5 | 0.1318 |
+| entity_recall@10 | 0.2040 |
+| entity_recall@20 | 0.2787 |
+
+### Training Command
+
+```bash
+python src/graph_retriever/train_stage2.py --config configs/graph_retriever/stage2_sft.yaml --run-sanity-first
+```
+
+### Output
+
+```text
+outputs/graph_retriever/kgc_stage2_sft/
+```
+
 
