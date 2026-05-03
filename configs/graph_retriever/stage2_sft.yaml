@@ -66,7 +66,7 @@ training:
   dtype: float32
   lr: 5.0e-5
   weight_decay: 0.01
-  epochs: 20
+  epochs: 15
   train_batch_size: 1
   eval_batch_size: 1
   logging_steps: 10
