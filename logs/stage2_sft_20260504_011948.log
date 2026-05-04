@@ -1,0 +1,79 @@
+2026-05-04 01:19:57,397 INFO src.graph_retriever.stage2_common: === STAGE2 RUNTIME CONTEXT ===
+2026-05-04 01:19:57,398 INFO src.graph_retriever.stage2_common:   current working directory: /kaggle/MultiFinRAG
+2026-05-04 01:19:57,398 INFO src.graph_retriever.stage2_common:   project root: /kaggle/MultiFinRAG
+2026-05-04 01:19:57,398 INFO src.graph_retriever.stage2_common:   gfmrag import source path: /kaggle/MultiFinRAG/gfmrag
+2026-05-04 01:19:57,398 INFO src.graph_retriever.stage2_common:   config path đang dùng: /kaggle/MultiFinRAG/configs/graph_retriever/stage2_sft.yaml
+2026-05-04 01:19:57,406 INFO __main__: === RUN SANITY FIRST ===
+2026-05-04 01:19:57,407 INFO src.graph_retriever.sanity_stage2: Sanity device: cuda
+2026-05-04 01:19:58,177 INFO src.graph_retriever.graph_adapter: Đã load graph: num_nodes=17262 num_relations=48 target_edges=39796
+2026-05-04 01:19:58,178 INFO src.graph_retriever.stage2_common: graph.x shape: (17262, 768)
+2026-05-04 01:19:58,178 INFO src.graph_retriever.stage2_common: graph.x shape: (17262, 768)
+2026-05-04 01:19:58,243 INFO src.graph_retriever.graph_adapter: build_target_to_other_types: 37939 entity→chunk edges, sparse shape=(17262, 17262)
+2026-05-04 01:19:58,601 INFO src.graph_retriever.sanity_stage2: Sanity: using 20 samples from data/qa/test_qa_stage2.json
+2026-05-04 01:19:58,606 INFO src.graph_retriever.sanity_stage2: Load 20 sanity question embeddings from cache: data/qa/test_question_embeddings.pt
+2026-05-04 01:19:58,606 INFO src.graph_retriever.stage2_common: graph.x shape: (17262, 768)
+2026-05-04 01:19:58,606 INFO src.graph_retriever.stage2_common: question_embeddings shape: (20, 768)
+2026-05-04 01:19:58,610 INFO src.graph_retriever.sanity_stage2: Sanity batch_size=4
+2026-05-04 01:19:58,951 INFO datasets: TensorFlow version 2.19.0 available.
+2026-05-04 01:19:58,956 INFO datasets: JAX version 0.7.2 available.
+2026-05-04 01:20:03,919 INFO src.graph_retriever.stage2_common: === LOSS FUNCTIONS LOADED ===
+2026-05-04 01:20:03,920 INFO src.graph_retriever.stage2_common:   bce_chunk: fn=BCELoss weight=0.3000 target=chunk distill=False
+2026-05-04 01:20:03,920 INFO src.graph_retriever.stage2_common:   listce_chunk: fn=ListCELoss weight=0.7000 target=chunk distill=False
+2026-05-04 01:20:03,920 INFO src.graph_retriever.stage2_common:   mse_distill_chunk: fn=MSELoss weight=0.1000 target=chunk distill=True
+2026-05-04 01:20:03,920 INFO src.graph_retriever.stage2_common: hard loss: ['bce_chunk', 'listce_chunk']
+2026-05-04 01:20:03,921 INFO src.graph_retriever.stage2_common: distill loss: ['mse_distill_chunk']
+2026-05-04 01:20:03,921 INFO src.graph_retriever.stage2_common: distillation target type: ['chunk']
+2026-05-04 01:20:04,207 INFO src.graph_retriever.sanity_stage2: Pretrained load OK: missing=0 unexpected=0
+2026-05-04 01:20:04,210 INFO src.graph_retriever.sanity_stage2: === SANITY hard_only STEP 0 EVAL ===
+2026-05-04 01:20:07,397 INFO src.graph_retriever.sanity_stage2:   chunk_mrr=0.0008 | recall@5=0.0000 | recall@10=0.0000 | recall@20=0.0000
+Traceback (most recent call last):
+  File "/kaggle/MultiFinRAG/src/graph_retriever/train_stage2.py", line 337, in <module>
+    main()
+  File "/kaggle/MultiFinRAG/src/graph_retriever/train_stage2.py", line 330, in main
+    run_sanity(cfg_all, sanity_steps=sanity_steps, already_bootstrapped=True)
+  File "/kaggle/MultiFinRAG/src/graph_retriever/sanity_stage2.py", line 377, in run_sanity
+    hard_metrics = _run_profile(
+                   ^^^^^^^^^^^^^
+  File "/kaggle/MultiFinRAG/src/graph_retriever/sanity_stage2.py", line 251, in _run_profile
+    pred = model(graph, batch)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/MultiFinRAG/gfmrag/models/gfm_rag_v1/model.py", line 293, in forward
+    output = self.entity_model(
+             ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/MultiFinRAG/gfmrag/models/ultra/models.py", line 483, in forward
+    output = self.bellmanford(
+             ^^^^^^^^^^^^^^^^^
+  File "/kaggle/MultiFinRAG/gfmrag/models/ultra/models.py", line 439, in bellmanford
+    hidden = layer(
+             ^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/MultiFinRAG/gfmrag/models/ultra/layers.py", line 102, in forward
+    output = self.propagate(
+             ^^^^^^^^^^^^^^^
+  File "/kaggle/MultiFinRAG/src/graph_retriever/gfm_bootstrap.py", line 109, in pyg_propagate
+    return MessagePassing.propagate(self, edge_index, size=size, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch_geometric/nn/conv/message_passing.py", line 523, in propagate
+    out = self.message(**msg_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/MultiFinRAG/gfmrag/models/ultra/layers.py", line 180, in message
+    message = torch.cat(
+              ^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 758.00 MiB. GPU 0 has a total capacity of 14.56 GiB of which 237.81 MiB is free. Including non-PyTorch memory, this process has 14.33 GiB memory in use. Of the allocated memory 13.56 GiB is allocated by PyTorch, and 657.17 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
