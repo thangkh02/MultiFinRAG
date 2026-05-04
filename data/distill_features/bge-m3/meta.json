@@ -1,0 +1,29 @@
+{
+  "teacher_model": "BAAI/bge-m3",
+  "node_x_shape": [
+    17262,
+    1024
+  ],
+  "question_embeddings_shape": [
+    120,
+    1024
+  ],
+  "num_samples": 120,
+  "embedding_dim": 1024,
+  "nodes_metadata": {
+    "num_nodes": 17262,
+    "embedding_dim": 1024,
+    "node_type_counts": {
+      "chunk": 3534,
+      "entity": 13728,
+      "unknown": 0
+    },
+    "source_nodes_csv": "data/graph/nodes.csv",
+    "source_node2id": "data/graph_tensor/node2id.json"
+  },
+  "source_config": "configs/graph_retriever/stage2_sft.yaml",
+  "source_nodes_csv": "data/graph/nodes.csv",
+  "source_node2id": "data/graph_tensor/node2id.json",
+  "source_stage2_json": "data/qa/test_qa_stage2.json",
+  "created_at": "2026-05-04T03:02:40.765340"
+}

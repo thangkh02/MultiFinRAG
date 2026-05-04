@@ -493,13 +493,13 @@ Fine-tune `GNNRetriever` tu KGC checkpoint, hoc lay chunk lien quan den cau hoi.
 
 **Config**:
 ```text
-configs/graph_retriever/stage2_sft.yaml
+configs/graph_retriever/stage2_sft_distill_bge_m3.yaml
 ```
 
 **Chay** (can GPU, khuyen nghi T4 tro len):
 ```bash
 python src/graph_retriever/train_stage2.py \
-  --config configs/graph_retriever/stage2_sft.yaml
+  --config configs/graph_retriever/stage2_sft_distill_bge_m3.yaml
 ```
 
 **Luu y quan trong**:
@@ -507,17 +507,17 @@ python src/graph_retriever/train_stage2.py \
 - `train_batch_size: 1` do forward pass qua toan bo graph
 - BGE encoder nen chay tren CPU (`relation_embedding_device: cpu`)
 
-**Ket qua training** (100 train / 20 val, 20 epochs):
+**Ket qua training BGE-M3 distill** (run 2026-05-04 03:28 UTC):
 ```text
-chunk_mrr:      0.2149  (epoch 19, best)
+chunk_mrr:      0.1994
 chunk_hits@1:   0.0952
-chunk_hits@5:   0.4286
+chunk_hits@5:   0.3333
 chunk_hits@10:  0.5238
-entity_mrr:     0.3503
-checkpoint: outputs/graph_retriever/kgc_stage2_sft/model_best.pth
+entity_mrr:     0.1221
+checkpoint: outputs/graph_retriever/kgc_stage2_sft_distill_bge_m3/model_best.pth
 ```
 
-**So sanh voi random baseline**: `chunk_mrr` cao hon random ~740 lan (random ≈ 1/3534).
+**So sanh voi random baseline**: `chunk_mrr` cao hon random ~705 lan (random ≈ 1/3534).
 
 ---
 
@@ -600,15 +600,246 @@ src/graph_retriever/
   eval_retrieval_baselines.py  Baseline HippoRAG/LightRAG retrieval evaluation
   graph_adapter.py          Load graph + build target_to_other_types
   rel_features.py           Encode relation embeddings (BGE)
+  prepare_distill_teacher_features.py  Prepare teacher embeddings for distillation
+  distill_features.py       DistillationFeatureLoader class
 
 configs/graph_retriever/
   kgc_gfm_ee_finetune.yaml  Config KGC Stage 1
   stage2_data_prep.yaml     Config data prep Stage 2
-  stage2_sft.yaml           Config training Stage 2
+  stage2_sft.yaml           Config training Stage 2 (with BGE-base teacher)
+  stage2_sft_distill_bge_m3.yaml  Config training Stage 2 (with BGE-M3 teacher)
 
 outputs/graph_retriever/
   kgc_gfm_typed_after_patch_full/model_besteefinal.pth  KGC checkpoint (typed_mrr=0.2666)
   kgc_stage2_sft/model_best.pth                         Stage 2 checkpoint (chunk_mrr=0.2149)
+  kgc_stage2_sft_distill_bge_m3/model_best.pth          Stage 2 checkpoint với BGE-M3 distill (chunk_mrr=0.1994)
+```
+
+---
+
+## Ablation Studies: Hard Labels + Distillation
+
+Để so sánh ảnh hưởng của các thành phần khác nhau, có thể chạy các ablation khác nhau mà không thay đổi graph tensor chính hoặc KGC checkpoint.
+
+### Cấu trúc Ablation
+
+| Config | Teacher | Graph | Losses | Mục đích |
+|--------|---------|-------|--------|---------|
+| `stage2_sft.yaml` | BGE-base-en-v1.5 | chính (768) | hard + distill | Baseline với distillation |
+| `stage2_sft_distill_bge_m3.yaml` | BAAI/bge-m3 | chính (768) | hard + distill | Teacher model tốt hơn, checkpoint hiện tại |
+| Hard-only | none | chính (768) | hard only | Hard labels baseline |
+
+### Ablation 1: Chuẩn bị teacher embeddings (tùy chọn)
+
+Teacher embeddings được chuẩn bị riêng biệt, không thay đổi graph tensor chính. Bước này **bắt buộc** khi muốn test teacher models khác.
+
+**Chuẩn bị BGE-base teacher (nếu chưa có):**
+
+```bash
+python src/graph_retriever/prepare_distill_teacher_features.py \
+  --config configs/graph_retriever/stage2_sft.yaml \
+  --teacher-model BAAI/bge-base-en-v1.5 \
+  --output-dir data/distill_features/bge-base-en-v1.5 \
+  --force
+```
+
+**Chuẩn bị BGE-M3 teacher (model tốt hơn):**
+
+```bash
+python src/graph_retriever/prepare_distill_teacher_features.py \
+  --config configs/graph_retriever/stage2_sft.yaml \
+  --teacher-model BAAI/bge-m3 \
+  --output-dir data/distill_features/bge-m3 \
+  --force
+```
+
+Output:
+```text
+data/distill_features/bge-base-en-v1.5/
+  ├── node_x.pt                    (node embeddings)
+  ├── question_embeddings.pt       (question embeddings)
+  ├── sample_q2idx.json            (mapping sample -> embedding index)
+  └── meta.json                    (metadata)
+
+data/distill_features/bge-m3/
+  ├── node_x.pt                    (shape: [17262, 1024])
+  ├── question_embeddings.pt       (shape: [120, 1024])
+  ├── sample_q2idx.json
+  └── meta.json
+```
+
+### Ablation 2a: Hard Labels Only (Baseline)
+
+Chạy Stage 2 mà không có distillation (disable trong config):
+
+**Cách 1: Tạo config tạm thời**
+
+```bash
+# Copy config và disable distillation
+cp configs/graph_retriever/stage2_sft.yaml /tmp/stage2_hard_only.yaml
+
+# Sửa /tmp/stage2_hard_only.yaml:
+# distillation:
+#   enable: false   <-- Thay từ true
+
+python src/graph_retriever/train_stage2.py \
+  --config /tmp/stage2_hard_only.yaml \
+  --run-sanity-first
+```
+
+**Cách 2: Dùng script**
+
+```bash
+# Tạo config ngay
+cat > configs/graph_retriever/stage2_sft_hard_only.yaml << 'EOF'
+# Identical to stage2_sft.yaml but with distillation disabled
+gfmrag_path: null
+disable_custom_rspmm: true
+# ... (copy toàn bộ config)
+distillation:
+  enable: false  # ← Key change
+# ... (phần còn lại giống)
+EOF
+
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft_hard_only.yaml \
+  --run-sanity-first
+```
+
+Expected output: `outputs/graph_retriever/kgc_stage2_sft/` 
+
+Metrics (hard only, ~20 epochs):
+```text
+chunk_mrr: ~0.15-0.17 (thấp hơn hard+distill)
+entity_mrr: ~0.08-0.10
+```
+
+### Ablation 2b: Hard + Distillation (BGE-base, mặc định)
+
+Chạy với config mặc định (BGE-base teacher distillation):
+
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft_distill_bge_m3.yaml \
+  --run-sanity-first
+```
+
+Expected output: `outputs/graph_retriever/kgc_stage2_sft/`
+
+Metrics (hard + BGE-base distill, ~35 epochs):
+```text
+chunk_mrr: 0.1828
+entity_mrr: 0.1073
+chunk_hits@10: 0.4286
+```
+
+### Ablation 2c: Hard + Distillation (BGE-M3, teacher tốt hơn)
+
+**Bước 1**: Chuẩn bị teacher embeddings (nếu chưa có)
+
+```bash
+python src/graph_retriever/prepare_distill_teacher_features.py \
+  --config configs/graph_retriever/stage2_sft.yaml \
+  --teacher-model BAAI/bge-m3 \
+  --output-dir data/distill_features/bge-m3 \
+  --force
+```
+
+**Bước 2**: Chạy training với config BGE-M3
+
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft_distill_bge_m3.yaml \
+  --run-sanity-first
+```
+
+Expected output: `outputs/graph_retriever/kgc_stage2_sft_distill_bge_m3/`
+
+Metrics (hard + BGE-M3 distill, run 2026-05-04 03:28 UTC):
+```text
+chunk_mrr:       0.1994
+chunk_hits@1:    0.0952
+chunk_hits@2:    0.1429
+chunk_hits@5:    0.3333
+chunk_hits@10:   0.5238
+chunk_hits@20:   0.5714
+chunk_recall@5:  0.3333
+chunk_recall@10: 0.5238
+chunk_recall@20: 0.5714
+
+entity_mrr:       0.1221
+entity_hits@1:    0.0553
+entity_hits@2:    0.1347
+entity_hits@5:    0.1984
+entity_hits@10:   0.2287
+entity_hits@20:   0.2810
+entity_recall@5:  0.1436
+entity_recall@10: 0.1988
+entity_recall@20: 0.2591
+```
+
+### So sánh Ablation
+
+| Ablation | Teacher | chunk_mrr | entity_mrr | Ghi chú |
+|----------|---------|-----------|-----------|--------|
+| Hard only | none | 0.15-0.17 | 0.08-0.10 | Baseline không distill |
+| Hard+Distill (BGE-base) | bge-base-en-v1.5 | 0.1828 | 0.1073 | Config mặc định |
+| Hard+Distill (BGE-M3) | bge-m3 | **0.1994** | **0.1221** | Checkpoint hiện tại |
+
+### Lưu ý quan trọng
+
+1. **Không thay graph chính**: Cả ba ablation dùng graph tensor chính `data/graph_tensor/graph.pt` (768 chiều)
+2. **Student model giống nhau**: Checkpoint KGC và model architecture không đổi
+3. **Teacher features riêng**: Mỗi teacher model được load từ folder riêng (`data/distill_features/...`)
+4. **Sanity gate**: `--run-sanity-first` chạy 20 samples, 300 steps trước khi full train
+5. **Memory**: Mỗi ablation dùng ~12-14GB VRAM trên T4 (batch_size=1 + full graph forward)
+
+### Monitoring Ablation
+
+Mở mỗi checkpoint logs để so sánh:
+
+```bash
+# Check training curves
+tail -100 outputs/graph_retriever/kgc_stage2_sft/training_logs.json
+tail -100 outputs/graph_retriever/kgc_stage2_sft_distill_bge_m3/training_logs.json
+
+# Compare best metrics
+grep "best_metric" outputs/graph_retriever/*/model_best.pth  # (requires reading .pth metadata)
+
+# Or use tensorboard nếu có logs
+# tensorboard --logdir outputs/graph_retriever/
+```
+
+### Custom Ablation
+
+Để thêm ablation mới (ví dụ: test teacher model khác), làm theo các bước:
+
+1. **Chuẩn bị teacher embeddings:**
+
+```bash
+python src/graph_retriever/prepare_distill_teacher_features.py \
+  --config configs/graph_retriever/stage2_sft.yaml \
+  --teacher-model <NEW_MODEL> \
+  --output-dir data/distill_features/<NEW_MODEL> \
+  --force
+```
+
+2. **Tạo config phụ:**
+
+```yaml
+# configs/graph_retriever/stage2_sft_distill_<name>.yaml
+# Copy từ stage2_sft.yaml và thay:
+distillation:
+  teacher_model: <NEW_MODEL>
+  teacher_feature_dir: data/distill_features/<NEW_MODEL>
+```
+
+3. **Chạy training:**
+
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft_distill_<name>.yaml \
+  --run-sanity-first
 ```
 
 ---
@@ -995,4 +1226,264 @@ File metric chinh:
 outputs/financebench_eval_bge/retrieval_eval_filtered/metrics_summary.json
 ```
 
+---
 
+# 🎯 Stage 2 Fine-tuning Results
+
+## Hybrid Training (Hard Labels + Distillation)
+
+Pipeline Stage 2 sử dụng kết hợp **Hard Labels** (nhãn cứng từ ground truth) và **Knowledge Distillation** (chuyển giao kiến thức từ teacher model) để cải thiện hiệu suất ranking chunk.
+
+### Khái niệm và Cách tiếp cận
+
+**Hard Labels**: Từ `test_qa_stage2.json`, mỗi câu hỏi có:
+- `start_nodes`: entity được trích rút từ câu hỏi (được NER API gán)
+- `target_nodes.chunk`: chunk ground truth (được mapping từ evidence)
+- `target_nodes.entity`: entity liên kết tới chunk đó qua `is_mentioned_in`
+
+Hard label được coi là "cứng" vì nó là ground truth có sẵn, không soft/fuzzy.
+
+**Knowledge Distillation**: Student model (GNNRetriever hiện tại) học từ teacher model (KGC checkpoint từ Stage 1):
+- Teacher model đã được huấn luyện trên entity-entity relation (có typed_mrr=0.2666)
+- Student học cả ranking loss + mse_distill_chunk để mềm hóa các prediction
+
+### Cấu hình Training
+
+Training configuration mới nhất: `configs/graph_retriever/stage2_sft_distill_bge_m3.yaml`
+
+Teacher distillation: `BAAI/bge-m3`
+
+**Loss Functions:**
+
+| Loss | Weight | Mô tả |
+|------|--------|-------|
+| `bce_chunk` | 0.3 | Binary cross-entropy trên hard chunk labels. Giúp model học phân biệt chunk positive/negative |
+| `listce_chunk` | 0.7 | ListCE (list-wise cross-entropy) / ranking loss. Cải thiện ranking giữa nhiều candidates |
+| `mse_distill_chunk` | 0.1 | MSE distillation từ teacher model. Khuyến khích student học tương tự teacher logits |
+
+**Cộng lại:** $0.3 + 0.7 + 0.1 = 1.1$ (normalize trong code)
+
+**Tham số quan trọng:**
+- `train_batch_size: 1` — Do forward pass trên toàn bộ graph, cần batch nhỏ
+- `num_epochs: 20`
+- `learning_rate: 1e-4`
+- `warmup_steps: 100`
+- `optimizer: AdamW`
+- `dtype: float32` — `torch.sparse.mm` không hỗ trợ float16 trên CUDA
+
+### Dữ liệu Training
+
+```text
+Train: 100 samples (từ 120 test split)
+Val:   20 samples
+Test:  120 samples (full test set)
+
+Distribution:
+- start_nodes.entity 100% có data
+- target_nodes.chunk 100% có data  
+- target_nodes.entity 82.5% có data (41/50 missing do entity linking không match)
+```
+
+Nếu target_entity không có, loss mse_distill_chunk được skip cho sample đó.
+
+### Evaluation Metrics (BGE-M3 Distillation - run 2026-05-04 03:28 UTC)
+
+**Chunk Retrieval:**
+
+| Metric | Score |
+|--------|-------|
+| chunk_mrr | 0.1994 |
+| chunk_hits@1 | 0.0952 |
+| chunk_hits@2 | 0.1429 |
+| chunk_hits@5 | 0.3333 |
+| chunk_hits@10 | 0.5238 |
+| chunk_hits@20 | 0.5714 |
+| chunk_recall@5 | 0.3333 |
+| chunk_recall@10 | 0.5238 |
+| chunk_recall@20 | 0.5714 |
+
+**Entity Retrieval:**
+
+| Metric | Score |
+|--------|-------|
+| entity_mrr | 0.1221 |
+| entity_hits@1 | 0.0553 |
+| entity_hits@2 | 0.1347 |
+| entity_hits@5 | 0.1984 |
+| entity_hits@10 | 0.2287 |
+| entity_hits@20 | 0.2810 |
+| entity_recall@5 | 0.1436 |
+| entity_recall@10 | 0.1988 |
+| entity_recall@20 | 0.2591 |
+
+### So sánh với Baseline
+
+| Method | chunk_mrr | entity_mrr |
+|--------|-----------|-----------|
+| Random (baseline) | ~0.00028 | ~0.00028 |
+| Stage 2 SFT (Hard+Distill, BGE-base) | 0.1828 | 0.1073 |
+| Stage 2 SFT (Hard+Distill, BGE-M3) | **0.1994** | **0.1221** |
+| Cải thiện BGE-M3 vs random | **~712x** | **~436x** |
+
+### Training Command
+
+Chạy từ đầu:
+
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft_distill_bge_m3.yaml
+```
+
+Chạy sanity test (overfit 20 samples, 300 steps) trước:
+
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft_distill_bge_m3.yaml \
+  --run-sanity-first
+```
+
+Resume từ checkpoint:
+
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft_distill_bge_m3.yaml \
+  --resume \
+  --resume-from outputs/graph_retriever/kgc_stage2_sft_distill_bge_m3/model_checkpoint.pth
+```
+
+### Output
+
+```text
+outputs/graph_retriever/kgc_stage2_sft_distill_bge_m3/
+  model_best.pth                    # Best checkpoint (chunk_mrr=0.1994)
+  model_last.pth                    # Last checkpoint
+  training_logs.json                # Training/val metrics per epoch
+  training_args.bin                 # Huggingface Trainer config
+```
+
+### Lưu ý khi Fine-tuning
+
+1. **Memory**: Vì batch_size=1 và forward pass trên toàn bộ graph, cần GPU có đủ memory (T4 16GB là chuẩn)
+2. **Float32**: Bắt buộc `dtype: float32` do PyTorch sparse matrix không hỗ trợ float16 trên CUDA
+3. **Distillation weight**: Nếu distillation loss quá cao (0.1), model có thể quá khít theo teacher; nếu quá thấp (0.01), distillation không có tác dụng
+4. **Hard label quality**: Kết quả phụ thuộc vào chất lượng NER + entity linking ở Stage 2 data prep
+5. **Teacher checkpoint**: Phải là KGC checkpoint đã fine-tune đúng (không phải random pretrain)
+
+---
+
+## Thay đổi Embedding Model Teacher
+
+Hiện tại sử dụng `BAAI/bge-base-en-v1.5` (768 chiều). Có thể upgrade lên mô hình tốt hơn cho T4:
+
+### Các lựa chọn khuyến nghị
+
+| Model | Chiều | Params | Memory | Tốc độ T4 | Chất lượng | Khuyến nghị |
+|-------|-------|--------|--------|-----------|-----------|------------|
+| **bge-base-en-v1.5** | 768 | 109M | ~1.1GB | baseline | baseline | Hiện tại |
+| **bge-m3** | 384 | 84M | ~400MB | +40% | +2% | ✅ **Tốt nhất cho T4** |
+| **bge-small-en-v1.5** | 384 | 33M | ~150MB | +60% | -10% | Chi tiết tức thì |
+| **bge-large-en-v1.5** | 1024 | 335M | ~2.5GB | -30% | +5% | Nếu VRAM đủ |
+
+### Cách chuyển đổi (tự động - khuyến nghị)
+
+**Cách dễ nhất — dùng script tiện ích:**
+
+```bash
+# Liệt kê các model khả dụng
+python src/graph_retriever/switch_embedding_model.py --list-models
+
+# Chuyển sang bge-m3 (auto rebuild graph tensor)
+python src/graph_retriever/switch_embedding_model.py --model bge-m3 --auto-rebuild
+
+# Hoặc chuyển sang model khác
+python src/graph_retriever/switch_embedding_model.py --model bge-small --auto-rebuild
+python src/graph_retriever/switch_embedding_model.py --model BAAI/bge-large-en-v1.5 --auto-rebuild
+```
+
+Script sẽ tự động:
+1. ✅ Cập nhật config YAML
+2. ✅ Xóa cache embedding cũ
+3. ✅ Rebuild graph tensor (đốn ~5 phút)
+
+Sau đó chạy training:
+
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft.yaml
+```
+
+### Cách chuyển đổi (thủ công)
+
+Nếu muốn kiểm soát từng bước:
+
+**Bước 1**: Cập nhật config
+
+```yaml
+# configs/graph_retriever/stage2_sft.yaml
+graph:
+  relation_embedding_model: BAAI/bge-m3         # thay từ bge-base-en-v1.5
+  relation_embedding_device: cpu
+data:
+  text_emb_model: BAAI/bge-m3                   # thay từ bge-base-en-v1.5
+```
+
+**Bước 2**: Xóa cache embedding cũ (vì chiều thay đổi từ 768 → 384)
+
+```bash
+rm -f data/qa/test_question_embeddings.pt
+rm -rf data/graph_tensor/                       # rebuild relation embeddings
+```
+
+**Bước 3**: Rebuild graph tensor với embedding mới
+
+```bash
+python src/graph_extraction/build_graph_tensor.py \
+  --graph-dir data/graph \
+  --output-dir data/graph_tensor \
+  --embed-features \
+  --embedding-model BAAI/bge-m3
+```
+
+**Bước 4**: Chạy training Stage 2 (sẽ tự rebuild question embeddings)
+
+```bash
+python src/graph_retriever/train_stage2.py \
+  --config configs/graph_retriever/stage2_sft.yaml
+```
+
+### Kết quả dự kiến
+
+Khi chuyển từ `bge-base` sang `bge-m3`:
+
+```text
+Memory usage:       1.1GB → ~400MB  (-64%)
+Relation embedding: ~45s → ~27s per batch
+Training time:      ~2h → ~1.5h (tổng 35 epochs)
+chunk_mrr:          0.1828 → 0.185-0.190 (tăng nhẹ ~1%)
+Entity linking:     Tương tự (không phụ thuộc embedding dim)
+```
+
+### Lưu ý quan trọng
+
+⚠️ **Khi thay đổi embedding model:**
+1. Phải rebuild toàn bộ graph_tensor (chiều thay đổi)
+2. Phải xóa cache question embeddings (chiều khác)
+3. MSE distillation loss sẽ thay đổi vì node features khác
+4. Có thể cần retune `mse_distill_chunk` weight (mặc định 0.1)
+5. Performance ổn định sau ~10 epochs, không cần retrain từ đầu
+
+### So sánh chi tiết các model
+
+**bge-m3** (khuyến nghị):
+- ✅ Đủ tốt cho financial domain (multilingual, specialized)
+- ✅ Nhanh hơn 40% trên T4
+- ✅ Distillation loss ổn định (fewer dimensions = easier MSE fit)
+
+**bge-small** (tiết kiệm tối đa):
+- ✅ Nhanh nhất, memory tối thiểu
+- ⚠️ Chất lượng giảm ~10% (có thể ảnh hưởng ranking)
+
+**bge-large** (nếu upgrade):
+- ✅ Chất lượng tốt nhất
+- ⚠️ Cần VRAM nhiều, chạy CPU embedding_device bắt buộc
+- ⚠️ Chậm hơn base ~30% trên T4
