@@ -55,7 +55,6 @@ node_text_semantics:
       - company
       - doc_type
       - doc_period
-
 # ─── Stage 2 Data ────────────────────────────────────────────
 data:
   stage2_json: data/qa/test_qa_stage2.json

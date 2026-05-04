@@ -137,7 +137,6 @@ def run_stage2(*, cfg: dict) -> Path:
             )
     else:
         logger.info("Node text semantics disabled.")
-
     validate_graph_x(graph, feat_dim=feat_dim, context="Stage 2 train graph")
 
     # ─── Build target_to_other_types (entity→chunk sparse) ────
@@ -198,7 +197,6 @@ def run_stage2(*, cfg: dict) -> Path:
     entity_model = instantiate(OmegaConf.create(cfg["model"]["entity_model"]))
     ranker = SimpleRanker()
     model_cfg = cfg["model"]
-
     if bool(model_cfg.get("use_node_text_semantics", False)):
         from src.graph_retriever.node_semantic_gnn import NodeSemanticGNNRetriever
 

@@ -1,0 +1,11 @@
+{
+  "ticker": "MS",
+  "company": "MORGAN STANLEY",
+  "cik": "0000895421",
+  "form": "10-Q",
+  "filing_date": "2025-08-04",
+  "accession": "0000895421-25-000440",
+  "primary_doc": "ms-20250630.htm",
+  "url": "https://www.sec.gov/Archives/edgar/data/895421/000089542125000440/ms-20250630.htm",
+  "local_path": "data\\raw_filings\\MS\\10-Q\\MS_10-Q_2025-08-04_0000895421-25-000440_ms-20250630.htm"
+}

@@ -383,7 +383,6 @@ def run_sanity(
         )
     else:
         logger.info("Node text semantics disabled for sanity.")
-
     validate_graph_x(graph, feat_dim=feat_dim, context="Stage 2 sanity graph")
 
     target_to_other = build_target_to_other_types(

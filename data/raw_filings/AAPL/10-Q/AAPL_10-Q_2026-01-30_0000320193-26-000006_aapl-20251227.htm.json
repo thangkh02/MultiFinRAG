@@ -1,0 +1,11 @@
+{
+  "ticker": "AAPL",
+  "company": "Apple Inc.",
+  "cik": "0000320193",
+  "form": "10-Q",
+  "filing_date": "2026-01-30",
+  "accession": "0000320193-26-000006",
+  "primary_doc": "aapl-20251227.htm",
+  "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000006/aapl-20251227.htm",
+  "local_path": "data\\raw_filings\\AAPL\\10-Q\\AAPL_10-Q_2026-01-30_0000320193-26-000006_aapl-20251227.htm"
+}
