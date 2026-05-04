@@ -29,6 +29,7 @@ from src.graph_retriever.gfm_bootstrap import bootstrap_gfmrag, disable_custom_r
 from src.graph_retriever.rel_features import ensure_rel_attr
 from src.graph_retriever.stage2_common import (
     LoggingSFTTrainerMixin,
+    TeacherFeaturesDistillationMixin,
     build_stage2_loss_functions,
     log_stage2_runtime_context,
     reject_external_gfmrag_path,
@@ -39,6 +40,7 @@ from src.graph_retriever.stage2_dataset import (
     _SingleSFTDatasetLoader,
     load_stage2_sft_data,
 )
+from src.graph_retriever.distill_features import DistillationFeatureLoader, validate_distillation_config
 
 logger = logging.getLogger(__name__)
 
@@ -197,6 +199,34 @@ def run_stage2(*, cfg: dict) -> Path:
     else:
         logger.warning("Không có pretrained_model_path — train from scratch!")
 
+    # ─── Load Distillation Features (if enabled) ───────────────
+    distill_loader = None
+    distill_cfg = cfg.get("distillation", {})
+    if distill_cfg.get("enable", False):
+        mode = distill_cfg.get("mode", "author_graph_x")
+        if mode == "teacher_features":
+            teacher_feature_dir = Path(str(distill_cfg.get("teacher_feature_dir", "")))
+            logger.info(f"Loading distillation features from: {teacher_feature_dir}")
+            
+            distill_loader = DistillationFeatureLoader(
+                teacher_feature_dir=teacher_feature_dir,
+                num_samples=len(sft_data.train_data) + len(sft_data.test_data),
+                num_nodes=graph.num_nodes,
+                device=device,
+            )
+            
+            distill_info = distill_loader.load()
+            distill_loader.log_info()
+            
+            # Validate config
+            if not validate_distillation_config(cfg, distill_loader):
+                logger.error("Distillation config validation failed")
+                sys.exit(1)
+            
+            logger.info(f"✅ Distillation features loaded successfully")
+        else:
+            logger.info(f"Distillation mode: {mode} (using author_graph_x, no separate loader)")
+
     # ─── Optimizer ────────────────────────────────────────────
     optimizer = torch.optim.AdamW(
         model.parameters(),
@@ -236,10 +266,11 @@ def run_stage2(*, cfg: dict) -> Path:
     eval_loader = _SingleSFTDatasetLoader(graph_name, sft_data)
 
     # ─── SFTTrainer ───────────────────────────────────────────
-    class Stage2LoggingSFTTrainer(LoggingSFTTrainerMixin, SFTTrainer):
+    class Stage2DistillTrainer(TeacherFeaturesDistillationMixin, LoggingSFTTrainerMixin, SFTTrainer):
+        """Trainer with logging and teacher features distillation support."""
         pass
 
-    trainer = Stage2LoggingSFTTrainer(
+    trainer = Stage2DistillTrainer(
         output_dir=str(output_dir),
         args=args,
         model=model,
@@ -251,10 +282,32 @@ def run_stage2(*, cfg: dict) -> Path:
         metrics=list(cfg.get("metrics", ["mrr", "hits@1", "hits@5", "hits@10"])),
     )
 
+    # ─── Attach distillation features to trainer ───────────────
+    if distill_loader is not None:
+        trainer.distill_loader = distill_loader
+        trainer.distill_config = distill_cfg
+        logger.info("Attached distillation features to trainer")
+    else:
+        trainer.distill_loader = None
+        trainer.distill_config = None
+
     logger.info("=== TRAINING START ===")
     logger.info("  output_dir: %s", output_dir)
     logger.info("  epochs: %d | batch: %d | lr: %s", args.num_epoch, args.train_batch_size, tcfg["lr"])
     logger.info("  target_types: %s | metric: %s", cfg.get("target_types"), args.metric_for_best_model)
+    
+    # Log distillation info
+    if distill_loader is not None:
+        logger.info("=== DISTILLATION INFO ===")
+        logger.info("  enabled: true")
+        logger.info("  mode: teacher_features")
+        logger.info("  teacher_model: %s", distill_cfg.get("teacher_model", "unknown"))
+        logger.info("  teacher_feature_dir: %s", distill_cfg.get("teacher_feature_dir", "unknown"))
+        logger.info("  teacher node_x: %s", distill_loader.node_x.shape)
+        logger.info("  teacher question_emb: %s", distill_loader.question_embeddings.shape)
+        logger.info("  teacher embedding_dim: %d", distill_loader.embedding_dim)
+    else:
+        logger.info("  distillation: %s", "disabled" if not distill_cfg.get("enable") else f"mode={distill_cfg.get('mode')}")
 
     trainer.train()
 
