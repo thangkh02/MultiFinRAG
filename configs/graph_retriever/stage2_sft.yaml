@@ -21,6 +21,41 @@ graph:
   relation_embedding_batch_size: 32
   force_rebuild_rel_attr: false
 
+# ─── Node Text Semantics (G-reasoner style) ────────────────
+node_text_semantics:
+  enable: true
+  assign_to: x
+  embedding_model: BAAI/bge-base-en-v1.5
+  embedding_device: null
+  embedding_batch_size: 32
+  normalize: true
+  cache_path: data/graph_tensor/node_text_features_bge_base.pt
+  force_rebuild: false
+
+  id2node_path: data/graph_tensor/id2node.json
+  chunk_text_path: data/chunks/all_chunks_tagged_paper_schema.jsonl
+
+  include_fields:
+    entity:
+      - name
+      - description
+    chunk:
+      - contextual_header
+      - company
+      - doc_name
+      - doc_type
+      - doc_period
+      - page
+      - section
+      - text
+      - summary
+      - semantic_tags
+    document:
+      - doc_name
+      - company
+      - doc_type
+      - doc_period
+
 # ─── Stage 2 Data ────────────────────────────────────────────
 data:
   stage2_json: data/qa/test_qa_stage2.json
@@ -47,6 +82,12 @@ model:
   # init_nodes_type: "chunk" → tính weight từ graph.target_to_other_types["chunk"]
   init_nodes_weight: true
   init_nodes_type: chunk
+  use_node_text_semantics: true
+  node_feat_attr: x
+  node_feat_fusion: add
+  node_feat_alpha: 0.1
+  use_semantic_residual_score: false
+  semantic_score_weight: 0.05
 
 # ─── Losses (hard chunk labels + optional distillation) ───────
 losses:

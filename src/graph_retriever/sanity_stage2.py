@@ -100,20 +100,44 @@ def _load_question_embeddings(cfg: dict, samples: list[dict]) -> torch.Tensor:
     return torch.tensor(embs, dtype=torch.float32)
 
 
-def _load_model(cfg: dict, feat_dim: int, device: torch.device, seed: int) -> torch.nn.Module:
+def _load_model(
+    cfg: dict,
+    feat_dim: int,
+    device: torch.device,
+    seed: int,
+    node_feat_dim: int | None = None,
+) -> torch.nn.Module:
     torch.manual_seed(seed)
     from gfmrag.models.gfm_rag_v1 import model as gfm_model_module
     from gfmrag.models.gfm_rag_v1.rankers import SimpleRanker
 
     entity_model = instantiate(OmegaConf.create(cfg["model"]["entity_model"]))
     model_cfg = cfg["model"]
-    model = gfm_model_module.GNNRetriever(
-        entity_model=entity_model,
-        feat_dim=int(feat_dim),
-        ranker=SimpleRanker(),
-        init_nodes_weight=bool(model_cfg.get("init_nodes_weight", True)),
-        init_nodes_type=str(model_cfg.get("init_nodes_type", "chunk")),
-    ).to(device)
+    if bool(model_cfg.get("use_node_text_semantics", False)):
+        from src.graph_retriever.node_semantic_gnn import NodeSemanticGNNRetriever
+
+        model = NodeSemanticGNNRetriever(
+            entity_model=entity_model,
+            feat_dim=int(feat_dim),
+            ranker=SimpleRanker(),
+            init_nodes_weight=bool(model_cfg.get("init_nodes_weight", True)),
+            init_nodes_type=str(model_cfg.get("init_nodes_type", "chunk")),
+            use_node_text_semantics=bool(model_cfg.get("use_node_text_semantics", False)),
+            node_feat_dim=int(model_cfg.get("node_feat_dim") or node_feat_dim or feat_dim),
+            node_feat_attr=str(model_cfg.get("node_feat_attr", "x")),
+            node_feat_alpha=float(model_cfg.get("node_feat_alpha", 0.1)),
+            node_feat_fusion=str(model_cfg.get("node_feat_fusion", "add")),
+            use_semantic_residual_score=bool(model_cfg.get("use_semantic_residual_score", False)),
+            semantic_score_weight=float(model_cfg.get("semantic_score_weight", 0.05)),
+        ).to(device)
+    else:
+        model = gfm_model_module.GNNRetriever(
+            entity_model=entity_model,
+            feat_dim=int(feat_dim),
+            ranker=SimpleRanker(),
+            init_nodes_weight=bool(model_cfg.get("init_nodes_weight", True)),
+            init_nodes_type=str(model_cfg.get("init_nodes_type", "chunk")),
+        ).to(device)
 
     pretrained_path = cfg["training"].get("pretrained_model_path")
     if pretrained_path:
@@ -215,6 +239,7 @@ def _run_profile(
     cfg: dict,
     graph: Any,
     feat_dim: int,
+    node_feat_dim: int | None,
     loader: DataLoader,
     loss_functions: list[Any],
     chunk_nodes: torch.Tensor,
@@ -223,7 +248,7 @@ def _run_profile(
     require_finite_distill: bool,
 ) -> dict[str, float]:
     seed = int(cfg.get("data", {}).get("seed", 42))
-    model = _load_model(cfg, feat_dim, device, seed)
+    model = _load_model(cfg, feat_dim, device, seed, node_feat_dim=node_feat_dim)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
     logger.info("=== SANITY %s STEP 0 EVAL ===", profile_name)
@@ -318,7 +343,10 @@ def run_sanity(
         mention_relation_key=str(cfg["graph"].get("mention_relation_key", "is_mentioned_in")),
     )
     graph = bundle.data
-    validate_graph_x(graph, context="Stage 2 sanity graph")
+    if getattr(graph, "x", None) is not None:
+        validate_graph_x(graph, context="Stage 2 sanity graph")
+    else:
+        logger.warning("graph.x missing at load time; will proceed if node_text_semantics is enabled.")
     graph, feat_dim = ensure_rel_attr(
         graph,
         rel2id_path=tensor_dir / "rel2id.json",
@@ -327,6 +355,35 @@ def run_sanity(
         embedding_batch_size=int(cfg["graph"].get("relation_embedding_batch_size", 32)),
         force=False,
     )
+
+    node_feat_dim = None
+    node_sem_cfg = cfg.get("node_text_semantics", {})
+    if isinstance(node_sem_cfg, dict) and node_sem_cfg.get("enable", False):
+        from src.graph_retriever.node_text_semantics import ensure_node_text_features
+
+        graph, node_feat_dim = ensure_node_text_features(
+            graph=graph,
+            tensor_dir=tensor_dir,
+            mappings=bundle.mappings,
+            cfg=node_sem_cfg,
+        )
+        node_feat_attr = str(node_sem_cfg.get("assign_to", "x"))
+        node_feat = getattr(graph, node_feat_attr, None)
+        if node_feat is None:
+            raise ValueError(f"Node semantics enabled but graph.{node_feat_attr} is missing")
+        if int(node_feat.size(0)) != int(graph.num_nodes):
+            raise ValueError(
+                f"Node semantics shape mismatch: {tuple(node_feat.shape)} vs num_nodes={graph.num_nodes}"
+            )
+        logger.info(
+            "Node semantics enabled: attr=%s shape=%s cache=%s",
+            node_feat_attr,
+            tuple(node_feat.shape),
+            node_sem_cfg.get("cache_path"),
+        )
+    else:
+        logger.info("Node text semantics disabled for sanity.")
+
     validate_graph_x(graph, feat_dim=feat_dim, context="Stage 2 sanity graph")
 
     target_to_other = build_target_to_other_types(
@@ -379,6 +436,7 @@ def run_sanity(
         cfg=cfg,
         graph=graph,
         feat_dim=feat_dim,
+        node_feat_dim=node_feat_dim,
         loader=loader,
         loss_functions=hard_losses,
         chunk_nodes=chunk_nodes,
@@ -391,6 +449,7 @@ def run_sanity(
         cfg=cfg,
         graph=graph,
         feat_dim=feat_dim,
+        node_feat_dim=node_feat_dim,
         loader=loader,
         loss_functions=all_losses,
         chunk_nodes=chunk_nodes,

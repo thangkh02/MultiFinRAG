@@ -99,7 +99,10 @@ def run_stage2(*, cfg: dict) -> Path:
     )
     graph = bundle.data
     mappings = bundle.mappings
-    validate_graph_x(graph, context="Stage 2 train graph")
+    if getattr(graph, "x", None) is not None:
+        validate_graph_x(graph, context="Stage 2 train graph")
+    else:
+        logger.warning("graph.x missing at load time; will proceed if node_text_semantics is enabled.")
 
     # ─── Đảm bảo rel_attr (BGE embeddings) ───────────────────
     rel2id_path = tensor_dir / "rel2id.json"
@@ -112,6 +115,29 @@ def run_stage2(*, cfg: dict) -> Path:
         force=bool(cfg["graph"].get("force_rebuild_rel_attr", False)),
     )
     logger.info("feat_dim (BGE embedding dim): %d", feat_dim)
+
+    # ─── Node text semantics (optional) ─────────────────────
+    node_feat_dim = None
+    node_sem_cfg = cfg.get("node_text_semantics", {})
+    if isinstance(node_sem_cfg, dict) and node_sem_cfg.get("enable", False):
+        from src.graph_retriever.node_text_semantics import ensure_node_text_features
+
+        graph, node_feat_dim = ensure_node_text_features(
+            graph=graph,
+            tensor_dir=tensor_dir,
+            mappings=mappings,
+            cfg=node_sem_cfg,
+        )
+        logger.info("Node text semantics enabled: feat_dim=%s", node_feat_dim)
+
+        distill_cfg = cfg.get("distillation", {})
+        if distill_cfg.get("mode") == "author_graph_x":
+            logger.warning(
+                "Distillation mode 'author_graph_x' uses graph.x; node text semantics also assigned to graph.x."
+            )
+    else:
+        logger.info("Node text semantics disabled.")
+
     validate_graph_x(graph, feat_dim=feat_dim, context="Stage 2 train graph")
 
     # ─── Build target_to_other_types (entity→chunk sparse) ────
@@ -173,14 +199,32 @@ def run_stage2(*, cfg: dict) -> Path:
     ranker = SimpleRanker()
     model_cfg = cfg["model"]
 
-    GNNRetriever = gfm_model_module.GNNRetriever
-    model = GNNRetriever(
-        entity_model=entity_model,
-        feat_dim=int(feat_dim),
-        ranker=ranker,
-        init_nodes_weight=bool(model_cfg.get("init_nodes_weight", True)),
-        init_nodes_type=str(model_cfg.get("init_nodes_type", "chunk")),
-    ).to(device)
+    if bool(model_cfg.get("use_node_text_semantics", False)):
+        from src.graph_retriever.node_semantic_gnn import NodeSemanticGNNRetriever
+
+        model = NodeSemanticGNNRetriever(
+            entity_model=entity_model,
+            feat_dim=int(feat_dim),
+            ranker=ranker,
+            init_nodes_weight=bool(model_cfg.get("init_nodes_weight", True)),
+            init_nodes_type=str(model_cfg.get("init_nodes_type", "chunk")),
+            use_node_text_semantics=bool(model_cfg.get("use_node_text_semantics", False)),
+            node_feat_dim=int(model_cfg.get("node_feat_dim") or node_feat_dim or feat_dim),
+            node_feat_attr=str(model_cfg.get("node_feat_attr", "x")),
+            node_feat_alpha=float(model_cfg.get("node_feat_alpha", 0.1)),
+            node_feat_fusion=str(model_cfg.get("node_feat_fusion", "add")),
+            use_semantic_residual_score=bool(model_cfg.get("use_semantic_residual_score", False)),
+            semantic_score_weight=float(model_cfg.get("semantic_score_weight", 0.05)),
+        ).to(device)
+    else:
+        GNNRetriever = gfm_model_module.GNNRetriever
+        model = GNNRetriever(
+            entity_model=entity_model,
+            feat_dim=int(feat_dim),
+            ranker=ranker,
+            init_nodes_weight=bool(model_cfg.get("init_nodes_weight", True)),
+            init_nodes_type=str(model_cfg.get("init_nodes_type", "chunk")),
+        ).to(device)
 
     num_params = sum(p.numel() for p in model.parameters())
     logger.info("=== MODEL INFO ===")
